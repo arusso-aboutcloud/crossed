@@ -1,0 +1,19 @@
+# Wrangler configuration for the crossed OG-image Worker.
+# Replace all PLACEHOLDER values before deploying.
+# Do not commit real account IDs, zone IDs, or tokens.
+
+name = "crossed-og"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+
+# Replace with your Cloudflare account ID.
+# Find it in the Cloudflare dashboard under Workers & Pages > Overview.
+account_id = "PLACEHOLDER_ACCOUNT_ID"
+
+[triggers]
+# Optional: bind the Worker to a custom route on your zone.
+# Replace with your domain and zone ID, or remove this section
+# if you use the default workers.dev subdomain.
+# routes = [
+#   { pattern = "PLACEHOLDER_DOMAIN/og/*", zone_id = "PLACEHOLDER_ZONE_ID" }
+# ]
