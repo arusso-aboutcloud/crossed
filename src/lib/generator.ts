@@ -16,19 +16,34 @@ function greedyPlace(
   config: DifficultyConfig,
   rng: () => number
 ): { placed: PlacedWord[] } {
+  if (entries.length === 0) return { placed: [] };
+
   const size = config.maxDim;
   const grid = makeGrid(size);
   let attempts = 0;
+
   const pool = shuffle([...entries], rng);
-  const first = [...pool].sort((a, b) => b.answer.length - a.answer.length)[0];
+
+  // First word must fit within the grid horizontally - filter by length first
+  const fits = [...pool]
+    .filter((e) => e.answer.length <= size)
+    .sort((a, b) => b.answer.length - a.answer.length);
+
+  if (fits.length === 0) return { placed: [] };
+
+  const first = fits[0];
   const startRow = Math.floor(size / 2);
   const startCol = Math.floor((size - first.answer.length) / 2);
   commitWord(grid, first, startRow, startCol, 'across', 0);
+
   const remaining = pool.filter((e) => e.id !== first.id);
   let bestGrid = cloneGrid(grid);
+
   for (const entry of remaining) {
     if (grid.placed.length >= config.targetWords) break;
     if (attempts >= ATTEMPT_BUDGET) break;
+    // Skip words that cannot possibly fit in the grid
+    if (entry.answer.length > size) continue;
     const candidates = findCandidates(grid, entry, config.maxDim);
     attempts += candidates.length + 1;
     if (candidates.length === 0) continue;
@@ -43,6 +58,7 @@ function greedyPlace(
     commitWord(grid, entry, best.row, best.col, best.dir, best.crossings);
     if (grid.placed.length > bestGrid.placed.length) bestGrid = cloneGrid(grid);
   }
+
   return { placed: bestGrid.placed };
 }
 
@@ -56,8 +72,8 @@ export function generate(
   const rng = mulberry32(seed);
   const { placed } = greedyPlace(entries, config, rng);
   const bb = placed.length > 0 ? boundingBox(placed) : { minR: 0, maxR: 0, minC: 0, maxC: 0 };
-  const rows = bb.maxR - bb.minR + 1;
-  const cols = bb.maxC - bb.minC + 1;
+  const rows = placed.length > 0 ? bb.maxR - bb.minR + 1 : 0;
+  const cols = placed.length > 0 ? bb.maxC - bb.minC + 1 : 0;
   const remapped: PlacedWord[] = placed.map((p) => ({
     ...p, row: p.row - bb.minR, col: p.col - bb.minC,
   }));
