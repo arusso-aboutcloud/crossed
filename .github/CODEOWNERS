@@ -1,0 +1,9 @@
+# CODEOWNERS
+# All files require review from the repository owner by default.
+* @arusso-aboutcloud
+
+# Clue bank content - changes need careful review for accuracy and licensing
+src/data/ @arusso-aboutcloud
+
+# Worker code - separate deployment, review carefully
+worker/ @arusso-aboutcloud
