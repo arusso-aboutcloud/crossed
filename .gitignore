@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# build output
+dist/
+.svelte-kit/
+build/
+
+# vite
+.vite/
+
+# env files - never commit secrets
+.env
+.env.*
+!.env.example
+
+# editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+
+# wrangler
+worker/.wrangler/
