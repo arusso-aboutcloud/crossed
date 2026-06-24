@@ -10,7 +10,28 @@ export default defineConfig({
     }
   },
   build: {
+    /*
+     * Multi-page build: main app + harness.
+     * The harness entry is included here so `vite build` compiles it.
+     * To exclude the harness from production, remove the harness entry below
+     * or add a VITE_HARNESS env-var gate. The harness page is not linked
+     * from the main app shell, so it is unreachable to end-users even if
+     * the file is present in dist/.
+     */
+    rollupOptions: {
+      input: {
+        main:    resolve(__dirname, 'index.html'),
+        harness: resolve(__dirname, 'src/dev/harness.html'),
+      },
+    },
     outDir: 'dist',
-    emptyOutDir: true
-  }
+    emptyOutDir: true,
+  },
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.ts'],
+    alias: {
+      $lib: resolve(__dirname, 'src/lib'),
+    },
+  },
 });
