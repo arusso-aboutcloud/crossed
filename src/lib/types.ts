@@ -77,10 +77,71 @@ export interface GridWord {
 
 /**
  * Full grid model passed to the game renderer.
- * The generation algorithm (not yet implemented) produces this.
  */
 export interface CrosswordGrid {
   rows: number;
   cols: number;
   words: GridWord[];
+}
+
+// ---------------------------------------------------------------------------
+// Generator types
+// ---------------------------------------------------------------------------
+
+/** One cell in the working grid. */
+export interface Cell {
+  letter: string;
+  /** word ids that pass through this cell */
+  wordIds: string[];
+}
+
+/** A word candidate before it is committed to the grid. */
+export interface PlacedWord {
+  entryId: string;
+  answer: string;
+  direction: 'across' | 'down';
+  row: number;
+  col: number;
+  /** number of letters shared with already-placed words at placement time */
+  crossings: number;
+}
+
+/** Per-difficulty size and word-count tunables. */
+export interface DifficultyConfig {
+  minDim: number;
+  maxDim: number;
+  targetWords: number;
+}
+
+/** Assembled clue item returned in the result. */
+export interface ClueLine {
+  number: number;
+  direction: 'across' | 'down';
+  clue: string;
+  answer: string;
+  entryId: string;
+  row: number;
+  col: number;
+  length: number;
+}
+
+/** Full result returned by the generator. */
+export interface GeneratorResult {
+  seed: number;
+  difficulty: Difficulty;
+  rows: number;
+  cols: number;
+  /** Sparse map: key is "row,col", value is the letter. */
+  cells: Record<string, string>;
+  placed: PlacedWord[];
+  clues: {
+    across: ClueLine[];
+    down: ClueLine[];
+  };
+  stats: {
+    wordsPlaced: number;
+    targetWords: number;
+    crossings: number;
+    generationMs: number;
+  };
 }
