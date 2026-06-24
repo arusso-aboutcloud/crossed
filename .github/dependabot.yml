@@ -1,0 +1,55 @@
+version: 2
+updates:
+  # Keep npm dependencies up to date for the frontend
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    commit-message:
+      prefix: "deps"
+    groups:
+      vite-svelte:
+        patterns:
+          - "vite"
+          - "@sveltejs/*"
+          - "svelte"
+          - "svelte-check"
+      typescript:
+        patterns:
+          - "typescript"
+
+  # Keep npm dependencies up to date for the Worker
+  - package-ecosystem: npm
+    directory: /worker
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - worker
+    commit-message:
+      prefix: "deps(worker)"
+
+  # Keep GitHub Actions up to date
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: UTC
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: "ci"

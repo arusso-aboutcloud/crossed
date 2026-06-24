@@ -1,0 +1,208 @@
+{
+  "topics": [
+    "defender",
+    "defender-cloud-apps",
+    "entra",
+    "intune",
+    "asr",
+    "sentinel",
+    "general"
+  ],
+  "entries": [
+    {
+      "id": "defender",
+      "answer": "DEFENDER",
+      "display": "Microsoft Defender",
+      "topic": "defender",
+      "era": "current",
+      "clues": {
+        "easy": "Microsoft's endpoint security product",
+        "medium": "XDR platform that unifies endpoint, identity, and cloud signals",
+        "hard": "The 'D' in MDE, MDO, MDI, and MDC",
+        "pro": "Suite whose Security Score API aggregates posture across workloads"
+      }
+    },
+    {
+      "id": "sentinel",
+      "answer": "SENTINEL",
+      "display": "Microsoft Sentinel",
+      "topic": "sentinel",
+      "era": "current",
+      "clues": {
+        "easy": "Microsoft's cloud-native SIEM",
+        "medium": "SIEM and SOAR service built on Log Analytics workspaces",
+        "hard": "Cloud SIEM whose data connectors include the Common Event Format source",
+        "pro": "Service where UEBA entity pages surface blast-radius timelines via IdentityInfo table"
+      }
+    },
+    {
+      "id": "intune",
+      "answer": "INTUNE",
+      "display": "Microsoft Intune",
+      "topic": "intune",
+      "era": "current",
+      "clues": {
+        "easy": "Microsoft's cloud-based MDM service",
+        "medium": "Endpoint management platform that enforces compliance on enrolled devices",
+        "hard": "MDM service whose compliance state feeds Entra Conditional Access",
+        "pro": "Service whose Proactive Remediations feature runs PowerShell detect-and-remediate script pairs"
+      }
+    },
+    {
+      "id": "entra",
+      "answer": "ENTRA",
+      "display": "Microsoft Entra",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "Microsoft's identity and access product family",
+        "medium": "Product suite that replaced Azure Active Directory branding",
+        "hard": "Family covering ID, External ID, ID Governance, and Verified ID",
+        "pro": "Suite whose Workload Identities product issues federated credentials to GitHub Actions runners"
+      }
+    },
+    {
+      "id": "asr",
+      "answer": "ASR",
+      "display": "Attack Surface Reduction",
+      "topic": "asr",
+      "era": "current",
+      "clues": {
+        "easy": "Acronym for the rules that block malicious Office macro behaviors",
+        "medium": "Defender feature set configured via policy to block exploit techniques",
+        "hard": "Rule set with modes audit, warn, and block; three letters",
+        "pro": "The rule GUID 75668C1F-73B5-4CF0-BB93-3ECF5CB7CC84 blocks this class of threat"
+      }
+    },
+    {
+      "id": "conditional-access",
+      "answer": "CONDITIONALACCESS",
+      "display": "Conditional Access",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "Entra policy engine that can require MFA based on risk",
+        "medium": "Zero-trust policy framework using if-then statements on signals like location and device compliance",
+        "hard": "Engine whose named locations, sign-in risk, and token binding form part of its signal set",
+        "pro": "Policy plane whose Continuous Access Evaluation revokes tokens in near-real-time on IP change"
+      }
+    },
+    {
+      "id": "kql",
+      "answer": "KQL",
+      "display": "KQL",
+      "topic": "sentinel",
+      "era": "current",
+      "clues": {
+        "easy": "Query language used in Sentinel and Defender hunting",
+        "medium": "Language whose summarize and render operators power Sentinel dashboards",
+        "hard": "Three-letter language underpinning both Log Analytics and Azure Data Explorer",
+        "pro": "Language in which the mv-expand operator is needed to normalize dynamic-typed columns in SecurityEvent"
+      }
+    },
+    {
+      "id": "casb",
+      "answer": "CASB",
+      "display": "Defender for Cloud Apps (CASB)",
+      "topic": "defender-cloud-apps",
+      "era": "current",
+      "clues": {
+        "easy": "Category of tool that brokers security between users and cloud services",
+        "medium": "Four-letter acronym for the proxy layer that powers Defender for Cloud Apps",
+        "hard": "Microsoft Defender for Cloud Apps is classified under this Gartner-coined four-letter architecture term",
+        "pro": "Architecture pattern whose in-line session controls in Defender for Cloud Apps use reverse-proxy token binding"
+      }
+    },
+    {
+      "id": "compliance",
+      "answer": "COMPLIANCE",
+      "display": "Compliance Policy",
+      "topic": "intune",
+      "era": "current",
+      "clues": {
+        "easy": "Intune policy type that marks devices as healthy or not",
+        "medium": "Intune construct whose pass/fail result gates Conditional Access for enrolled devices",
+        "hard": "Policy type in Intune that evaluates BitLocker, OS version, and threat level settings",
+        "pro": "Intune object whose grace period attribute delays non-compliant marking by a configurable number of days"
+      }
+    },
+    {
+      "id": "baseline",
+      "answer": "BASELINE",
+      "display": "Security Baseline",
+      "topic": "intune",
+      "era": "current",
+      "clues": {
+        "easy": "Intune template with Microsoft-recommended security settings pre-configured",
+        "medium": "Intune profile type that bundles hardening settings aligned to a benchmark",
+        "hard": "Intune object type that ships an MDM-translated version of the Microsoft Security Compliance Toolkit settings",
+        "pro": "Intune construct whose conflict resolution merges instance settings in order of assignment group priority"
+      }
+    },
+    {
+      "id": "pim",
+      "answer": "PIM",
+      "display": "Privileged Identity Management",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "Entra feature for just-in-time privileged role activation",
+        "medium": "Three-letter Entra service that requires approval and MFA before granting Global Admin",
+        "hard": "Service with eligible, active, and expired assignment states; three-letter acronym",
+        "pro": "Service whose access reviews can auto-remove eligible assignments when no reviewer responds within the configured period"
+      }
+    },
+    {
+      "id": "mfa",
+      "answer": "MFA",
+      "display": "Multi-Factor Authentication",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "Authentication method requiring more than just a password",
+        "medium": "Three-letter control enforced by Conditional Access to strengthen sign-in assurance",
+        "hard": "Control whose phishing-resistant variant in Entra uses passkeys or certificate-based auth",
+        "pro": "Entra authentication strength whose FIDO2 security key satisfies the AAL3 assurance requirement under NIST 800-63B"
+      }
+    },
+    {
+      "id": "aad",
+      "answer": "AAD",
+      "display": "Azure Active Directory (former name)",
+      "topic": "entra",
+      "era": "legacy",
+      "clues": {
+        "easy": "Three-letter acronym for the cloud identity service now called Microsoft Entra ID",
+        "medium": "Former brand acronym retired when Microsoft unified cloud identity under the Entra name",
+        "hard": "Acronym still seen in legacy PowerShell module names and older API paths despite the rebrand",
+        "pro": "Acronym whose AzureAD PowerShell module reached end-of-life in March 2024, replaced by Microsoft.Graph"
+      }
+    },
+    {
+      "id": "adfs",
+      "answer": "ADFS",
+      "display": "Active Directory Federation Services",
+      "topic": "entra",
+      "era": "legacy",
+      "clues": {
+        "easy": "On-premises federation service many orgs migrated away from when moving to Entra ID",
+        "medium": "Windows Server role that issued SAML tokens before cloud-native SSO with Entra became the standard",
+        "hard": "Legacy STS whose Extranet Smart Lockout feature guarded on-prem accounts from password spray",
+        "pro": "Federation server whose Golden SAML attack forges response tokens by abusing the exported token-signing certificate"
+      }
+    },
+    {
+      "id": "bpos",
+      "answer": "BPOS",
+      "display": "Business Productivity Online Suite",
+      "topic": "general",
+      "era": "legacy",
+      "clues": {
+        "easy": "Microsoft's early cloud bundle that preceded Office 365 - a memorabilia four-letter acronym",
+        "medium": "Retired Microsoft cloud suite from the late 2000s that bundled Exchange Online and SharePoint Online before the Office 365 rebrand",
+        "hard": "Four-letter acronym for the Microsoft hosted services suite sunset around 2011 when Office 365 launched",
+        "pro": "Legacy Microsoft cloud offering whose MOCP provisioning portal was decommissioned as tenants migrated to the Office 365 wave"
+      }
+    }
+  ]
+}
