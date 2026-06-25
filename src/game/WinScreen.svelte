@@ -1,8 +1,11 @@
 <script lang="ts">
-  import { winResult, difficulty, newPuzzle, goToDifficulty, exitToMenu, onWin } from './store';
+  import { winResult, difficulty, newPuzzle, goToDifficulty, exitToMenu } from './store';
   import { get } from 'svelte/store';
+  import BadgeShare from '../badge/BadgeShare.svelte';
 
   $: result = $winResult;
+
+  let showBadge = false;
 
   function formatTime(s: number): string {
     const m = Math.floor(s / 60).toString().padStart(2, '0');
@@ -12,10 +15,6 @@
 
   function playAgain() {
     newPuzzle(get(difficulty));
-  }
-
-  function handleShare() {
-    if (result) onWin(result);
   }
 </script>
 
@@ -53,14 +52,15 @@
     <div class="actions">
       <button class="btn btn-primary" on:click={playAgain}>Play Again</button>
       <button class="btn btn-secondary" on:click={goToDifficulty}>Change Difficulty</button>
-      <div class="share-wrap">
-        <button class="btn btn-share" on:click={handleShare}>Share / Get Badge</button>
-        <span class="stub-note">Badge sharing coming soon</span>
-      </div>
+      <button class="btn btn-share" on:click={() => (showBadge = true)}>Share / Get Badge</button>
       <button class="btn btn-ghost" on:click={exitToMenu}>Exit to Menu</button>
     </div>
   </div>
 </div>
+
+{#if showBadge && result}
+  <BadgeShare {result} onClose={() => (showBadge = false)} />
+{/if}
 
 <style>
   .win-screen {
@@ -176,16 +176,10 @@
 
   .btn-secondary { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); }
 
-  .share-wrap { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-
   .btn-share {
-    width: 100%;
     background: linear-gradient(135deg, #a855f7, #3b82f6);
     color: #fff;
-    opacity: 0.85;
   }
-
-  .stub-note { font-size: 0.7rem; color: var(--color-muted); }
 
   .btn-ghost { background: transparent; color: var(--color-muted); font-weight: 400; }
   .btn-ghost:hover { color: var(--color-text); }
