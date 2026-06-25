@@ -6,35 +6,36 @@ import {
 import type { Difficulty } from '$lib/types';
 
 describe('getBadgeSpec', () => {
-  it('returns the bronze spec for easy', () => {
-    expect(getBadgeSpec('easy').material).toBe('BRONZE');
+  it('easy maps to green/completed tier', () => {
+    const s = getBadgeSpec('easy');
+    expect(s.displayName).toBe('EASY');
+    expect(s.stars).toBe(1);
   });
 
-  it('returns the silver spec for medium', () => {
-    expect(getBadgeSpec('medium').material).toBe('SILVER');
+  it('medium maps to blue/accomplished tier', () => {
+    const s = getBadgeSpec('medium');
+    expect(s.displayName).toBe('MEDIUM');
+    expect(s.stars).toBe(2);
   });
 
-  it('returns the gold spec for hard', () => {
-    expect(getBadgeSpec('hard').material).toBe('GOLD');
+  it('hard maps to purple/mastered tier', () => {
+    const s = getBadgeSpec('hard');
+    expect(s.displayName).toBe('HARD');
+    expect(s.stars).toBe(3);
   });
 
-  it('returns the platinum spec for pro', () => {
-    expect(getBadgeSpec('pro').material).toBe('PLATINUM');
+  it('pro maps to gold/legendary tier labeled EXPERT', () => {
+    const s = getBadgeSpec('pro');
+    expect(s.displayName).toBe('EXPERT');
+    expect(s.stars).toBe(4);
   });
 
-  it('returns correct rarity label for each difficulty', () => {
-    expect(getBadgeSpec('easy').rarityLabel).toBe('COMPLETED');
-    expect(getBadgeSpec('medium').rarityLabel).toBe('ACCOMPLISHED');
-    expect(getBadgeSpec('hard').rarityLabel).toBe('MASTERED');
-    expect(getBadgeSpec('pro').rarityLabel).toBe('LEGENDARY');
-  });
-
-  it('each spec has a distinct material name', () => {
-    const materials = (['easy', 'medium', 'hard', 'pro'] as Difficulty[]).map(
-      (d) => getBadgeSpec(d).material
-    );
-    const unique = new Set(materials);
-    expect(unique.size).toBe(4);
+  it('star count strictly escalates with difficulty', () => {
+    const diffs: Difficulty[] = ['easy', 'medium', 'hard', 'pro'];
+    const counts = diffs.map((d) => getBadgeSpec(d).stars);
+    for (let i = 1; i < counts.length; i++) {
+      expect(counts[i]).toBeGreaterThan(counts[i - 1]);
+    }
   });
 
   it('border complexity escalates with difficulty', () => {
@@ -44,23 +45,31 @@ describe('getBadgeSpec', () => {
   });
 });
 
-describe('TIER_SPECS constant', () => {
-  const difficulties: Difficulty[] = ['easy', 'medium', 'hard', 'pro'];
+describe('TIER_SPECS', () => {
+  const diffs: Difficulty[] = ['easy', 'medium', 'hard', 'pro'];
 
   it('all specs have non-empty accent color', () => {
-    for (const d of difficulties) {
-      expect(TIER_SPECS[d].accent).toBeTruthy();
-    }
+    for (const d of diffs) expect(TIER_SPECS[d].accentColor).toBeTruthy();
   });
 
   it('all specs have distinct accent colors', () => {
-    const accents = difficulties.map((d) => TIER_SPECS[d].accent);
+    const accents = diffs.map((d) => TIER_SPECS[d].accentColor);
     expect(new Set(accents).size).toBe(4);
   });
 
-  it('all specs have distinct background pairs', () => {
-    const bgs = difficulties.map((d) => TIER_SPECS[d].bgA + TIER_SPECS[d].bgB);
+  it('all specs have distinct shield background pairs', () => {
+    const bgs = diffs.map((d) => TIER_SPECS[d].shieldBg1 + TIER_SPECS[d].shieldBg2);
     expect(new Set(bgs).size).toBe(4);
+  });
+
+  it('all display names are unique', () => {
+    const names = diffs.map((d) => TIER_SPECS[d].displayName);
+    expect(new Set(names).size).toBe(4);
+  });
+
+  it('all taglines are unique', () => {
+    const tags = diffs.map((d) => TIER_SPECS[d].tagline);
+    expect(new Set(tags).size).toBe(4);
   });
 });
 
@@ -84,32 +93,31 @@ describe('formatBadgeTime', () => {
 
 describe('formatBadgeDate', () => {
   it('formats a known date correctly', () => {
-    const d = new Date(2026, 5, 25); // June 25, 2026
+    const d = new Date(2026, 5, 25);
     expect(formatBadgeDate(d)).toBe('Jun 25, 2026');
   });
 
-  it('formats January', () => {
+  it('formats January correctly', () => {
     const d = new Date(2026, 0, 1);
     expect(formatBadgeDate(d)).toBe('Jan 1, 2026');
   });
 
-  it('formats December', () => {
+  it('formats December correctly', () => {
     const d = new Date(2025, 11, 31);
     expect(formatBadgeDate(d)).toBe('Dec 31, 2025');
   });
 
-  it('returns a string containing the year', () => {
-    const result = formatBadgeDate(new Date());
-    expect(result).toMatch(/\d{4}/);
+  it('includes the year', () => {
+    expect(formatBadgeDate(new Date())).toMatch(/\d{4}/);
   });
 });
 
 describe('badge dimensions', () => {
-  it('has OG-standard width', () => {
-    expect(BADGE_W).toBe(1200);
+  it('width is 630 (portrait badge)', () => {
+    expect(BADGE_W).toBe(630);
   });
 
-  it('has OG-standard height', () => {
-    expect(BADGE_H).toBe(630);
+  it('height is 840 (3:4 aspect)', () => {
+    expect(BADGE_H).toBe(840);
   });
 });

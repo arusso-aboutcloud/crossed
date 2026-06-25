@@ -23,12 +23,12 @@
     requestAnimationFrame(() => {
       try {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const W = 600;
-        const H = 315;
+        const W = 315;   // preview at half badge width (badge is 630x840)
+        const H = 420;   // preview at half badge height
         canvas.width = W * dpr;
         canvas.height = H * dpr;
-        canvas.style.width = '600px';
-        canvas.style.height = '315px';
+        canvas.style.width = `${W}px`;
+        canvas.style.height = `${H}px`;
         const ctx = canvas.getContext('2d')!;
         ctx.scale(dpr, dpr);
         drawBadge(ctx, result, W, H);
@@ -185,16 +185,17 @@
 
   .preview-wrap {
     position: relative;
-    width: 100%;
-    aspect-ratio: 1200 / 630;
+    display: flex;
+    justify-content: center;
     background: #111;
     border-radius: 8px;
     overflow: hidden;
+    min-height: 200px;
   }
 
   .preview {
     display: block;
-    width: 100%;
+    max-width: 100%;
     height: auto;
     border-radius: 6px;
   }
