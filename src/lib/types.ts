@@ -145,3 +145,15 @@ export interface GeneratorResult {
     generationMs: number;
   };
 }
+
+export type GamePhase = 'menu' | 'difficulty' | 'playing' | 'paused' | 'win';
+
+// Shape consumed by the badge task. Field names are stable.
+export interface WinResult {
+  difficulty: Difficulty;
+  elapsedSeconds: number;
+  wordsPlaced: number;
+  wordsSolved: number;
+  totalCells: number;
+  seed: number;
+}
