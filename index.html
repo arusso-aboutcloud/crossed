@@ -9,19 +9,23 @@
     <meta name="description" content="A browser crossword game about Microsoft Cloud security. Free, static, no sign-in required." />
 
     <!--
-      Open Graph and Twitter card meta tags.
-      The static badge path below is a placeholder.
-      When the OG-image Worker is implemented it will override these
-      per-game via a dynamic URL served from the Worker route.
+      Open Graph and Twitter card meta tags - static baseline defaults.
+      og:image points to a bundled default preview generated at build time.
+      NOTE: Per-result dynamic OG images (showing the player's actual badge)
+      are a SEPARATE later task that will be served from the Cloudflare Worker
+      route. The Worker stub in worker/ remains unchanged. These static defaults
+      are the baseline that unfurls when someone pastes the game URL.
     -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Crossed - Microsoft Cloud Security Crossword" />
-    <meta property="og:description" content="Test your Microsoft Cloud security knowledge. New puzzle every load. Four difficulty levels." />
-    <meta property="og:image" content="/badge-placeholder.png" />
+    <meta property="og:description" content="Test your Microsoft Cloud security knowledge. Random puzzle every session. Four difficulty levels. Free, no sign-in." />
+    <meta property="og:image" content="/og-default.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Crossed - Microsoft Cloud Security Crossword" />
-    <meta name="twitter:description" content="Test your Microsoft Cloud security knowledge. New puzzle every load. Four difficulty levels." />
-    <meta name="twitter:image" content="/badge-placeholder.png" />
+    <meta name="twitter:description" content="Test your Microsoft Cloud security knowledge. Random puzzle every session. Four difficulty levels. Free, no sign-in." />
+    <meta name="twitter:image" content="/og-default.png" />
 
     <link rel="stylesheet" href="/src/styles/app.css" />
   </head>
