@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { drawBadge, renderBadge } from './renderer';
+  import { drawBadge, renderBadge, getBadgeSpec } from './renderer';
   import type { WinResult } from '$lib/types';
+  import { SITE_URL } from '$lib/siteConfig';
 
   export let result: WinResult;
   export let onClose: () => void = () => {};
+  export let isRepeat: boolean = false;
 
   let canvas: HTMLCanvasElement;
   let state: 'rendering' | 'ready' | 'sharing' | 'error' = 'rendering';
@@ -47,22 +49,51 @@
     return b;
   }
 
-  async function handleShare() {
+  // Primary share path: native Web Share API (mobile/tablet).
+  // The OS share sheet handles Instagram, LinkedIn, X, and saving natively.
+  async function handleNativeShare() {
     state = 'sharing';
     try {
       const blob = await getBlob();
       const file = new File([blob], `crossed-${result.difficulty}.png`, { type: 'image/png' });
-      const text = `I just completed the Crossed Microsoft Cloud Security crossword on ${result.difficulty.toUpperCase()} difficulty! Try it at aboutcloud.io`;
+      const spec = getBadgeSpec(result.difficulty);
+      const text = `I just earned the ${spec.displayName} badge on Crossed - Microsoft Cloud Security Crossword!`;
       if (typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] })) {
-        await navigator.share({ title: 'Crossed', text, files: [file] });
+        await navigator.share({ title: 'Crossed', text, url: SITE_URL, files: [file] });
       } else {
+        // Fallback on unsupported browsers: download the PNG.
         downloadBlob(blob);
       }
     } catch {
-      // user cancelled or share unsupported
+      // User cancelled share sheet or share is unavailable.
     } finally {
       state = 'ready';
     }
+  }
+
+  // LinkedIn share-offsite endpoint - shares the game URL.
+  // The page Open Graph card provides the preview on LinkedIn's side.
+  function handleLinkedIn() {
+    const url = encodeURIComponent(SITE_URL);
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+      '_blank',
+      'noopener,noreferrer,width=600,height=500'
+    );
+  }
+
+  // X tweet-intent endpoint - pre-fills short, friendly text.
+  function handleX() {
+    const spec = getBadgeSpec(result.difficulty);
+    const text = encodeURIComponent(
+      `I just earned the ${spec.displayName} badge on Crossed - Microsoft Cloud Security Crossword! Try it:`
+    );
+    const url = encodeURIComponent(SITE_URL);
+    window.open(
+      `https://x.com/intent/tweet?text=${text}&url=${url}`,
+      '_blank',
+      'noopener,noreferrer,width=600,height=500'
+    );
   }
 
   async function handleDownload() {
@@ -85,7 +116,7 @@
 
   async function handleCopyLink() {
     try {
-      await navigator.clipboard.writeText(window.location.origin);
+      await navigator.clipboard.writeText(SITE_URL);
       copyLabel = 'Copied!';
     } catch {
       copyLabel = 'Copy failed';
@@ -102,8 +133,15 @@
       <button class="close-btn" on:click={onClose} aria-label="Close">X</button>
     </div>
 
+    {#if isRepeat}
+      <div class="repeat-notice" role="status">
+        You have already earned this badge - and it is still yours.
+        Download, share, or keep playing; nothing is withheld.
+      </div>
+    {/if}
+
     <div class="preview-wrap">
-      <!-- Canvas is always mounted; placeholder overlays it while rendering -->
+      <!-- Canvas is always mounted; placeholder overlays it while rendering. -->
       <canvas bind:this={canvas} class="preview" aria-label="Badge preview"></canvas>
       {#if state === 'rendering'}
         <div class="placeholder" aria-live="polite">
@@ -119,10 +157,54 @@
       {result.difficulty.toUpperCase()} - {TIER_LABELS[result.difficulty]}
     </div>
 
+    <!-- Mobile / tablet: native OS share sheet (handles all platforms). -->
     <div class="actions">
-      <button class="btn primary" disabled={state !== 'ready'} on:click={handleShare}>
+      <button class="btn primary" disabled={state !== 'ready'} on:click={handleNativeShare}>
         {state === 'sharing' ? 'Sharing...' : 'Share Badge'}
       </button>
+    </div>
+
+    <!-- Desktop explicit platform buttons. -->
+    <div class="social-row">
+      <button
+        class="btn social-btn li-btn"
+        disabled={state !== 'ready'}
+        on:click={handleLinkedIn}
+        aria-label="Share on LinkedIn"
+        title="Share on LinkedIn"
+      >
+        <img
+          src="/brand/linkedin-placeholder.svg"
+          alt=""
+          aria-hidden="true"
+          class="brand-icon"
+        />
+        LinkedIn
+      </button>
+      <button
+        class="btn social-btn x-btn"
+        disabled={state !== 'ready'}
+        on:click={handleX}
+        aria-label="Post on X"
+        title="Post on X"
+      >
+        <img
+          src="/brand/x-placeholder.svg"
+          alt=""
+          aria-hidden="true"
+          class="brand-icon"
+        />
+        Post on X
+      </button>
+    </div>
+
+    <!-- Instagram: no web share intent exists; guide the user to the app. -->
+    <p class="instagram-hint">
+      Instagram: Download your badge and post the PNG from the Instagram app.
+    </p>
+
+    <!-- Utility actions. -->
+    <div class="actions actions-util">
       <button class="btn secondary" disabled={state !== 'ready'} on:click={handleDownload}>
         Download PNG
       </button>
@@ -133,6 +215,7 @@
 
     <p class="note">
       No data is sent to any server. Badge is generated locally in your browser.
+      Sharing only opens the official platform page - no SDKs, no tracking.
     </p>
 
   </div>
@@ -182,6 +265,17 @@
   }
   .close-btn:hover { color: var(--color-text); }
   .close-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+  .repeat-notice {
+    background: rgba(0, 120, 212, 0.10);
+    border: 1px solid rgba(0, 120, 212, 0.30);
+    border-radius: 8px;
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.82rem;
+    color: var(--color-text);
+    line-height: 1.5;
+    text-align: center;
+  }
 
   .preview-wrap {
     position: relative;
@@ -235,12 +329,19 @@
     letter-spacing: 0.15em;
   }
 
-  .tier-easy   { color: #cd7f32; }
-  .tier-medium { color: #b0bcc8; }
-  .tier-hard   { color: #ffd700; }
-  .tier-pro    { color: #c8d4ff; }
+  .tier-easy   { color: #3ddf50; }
+  .tier-medium { color: #4a88ff; }
+  .tier-hard   { color: #aa55ee; }
+  .tier-pro    { color: #ffd700; }
 
   .actions { display: flex; flex-direction: column; gap: var(--space-sm); }
+  .actions-util { margin-top: 0; }
+
+  .social-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+  }
 
   .btn {
     width: 100%;
@@ -266,6 +367,35 @@
 
   .ghost { background: transparent; color: var(--color-muted); font-weight: 400; }
   .ghost:hover:not(:disabled) { color: var(--color-text); }
+
+  .social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    font-size: 0.88rem;
+  }
+
+  .social-btn:hover:not(:disabled) { border-color: var(--color-accent); }
+
+  .brand-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    /* Icon inherits currentColor so it matches the button text. */
+    color: var(--color-text);
+  }
+
+  .instagram-hint {
+    font-size: 0.74rem;
+    color: var(--color-muted);
+    text-align: center;
+    margin: 0;
+    line-height: 1.45;
+  }
 
   .note { font-size: 0.72rem; color: var(--color-muted); text-align: center; margin: 0; line-height: 1.4; }
 </style>

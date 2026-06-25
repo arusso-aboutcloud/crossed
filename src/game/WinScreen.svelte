@@ -2,10 +2,18 @@
   import { winResult, difficulty, newPuzzle, goToDifficulty, exitToMenu } from './store';
   import { get } from 'svelte/store';
   import BadgeShare from '../badge/BadgeShare.svelte';
+  import { hasEarned, markEarned } from './badgeMemory';
 
   $: result = $winResult;
 
   let showBadge = false;
+  let isRepeatWin = false;
+
+  // On each new result: capture repeat state BEFORE marking, then mark.
+  $: if (result) {
+    isRepeatWin = hasEarned(result.difficulty);
+    markEarned(result.difficulty);
+  }
 
   function formatTime(s: number): string {
     const m = Math.floor(s / 60).toString().padStart(2, '0');
@@ -59,7 +67,7 @@
 </div>
 
 {#if showBadge && result}
-  <BadgeShare {result} onClose={() => (showBadge = false)} />
+  <BadgeShare {result} isRepeat={isRepeatWin} onClose={() => (showBadge = false)} />
 {/if}
 
 <style>

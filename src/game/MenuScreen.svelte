@@ -1,7 +1,16 @@
 <script lang="ts">
   import { soundEnabled, goToDifficulty } from './store';
+  import { clearProgress } from './badgeMemory';
 
   export let onRules: () => void = () => {};
+
+  let resetDone = false;
+
+  function handleReset() {
+    clearProgress();
+    resetDone = true;
+    setTimeout(() => (resetDone = false), 2500);
+  }
 </script>
 
 <div class="menu">
@@ -19,6 +28,10 @@
       {$soundEnabled ? 'Sound: On' : 'Sound: Off'}
     </button>
   </div>
+
+  <button class="reset-link" on:click={handleReset} aria-live="polite">
+    {resetDone ? 'Progress cleared.' : 'Reset my local progress'}
+  </button>
 
   <p class="legal">MIT code - CC-BY-4.0 content</p>
 </div>
@@ -109,6 +122,22 @@
   }
 
   .btn-icon:hover { color: var(--color-text); }
+
+  .reset-link {
+    background: transparent;
+    border: none;
+    color: var(--color-muted);
+    font-size: 0.7rem;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    opacity: 0.7;
+  }
+
+  .reset-link:hover { opacity: 1; color: var(--color-text); }
+  .reset-link:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 2px; }
 
   .legal { font-size: 0.7rem; color: var(--color-muted); margin-top: auto; }
 </style>
