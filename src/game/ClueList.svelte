@@ -54,12 +54,23 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
-    max-height: 40vh;
+    /*
+     * height (not max-height) gives the column flex a definite size, allowing
+     * .clue-list { flex: 1 } to fill the remainder and overflow-y: auto to
+     * actually scroll. max-height alone does not create a definite flex axis
+     * size, so flex:1 children collapse and the scroll never activates.
+     */
+    height: 40vh;
     overflow: hidden;
   }
 
   @media (min-width: 720px) {
-    .clue-panel { max-height: none; max-width: 280px; }
+    /* In the grid layout, let height be determined by content up to the viewport. */
+    .clue-panel {
+      height: auto;
+      max-height: calc(100vh - 64px);
+      max-width: 320px;
+    }
   }
 
   .tabs { display: flex; gap: 2px; margin-bottom: var(--space-sm); }

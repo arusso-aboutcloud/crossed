@@ -101,7 +101,16 @@
   }
 
   @media (min-width: 720px) {
-    .play-area { flex-direction: row; align-items: flex-start; }
+    /*
+     * Use CSS grid so the board column is sized to its natural (grid) width
+     * and the clue panel fills the remainder. A flex row with board-wrap at
+     * width:100% would claim the entire row and leave ClueList 0px.
+     */
+    .play-area {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      align-items: start;
+    }
   }
 
   .confirm-backdrop {

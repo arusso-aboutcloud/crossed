@@ -45,7 +45,7 @@
         "easy": "Microsoft's cloud-based MDM service",
         "medium": "Endpoint management platform that enforces compliance on enrolled devices",
         "hard": "MDM service whose compliance state feeds Entra Conditional Access",
-        "pro": "Service whose Proactive Remediations feature runs PowerShell detect-and-remediate script pairs"
+        "pro": "Service whose Remediations feature runs PowerShell detect-and-remediate script pairs on managed devices"
       }
     },
     {
@@ -202,6 +202,591 @@
         "medium": "Retired Microsoft cloud suite from the late 2000s that bundled Exchange Online and SharePoint Online before the Office 365 rebrand",
         "hard": "Four-letter acronym for the Microsoft hosted services suite sunset around 2011 when Office 365 launched",
         "pro": "Legacy Microsoft cloud offering whose MOCP provisioning portal was decommissioned as tenants migrated to the Office 365 wave"
+      }
+    },
+    {
+      "id": "xdr",
+      "answer": "XDR",
+      "display": "Extended Detection and Response",
+      "topic": "defender",
+      "era": "current",
+      "clues": {
+        "easy": "Three-letter term for Microsoft's platform that correlates alerts across endpoints, email, and identity",
+        "medium": "Four-letter acronym for the architecture that unifies signals across the Defender product family",
+        "hard": "Umbrella platform atop Defender for Endpoint, Identity, and Office that correlates multi-workload incidents",
+        "pro": "Architecture where Microsoft Defender XDR deduplicates alerts from six workloads into unified incident timelines"
+      }
+    },
+    {
+      "id": "mdi",
+      "answer": "MDI",
+      "display": "Microsoft Defender for Identity",
+      "topic": "defender",
+      "era": "current",
+      "clues": {
+        "easy": "Microsoft product that monitors on-premises Active Directory for identity-based threats",
+        "medium": "Three-letter Defender product that uses domain controller sensors to detect lateral movement",
+        "hard": "Defender product whose sensors analyze Kerberos and LDAP traffic mirrored from domain controllers",
+        "pro": "Defender product that detects DCSync, pass-the-hash, and Overpass-the-Hash via mirrored domain controller traffic"
+      }
+    },
+    {
+      "id": "mdo",
+      "answer": "MDO",
+      "display": "Microsoft Defender for Office 365",
+      "topic": "defender",
+      "era": "current",
+      "clues": {
+        "easy": "Defender product protecting Exchange Online, Teams, and SharePoint from email threats",
+        "medium": "Three-letter Defender product that adds Safe Links and Safe Attachments on top of Exchange Online Protection",
+        "hard": "Defender product whose Plan 2 includes Attack Simulation Training and Threat Explorer",
+        "pro": "Defender product whose Zero-hour Auto Purge silently removes malware from already-delivered mailboxes post-detonation"
+      }
+    },
+    {
+      "id": "secure-score",
+      "answer": "SECURESCORE",
+      "display": "Microsoft Secure Score",
+      "topic": "defender",
+      "era": "current",
+      "clues": {
+        "easy": "Microsoft metric that measures how strong your security configuration is across products",
+        "medium": "Cross-product score in the Defender portal that recommends hardening improvements for identity, devices, and apps",
+        "hard": "Posture metric in Defender XDR that aggregates identity, device, and app control points across tenants",
+        "pro": "Score whose recommended actions include enabling Entra ID Protection sign-in risk policies for P2-licensed tenants"
+      }
+    },
+    {
+      "id": "hunting",
+      "answer": "HUNTING",
+      "display": "Advanced Hunting",
+      "topic": "defender",
+      "era": "current",
+      "clues": {
+        "easy": "Defender XDR feature for writing custom threat detection queries",
+        "medium": "Proactive investigation capability using KQL across unified device, identity, and email tables",
+        "hard": "Defender XDR feature where DeviceProcessEvents and IdentityLogonEvents tables share a unified schema",
+        "pro": "Defender XDR capability whose custom detection rules run on a configurable schedule and auto-create incidents with evidence entities"
+      }
+    },
+    {
+      "id": "mdatp",
+      "answer": "MDATP",
+      "display": "Microsoft Defender ATP (legacy name)",
+      "topic": "defender",
+      "era": "legacy",
+      "clues": {
+        "easy": "Five-letter legacy acronym for the product now called Microsoft Defender for Endpoint",
+        "medium": "Retired brand acronym for Defender for Endpoint, used before the 2020 Defender family rebrand",
+        "hard": "Pre-2020 product name whose acronym still appears in older Group Policy ADMX templates for endpoint settings",
+        "pro": "Deprecated product name whose Azure Security Center integration was replaced by the Microsoft Defender for Cloud connector"
+      }
+    },
+    {
+      "id": "tamper",
+      "answer": "TAMPER",
+      "display": "Tamper Protection",
+      "topic": "defender",
+      "era": "current",
+      "clues": {
+        "easy": "Defender setting that prevents malware or rogue admins from disabling security features",
+        "medium": "Defender for Endpoint toggle that blocks changes to security settings from outside the Defender console",
+        "hard": "Defender protection that blocks registry modifications to real-time protection and cloud-delivered protection keys",
+        "pro": "Defender protection mode whose exclusions, when managed via Intune, override local admin attempts to disable real-time protection"
+      }
+    },
+    {
+      "id": "deception",
+      "answer": "DECEPTION",
+      "display": "Defender Deception",
+      "topic": "defender",
+      "era": "current",
+      "clues": {
+        "easy": "Defender XDR feature that plants fake credentials and files to trap attackers exploring the network",
+        "medium": "Defender XDR capability that deploys lure accounts and honeytokens to detect lateral movement",
+        "hard": "Defender XDR technology that raises high-fidelity alerts when an attacker interacts with planted bait identities or device lures",
+        "pro": "Defender feature whose synthetic user accounts in Active Directory generate high-confidence incidents when accessed during lateral movement"
+      }
+    },
+    {
+      "id": "mdc",
+      "answer": "MDC",
+      "display": "Microsoft Defender for Cloud",
+      "topic": "defender",
+      "era": "current",
+      "clues": {
+        "easy": "Microsoft product that protects Azure, AWS, and GCP workloads",
+        "medium": "Three-letter Defender product that provides Cloud Security Posture Management across multi-cloud environments",
+        "hard": "Three-letter acronym for the product that replaced both Azure Defender and Azure Security Center",
+        "pro": "Product whose Defender CSPM tier adds cloud security graph, attack path analysis, and agentless vulnerability scanning"
+      }
+    },
+    {
+      "id": "isolate",
+      "answer": "ISOLATE",
+      "display": "Device Isolation",
+      "topic": "defender",
+      "era": "current",
+      "clues": {
+        "easy": "Defender for Endpoint action that cuts a compromised device off from the network",
+        "medium": "MDE response action that blocks all network traffic on a device except to the Defender management channel",
+        "hard": "MDE containment action that uses the Windows Filtering Platform to block inbound and outbound traffic while keeping telemetry flowing",
+        "pro": "MDE action whose selective mode allows specific authorized application traffic through while blocking all other network paths on the device"
+      }
+    },
+    {
+      "id": "mcas",
+      "answer": "MCAS",
+      "display": "Microsoft Cloud App Security (legacy name)",
+      "topic": "defender-cloud-apps",
+      "era": "legacy",
+      "clues": {
+        "easy": "Four-letter legacy acronym for the product now called Defender for Cloud Apps",
+        "medium": "Retired brand acronym for the CASB service rebranded under the Defender family in 2021",
+        "hard": "Legacy product acronym still referenced in some Conditional Access session control configurations",
+        "pro": "Former product name whose MDE traffic-tunneling integration via an internal proxy endpoint was preserved through the Defender for Cloud Apps rebrand"
+      }
+    },
+    {
+      "id": "dlp",
+      "answer": "DLP",
+      "display": "Data Loss Prevention",
+      "topic": "defender-cloud-apps",
+      "era": "current",
+      "clues": {
+        "easy": "Three-letter acronym for policies that block sharing of sensitive data like credit card numbers",
+        "medium": "Policy type in Microsoft Purview that detects and restricts movement of classified content across endpoints and cloud apps",
+        "hard": "Control whose Endpoint variant in Defender for Endpoint monitors file copy, upload, and print actions on managed devices",
+        "pro": "Policy type where Adaptive Protection in Microsoft Purview dynamically tightens restrictions based on Insider Risk Management severity levels"
+      }
+    },
+    {
+      "id": "sanctioned",
+      "answer": "SANCTIONED",
+      "display": "Sanctioned App",
+      "topic": "defender-cloud-apps",
+      "era": "current",
+      "clues": {
+        "easy": "Defender for Cloud Apps tag for an approved cloud application in your organization",
+        "medium": "App governance status in Defender for Cloud Apps that marks a discovered app as approved for use",
+        "hard": "Defender for Cloud Apps classification whose opposite status triggers traffic blocking via MDE DNS enforcement",
+        "pro": "Defender for Cloud Apps attribute that, when set to unsanctioned, pushes block indicators to MDE for DNS-level enforcement on enrolled devices"
+      }
+    },
+    {
+      "id": "shadow-it",
+      "answer": "SHADOWIT",
+      "display": "Shadow IT",
+      "topic": "defender-cloud-apps",
+      "era": "current",
+      "clues": {
+        "easy": "Term for cloud apps employees use without IT knowledge or approval",
+        "medium": "Risk category that Defender for Cloud Apps discovers by analyzing proxy and firewall traffic logs",
+        "hard": "Discovery category in Defender for Cloud Apps where risk scores across more than 90 attributes rank unapproved apps",
+        "pro": "Risk surface that Defender for Cloud Apps Cloud Discovery quantifies by uploading traffic logs from Palo Alto, Zscaler, or other supported firewalls"
+      }
+    },
+    {
+      "id": "sspr",
+      "answer": "SSPR",
+      "display": "Self-Service Password Reset",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "Entra ID feature that lets users reset their own passwords without calling IT",
+        "medium": "Four-letter Entra capability that reduces helpdesk load by letting users unlock accounts via registered methods",
+        "hard": "Entra feature whose on-premises password writeback requires the Entra Connect Password Writeback option",
+        "pro": "Entra feature that Conditional Access can force re-registration for after Identity Protection detects a suspicious sign-in risk event"
+      }
+    },
+    {
+      "id": "sso",
+      "answer": "SSO",
+      "display": "Single Sign-On",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "Authentication model where one login grants access to many connected applications",
+        "medium": "Three-letter feature in Entra ID that issues tokens to integrated apps without re-prompting for credentials",
+        "hard": "Authentication pattern supported by Entra ID via SAML 2.0, OIDC, WS-Federation, and password-based methods",
+        "pro": "Seamless three-letter Entra feature that uses a Kerberos ticket to silently authenticate domain-joined devices on the corporate network"
+      }
+    },
+    {
+      "id": "fido",
+      "answer": "FIDO",
+      "display": "FIDO2",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "Standard behind passkeys and hardware security keys for passwordless login",
+        "medium": "Authentication standard used by Entra ID for phishing-resistant login with hardware tokens",
+        "hard": "Four-letter alliance protocol whose CTAP2 device-side spec pairs with WebAuthn on the relying-party side",
+        "pro": "Alliance whose CTAP2 and WebAuthn combined specification, registered as FIDO2, satisfies NIST AAL3 under SP 800-63B when using hardware-bound keys"
+      }
+    },
+    {
+      "id": "passkey",
+      "answer": "PASSKEY",
+      "display": "Passkey",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "Passwordless credential based on FIDO2 that can be synced across your devices",
+        "medium": "FIDO2-based credential stored in Microsoft Authenticator or a hardware key for phishing-resistant sign-in",
+        "hard": "Phishing-resistant credential type supported in Entra ID whose device-bound variant is stored in hardware and never exported",
+        "pro": "Synced FIDO2 credential whose private key material is protected by the device Secure Enclave and cannot be intercepted by a phishing proxy"
+      }
+    },
+    {
+      "id": "entra-id",
+      "answer": "ENTRAID",
+      "display": "Microsoft Entra ID",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "Current brand name for the cloud identity service formerly called Azure Active Directory",
+        "medium": "Seven-letter product name introduced in the July 2023 rebrand that replaced Azure Active Directory",
+        "hard": "Cloud identity service renamed in 2023 whose tenant IDs, application IDs, and object IDs are unchanged by the rebrand",
+        "pro": "Service whose P2 licence unlocks Identity Protection risk policies, PIM just-in-time activation, and access reviews in a single SKU"
+      }
+    },
+    {
+      "id": "saml",
+      "answer": "SAML",
+      "display": "Security Assertion Markup Language",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "XML-based protocol used to federate identity between an identity provider and a service provider",
+        "medium": "Four-letter SSO protocol used by Entra ID to send signed assertions to enterprise applications",
+        "hard": "Protocol whose assertion, authentication statement, and attribute statement are all cryptographically signed by the IdP",
+        "pro": "Protocol used in Golden SAML attacks where a stolen ADFS token-signing certificate lets attackers forge any valid assertion"
+      }
+    },
+    {
+      "id": "oauth",
+      "answer": "OAUTH",
+      "display": "OAuth 2.0",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "Authorization framework that lets apps request access to resources on behalf of a user",
+        "medium": "Five-letter protocol underpinning access tokens issued by Entra ID to Microsoft Graph and custom APIs",
+        "hard": "Framework whose authorization_code flow with PKCE is the recommended grant type for public clients in Entra",
+        "pro": "Framework whose device_code flow grants tokens to input-constrained devices by polling the token endpoint with a device code"
+      }
+    },
+    {
+      "id": "lifecycle",
+      "answer": "LIFECYCLE",
+      "display": "Identity Lifecycle Workflows",
+      "topic": "entra",
+      "era": "current",
+      "clues": {
+        "easy": "Entra feature that automates tasks like account provisioning when a new employee joins",
+        "medium": "Entra ID Governance capability that runs workflow tasks during joiner, mover, and leaver HR events",
+        "hard": "Entra Identity Governance feature that triggers tasks such as Teams welcome messages on a pre-hire event trigger",
+        "pro": "Entra Governance workflow type whose temporal trigger fires a configurable number of days before or after the employeeHireDate attribute value"
+      }
+    },
+    {
+      "id": "watchlist",
+      "answer": "WATCHLIST",
+      "display": "Sentinel Watchlist",
+      "topic": "sentinel",
+      "era": "current",
+      "clues": {
+        "easy": "Sentinel feature that imports a CSV of high-value assets for use in KQL queries",
+        "medium": "Sentinel construct that correlates incoming events against a maintained list such as VIP users or trusted IP ranges",
+        "hard": "Sentinel resource type created via CSV upload that exposes its rows via the _GetWatchlist() KQL function",
+        "pro": "Sentinel object that stores reference data outside the main log tables, enabling low-cost lookups without scanning large SecurityEvent ingestion volumes"
+      }
+    },
+    {
+      "id": "playbook",
+      "answer": "PLAYBOOK",
+      "display": "Sentinel Automation Playbook",
+      "topic": "sentinel",
+      "era": "current",
+      "clues": {
+        "easy": "Sentinel automated response that runs a Logic Apps workflow when an incident is created",
+        "medium": "Sentinel automation object backed by Azure Logic Apps that can enrich alerts or remediate incidents automatically",
+        "hard": "Sentinel entity type that uses a Consumption Logic App workflow triggered by the Microsoft Sentinel connector",
+        "pro": "Sentinel automation object whose Standard Logic App-backed variant supports stateful workflows and private endpoint connectivity for secure execution"
+      }
+    },
+    {
+      "id": "fusion",
+      "answer": "FUSION",
+      "display": "Sentinel Fusion",
+      "topic": "sentinel",
+      "era": "current",
+      "clues": {
+        "easy": "Sentinel AI engine that correlates low-severity alerts into high-confidence multi-stage incidents",
+        "medium": "Sentinel ML-based correlation technology that reduces alert fatigue by combining signals across data sources",
+        "hard": "Sentinel detection engine that maps signals to kill-chain stages to combine telemetry into multi-stage attack scenarios",
+        "pro": "Sentinel ML engine whose Advanced Multistage Attack Detection scenarios include credential access events followed by anomalous cloud resource activity"
+      }
+    },
+    {
+      "id": "ueba",
+      "answer": "UEBA",
+      "display": "User and Entity Behavior Analytics",
+      "topic": "sentinel",
+      "era": "current",
+      "clues": {
+        "easy": "Four-letter Sentinel module that baselines normal user behavior to spot anomalies",
+        "medium": "Sentinel capability that assigns risk scores to users and hosts based on behavioral deviation from learned baselines",
+        "hard": "Sentinel module that populates the BehaviorAnalytics and UserPeerAnalytics tables with anomaly scores",
+        "pro": "Sentinel capability that ingests from Entra sign-in logs, MDE device events, and custom connectors to build per-entity behavioral models"
+      }
+    },
+    {
+      "id": "analytics",
+      "answer": "ANALYTICS",
+      "display": "Sentinel Analytics Rule",
+      "topic": "sentinel",
+      "era": "current",
+      "clues": {
+        "easy": "Sentinel component that runs a scheduled KQL query and creates alerts when conditions are met",
+        "medium": "Sentinel rule type that fires on a schedule, evaluating KQL results against a threshold or event sequence",
+        "hard": "Sentinel rule category that includes Scheduled, Near-Real-Time, and Fusion detection kinds",
+        "pro": "Sentinel NRT rule type that evaluates KQL continuously on new data, bypassing the minimum five-minute scheduling interval of standard scheduled rules"
+      }
+    },
+    {
+      "id": "workspace",
+      "answer": "WORKSPACE",
+      "display": "Log Analytics Workspace",
+      "topic": "sentinel",
+      "era": "current",
+      "clues": {
+        "easy": "Azure resource that stores and queries log data for Sentinel and Azure Monitor",
+        "medium": "Log Analytics resource that acts as Sentinel's underlying data store and is priced per GB ingested",
+        "hard": "Azure resource whose per-table retention settings can be configured independently from 30 to 730 days",
+        "pro": "Azure resource whose commitment-tier pricing model provides discounted per-GB rates when committing to a fixed daily ingestion volume"
+      }
+    },
+    {
+      "id": "autopilot",
+      "answer": "AUTOPILOT",
+      "display": "Windows Autopilot",
+      "topic": "intune",
+      "era": "current",
+      "clues": {
+        "easy": "Microsoft service that lets new Windows devices be set up directly from the cloud without IT reimaging",
+        "medium": "Intune-integrated service that pre-provisions Windows devices by enrolling them from OOBE using an Entra-joined profile",
+        "hard": "Service whose self-deploying mode skips user authentication by using device TPM 2.0 attestation during OOBE",
+        "pro": "Service whose pre-provisioning flow allows a technician to complete the Enrollment Status Page before handing the device to an end user"
+      }
+    },
+    {
+      "id": "remediation",
+      "answer": "REMEDIATION",
+      "display": "Intune Remediations",
+      "topic": "intune",
+      "era": "current",
+      "clues": {
+        "easy": "Intune feature that runs detection and fix scripts on devices to correct configuration drift",
+        "medium": "Intune capability that deploys paired detect-and-remediate PowerShell scripts to Windows devices on a schedule",
+        "hard": "Intune feature that evaluates a detection script exit code of 0 or 1 to decide whether to run the paired remediation script",
+        "pro": "Intune feature available only on devices running Windows 10 or 11 Enterprise or Education edition under an Intune license"
+      }
+    },
+    {
+      "id": "sccm",
+      "answer": "SCCM",
+      "display": "System Center Configuration Manager (legacy)",
+      "topic": "intune",
+      "era": "legacy",
+      "clues": {
+        "easy": "Four-letter acronym for Microsoft's on-premises endpoint management tool, now called Configuration Manager",
+        "medium": "Legacy Microsoft platform rebranded as Configuration Manager in 2019 when unified under Microsoft Endpoint Manager",
+        "hard": "On-premises management system whose co-management feature with Intune moves device workloads to the cloud incrementally",
+        "pro": "Platform whose client agent communicates via HTTPS to a management point using certificates provisioned by the Network Device Enrollment Service"
+      }
+    },
+    {
+      "id": "bitlocker",
+      "answer": "BITLOCKER",
+      "display": "BitLocker",
+      "topic": "intune",
+      "era": "current",
+      "clues": {
+        "easy": "Windows full-disk encryption feature managed via Intune or Group Policy",
+        "medium": "Windows encryption technology whose recovery keys Intune can silently escrow to Entra ID for IT retrieval",
+        "hard": "Windows drive encryption that supports TPM plus PIN as an enhanced startup authentication option",
+        "pro": "Encryption feature whose XTS-AES 256-bit cipher mode for OS drives is enforced via Intune endpoint security disk encryption policy"
+      }
+    },
+    {
+      "id": "co-managed",
+      "answer": "COMANAGED",
+      "display": "Co-managed Devices",
+      "topic": "intune",
+      "era": "current",
+      "clues": {
+        "easy": "Term for Windows devices managed simultaneously by both Intune and Configuration Manager",
+        "medium": "Intune enrollment state where Configuration Manager retains authority for some workloads while Intune controls others",
+        "hard": "Configuration Manager plus Intune mode where specific workloads such as Compliance Policies can be slid to Intune control",
+        "pro": "Configuration state requiring the SMS Agent Host service and the Co-management setting enabled via the cloud attach wizard in Configuration Manager"
+      }
+    },
+    {
+      "id": "cfa",
+      "answer": "CFA",
+      "display": "Controlled Folder Access",
+      "topic": "asr",
+      "era": "current",
+      "clues": {
+        "easy": "Defender feature that stops unauthorized apps from modifying files in protected folders like Documents",
+        "medium": "Defender ASR feature that blocks untrusted processes from writing to designated directories",
+        "hard": "Three-letter Defender feature configured via Intune or Group Policy that protects folders using an app allowlist",
+        "pro": "ASR feature that can be set to audit or block mode and allows applications by publisher certificate trust or explicit path rules"
+      }
+    },
+    {
+      "id": "exploit",
+      "answer": "EXPLOIT",
+      "display": "Exploit Protection",
+      "topic": "asr",
+      "era": "current",
+      "clues": {
+        "easy": "Defender setting that applies mitigations like DEP and ASLR to prevent software exploits",
+        "medium": "Windows Defender feature that enforces per-process mitigations such as Control Flow Guard, SEHOP, and ASLR",
+        "hard": "Defender capability whose XML configuration export from one device can be imported as a baseline via Intune policy",
+        "pro": "Defender mechanism whose ProcessMitigationPolicy Windows API is the underlying kernel control enforcing per-process DEP, ASLR, and CFG settings"
+      }
+    },
+    {
+      "id": "surface",
+      "answer": "SURFACE",
+      "display": "Attack Surface",
+      "topic": "asr",
+      "era": "current",
+      "clues": {
+        "easy": "The set of all points in a system that an attacker could target or exploit",
+        "medium": "Security concept that ASR rules and Defender XDR are designed to minimize across cloud and on-premises environments",
+        "hard": "Term describing the exposure area that the Defender XDR Exposure Management module quantifies using a security graph",
+        "pro": "Concept mapped by the Defender XDR enterprise attack surface graph that calculates blast radius across asset relationships"
+      }
+    },
+    {
+      "id": "guard",
+      "answer": "GUARD",
+      "display": "Windows Defender Application Guard",
+      "topic": "asr",
+      "era": "current",
+      "clues": {
+        "easy": "Defender feature that opens untrusted websites in an isolated virtual container inside Edge",
+        "medium": "Defender feature that uses hardware virtualization to isolate Edge browser sessions from the host OS",
+        "hard": "Defender feature that uses Hyper-V containers to run untrusted web content in a session isolated from the host kernel",
+        "pro": "Defender feature whose Enterprise mode, configured via Intune, can restrict clipboard sharing and printing from isolated Edge sessions"
+      }
+    },
+    {
+      "id": "zero-trust",
+      "answer": "ZEROTRUST",
+      "display": "Zero Trust",
+      "topic": "general",
+      "era": "current",
+      "clues": {
+        "easy": "Security model that assumes no user or device should be trusted by default, even inside the network",
+        "medium": "Microsoft-endorsed framework built on verify explicitly, use least privilege, and assume breach",
+        "hard": "Security model whose three principles map to Conditional Access, PIM, and XDR across the Defender and Entra products",
+        "pro": "Architecture defined in NIST SP 800-207 whose resource-centric access model Entra implements via Continuous Access Evaluation"
+      }
+    },
+    {
+      "id": "rbac",
+      "answer": "RBAC",
+      "display": "Role-Based Access Control",
+      "topic": "general",
+      "era": "current",
+      "clues": {
+        "easy": "Access model that grants permissions to roles rather than to individual users",
+        "medium": "Four-letter control model used in Defender XDR, Sentinel, and Entra to scope administrator permissions",
+        "hard": "Permission model in Defender for Endpoint where custom roles are scoped to specific device groups for investigations",
+        "pro": "Model in Sentinel where resource-context mode limits analysts to querying only the Log Analytics workspaces they are assigned"
+      }
+    },
+    {
+      "id": "soc",
+      "answer": "SOC",
+      "display": "Security Operations Center",
+      "topic": "general",
+      "era": "current",
+      "clues": {
+        "easy": "Team or facility where security analysts monitor and respond to alerts",
+        "medium": "Three-letter acronym for the team that uses Microsoft Sentinel and Defender XDR as primary tools",
+        "hard": "Team whose Tier 1, Tier 2, and Tier 3 analyst structure maps to Sentinel automation, investigation, and threat hunting respectively",
+        "pro": "Organization whose mean time to respond is tracked via the Sentinel Incident Metrics workbook powered by the SecurityIncident table"
+      }
+    },
+    {
+      "id": "mitre",
+      "answer": "MITRE",
+      "display": "MITRE ATT&CK",
+      "topic": "general",
+      "era": "current",
+      "clues": {
+        "easy": "Organization behind the ATT&CK framework of adversary tactics and techniques",
+        "medium": "Five-letter nonprofit whose ATT&CK Enterprise matrix maps adversary behaviors used to tag Defender and Sentinel detections",
+        "hard": "Organization whose ATT&CK technique IDs are used to annotate Sentinel analytics rules for coverage gap analysis",
+        "pro": "Framework publisher whose Navigator tool maps detection coverage to technique IDs, surfaced in Sentinel via the MITRE ATT&CK coverage workbook"
+      }
+    },
+    {
+      "id": "nist",
+      "answer": "NIST",
+      "display": "NIST",
+      "topic": "general",
+      "era": "current",
+      "clues": {
+        "easy": "US standards body whose Cybersecurity Framework is widely adopted for security program management",
+        "medium": "Four-letter US agency whose SP 800-63B defines identity assurance levels referenced by Entra MFA strength policies",
+        "hard": "Agency whose Cybersecurity Framework 2.0 added a Govern function alongside Identify, Protect, Detect, Respond, and Recover",
+        "pro": "Agency whose SP 800-207 Zero Trust Architecture document is the formal specification that Microsoft Entra's CAE implementation references"
+      }
+    },
+    {
+      "id": "phishing",
+      "answer": "PHISHING",
+      "display": "Phishing",
+      "topic": "general",
+      "era": "current",
+      "clues": {
+        "easy": "Attack technique where deceptive emails trick users into revealing credentials",
+        "medium": "Social engineering attack type blocked by Defender for Office 365 Safe Links and anti-impersonation policies",
+        "hard": "Attack category for which Entra's phishing-resistant MFA using FIDO2 keys or certificate-based auth provides the strongest mitigation",
+        "pro": "Attack type that Defender for Office 365 Advanced Anti-Phishing counters using per-recipient ML mailbox intelligence models"
+      }
+    },
+    {
+      "id": "breach",
+      "answer": "BREACH",
+      "display": "Assume Breach",
+      "topic": "general",
+      "era": "current",
+      "clues": {
+        "easy": "Microsoft Zero Trust principle that assumes attackers may already be inside the network",
+        "medium": "Third Zero Trust pillar that drives investments in XDR, SIEM, and network segmentation",
+        "hard": "Zero Trust principle that motivates deployment of Sentinel UEBA, Defender threat hunting, and network micro-segmentation",
+        "pro": "Zero Trust pillar operationalized through Defender XDR automated investigation and Sentinel SOAR playbooks to limit blast radius after compromise"
+      }
+    },
+    {
+      "id": "tiering",
+      "answer": "TIERING",
+      "display": "Privilege Tiering",
+      "topic": "general",
+      "era": "current",
+      "clues": {
+        "easy": "Security practice of separating admin accounts by level of trust and access scope",
+        "medium": "Microsoft-recommended model that isolates Tier 0 domain controllers from Tier 1 servers and Tier 2 workstations",
+        "hard": "Enterprise access model where Privileged Access Workstations are required for Tier 0 administration to block credential theft",
+        "pro": "Access control design whose Entra implementation maps Global Admin to Tier 0 and enforces activation through PIM-scoped just-in-time role assignments"
       }
     }
   ]
