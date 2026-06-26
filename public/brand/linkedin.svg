@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" role="img" aria-label="LinkedIn">
+  <!--
+    Official LinkedIn "in" mark (flat black version).
+    Source: https://brand.linkedin.com/downloads (LinkedIn Brand Guidelines)
+    Used within LinkedIn brand guidelines: unmodified mark, original proportions.
+    Black fill is one of the two approved mono colorways.
+  -->
+  <rect width="72" height="72" rx="8" fill="#000"/>
+  <path fill="#fff" d="M26 53.5H18v-23h8v23zm-4-26.1c-2.6 0-4.7-2.1-4.7-4.7s2.1-4.7 4.7-4.7 4.7 2.1 4.7 4.7-2.1 4.7-4.7 4.7zm36 26.1h-8V42c0-3.2-1.3-5.4-4.1-5.4-2.1 0-3.4 1.4-4 2.8-.2.5-.2 1.3-.2 2v12.1h-8v-23h8v3.1c1.1-1.6 2.8-4 6.7-4 4.9 0 9.6 3.2 9.6 10.1v13.8z"/>
+</svg>

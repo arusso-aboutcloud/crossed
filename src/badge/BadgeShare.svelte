@@ -96,6 +96,19 @@
     );
   }
 
+  // Bluesky compose-intent endpoint.
+  function handleBluesky() {
+    const spec = getBadgeSpec(result.difficulty);
+    const text = encodeURIComponent(
+      `I just earned the ${spec.displayName} badge on Crossed - Microsoft Cloud Security Crossword! Try it: ${SITE_URL}`
+    );
+    window.open(
+      `https://bsky.app/intent/compose?text=${text}`,
+      '_blank',
+      'noopener,noreferrer,width=600,height=500'
+    );
+  }
+
   async function handleDownload() {
     try {
       const blob = await getBlob();
@@ -173,12 +186,7 @@
         aria-label="Share on LinkedIn"
         title="Share on LinkedIn"
       >
-        <img
-          src="/brand/linkedin-placeholder.svg"
-          alt=""
-          aria-hidden="true"
-          class="brand-icon"
-        />
+        <img src="/brand/linkedin.svg" alt="" aria-hidden="true" class="brand-icon" />
         LinkedIn
       </button>
       <button
@@ -188,13 +196,18 @@
         aria-label="Post on X"
         title="Post on X"
       >
-        <img
-          src="/brand/x-placeholder.svg"
-          alt=""
-          aria-hidden="true"
-          class="brand-icon"
-        />
+        <img src="/brand/x.svg" alt="" aria-hidden="true" class="brand-icon icon-invert" />
         Post on X
+      </button>
+      <button
+        class="btn social-btn bsky-btn"
+        disabled={state !== 'ready'}
+        on:click={handleBluesky}
+        aria-label="Post on Bluesky"
+        title="Post on Bluesky"
+      >
+        <img src="/brand/bluesky.svg" alt="" aria-hidden="true" class="brand-icon" />
+        Bluesky
       </button>
     </div>
 
@@ -339,7 +352,7 @@
 
   .social-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: var(--space-sm);
   }
 
@@ -385,9 +398,10 @@
     width: 18px;
     height: 18px;
     flex-shrink: 0;
-    /* Icon inherits currentColor so it matches the button text. */
-    color: var(--color-text);
   }
+
+  /* X logo is black-on-transparent; invert to white for the dark UI. */
+  .icon-invert { filter: invert(1); }
 
   .instagram-hint {
     font-size: 0.74rem;
