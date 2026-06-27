@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Medium badge">
+  <defs>
+    <linearGradient id="mg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#04082a"/>
+      <stop offset="100%" stop-color="#0a2068"/>
+    </linearGradient>
+    <filter id="mglow">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feFlood flood-color="#2055cc" flood-opacity="0.6" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Shield background -->
+  <path d="M18 10 L102 10 Q110 10 110 18 C110 60 88 88 60 102 C32 88 10 60 10 18 Q10 10 18 10 Z"
+        fill="url(#mg)" filter="url(#mglow)"/>
+
+  <!-- Shield outline -->
+  <path d="M18 10 L102 10 Q110 10 110 18 C110 60 88 88 60 102 C32 88 10 60 10 18 Q10 10 18 10 Z"
+        fill="none" stroke="#4a88ff" stroke-width="3"/>
+
+  <!-- Banner ribbon -->
+  <rect x="18" y="22" width="84" height="20" fill="#eef1fa"/>
+  <rect x="18" y="22" width="84" height="2" fill="#4a88ff"/>
+  <rect x="18" y="40" width="84" height="2" fill="#4a88ff"/>
+  <text x="60" y="35" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, Arial, sans-serif" font-size="8" font-weight="800"
+        fill="#04082a" letter-spacing="1">CROSSED</text>
+
+  <!-- Shield-check icon (medium) -->
+  <g stroke="#4a9fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M44 52 L52 52 Q76 52 76 66 C76 80 68 86 60 90 C52 86 44 80 44 66 Z"/>
+    <path d="M52 70 L57 76 L70 62"/>
+  </g>
+  <path d="M44 52 L52 52 Q76 52 76 66 C76 80 68 86 60 90 C52 86 44 80 44 66 Z"
+        fill="#4a9fff" opacity="0.12"/>
+
+  <!-- 2 stars -->
+  <g fill="#ffffff" transform="translate(-8,0)">
+    <polygon points="60,90 61.4,94.3 66,94.3 62.3,96.9 63.7,101.2 60,98.6 56.3,101.2 57.7,96.9 54,94.3 58.6,94.3" transform="scale(0.55) translate(46,68)"/>
+    <polygon points="60,90 61.4,94.3 66,94.3 62.3,96.9 63.7,101.2 60,98.6 56.3,101.2 57.7,96.9 54,94.3 58.6,94.3" transform="scale(0.55) translate(75,68)"/>
+  </g>
+
+  <!-- Tier label -->
+  <text x="60" y="113" text-anchor="middle"
+        font-family="system-ui, Arial, sans-serif" font-size="8" font-weight="900"
+        fill="#4a88ff" letter-spacing="1">MEDIUM</text>
+</svg>

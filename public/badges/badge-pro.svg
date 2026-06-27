@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Pro / Expert badge">
+  <defs>
+    <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10080a"/>
+      <stop offset="100%" stop-color="#3a2200"/>
+    </linearGradient>
+    <filter id="pglow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#bb8800" flood-opacity="0.8" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Shield background -->
+  <path d="M18 10 L102 10 Q110 10 110 18 C110 60 88 88 60 102 C32 88 10 60 10 18 Q10 10 18 10 Z"
+        fill="url(#pg)" filter="url(#pglow)"/>
+
+  <!-- Shield outer outline -->
+  <path d="M18 10 L102 10 Q110 10 110 18 C110 60 88 88 60 102 C32 88 10 60 10 18 Q10 10 18 10 Z"
+        fill="none" stroke="#ffd700" stroke-width="3"/>
+
+  <!-- Shield inner accent ring (pro only) -->
+  <path d="M21 13 L99 13 Q106 13 106 21 C106 59 85 85 60 98 C35 85 14 59 14 21 Q14 13 21 13 Z"
+        fill="none" stroke="#ffd700" stroke-width="1" opacity="0.5"/>
+
+  <!-- Banner ribbon -->
+  <rect x="18" y="22" width="84" height="20" fill="#fffbe0"/>
+  <rect x="18" y="22" width="84" height="2" fill="#ffd700"/>
+  <rect x="18" y="40" width="84" height="2" fill="#ffd700"/>
+  <text x="60" y="35" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, Arial, sans-serif" font-size="8" font-weight="800"
+        fill="#2a1400" letter-spacing="1">CROSSED</text>
+
+  <!-- Trophy icon (pro) -->
+  <g stroke="#ffd700" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- cup -->
+    <path d="M45 50 L75 50 C75 70 65 78 60 80 C55 78 45 70 45 50 Z"/>
+    <!-- handles -->
+    <path d="M45 57 C38 57 38 65 45 65"/>
+    <path d="M75 57 C82 57 82 65 75 65"/>
+    <!-- stem -->
+    <line x1="57" y1="80" x2="57" y2="88"/>
+    <line x1="63" y1="80" x2="63" y2="88"/>
+    <!-- base -->
+    <rect x="49" y="88" width="22" height="5" rx="2"/>
+  </g>
+  <path d="M45 50 L75 50 C75 70 65 78 60 80 C55 78 45 70 45 50 Z"
+        fill="#ffd700" opacity="0.14"/>
+
+  <!-- 4 stars -->
+  <g fill="#ffd700">
+    <polygon points="0,-4.5 1.4,-1.4 4.5,-1.4 2,0.8 2.9,4 0,2.3 -2.9,4 -2,0.8 -4.5,-1.4 -1.4,-1.4"
+             transform="translate(42,106) scale(0.85)"/>
+    <polygon points="0,-4.5 1.4,-1.4 4.5,-1.4 2,0.8 2.9,4 0,2.3 -2.9,4 -2,0.8 -4.5,-1.4 -1.4,-1.4"
+             transform="translate(53,106) scale(0.85)"/>
+    <polygon points="0,-4.5 1.4,-1.4 4.5,-1.4 2,0.8 2.9,4 0,2.3 -2.9,4 -2,0.8 -4.5,-1.4 -1.4,-1.4"
+             transform="translate(67,106) scale(0.85)"/>
+    <polygon points="0,-4.5 1.4,-1.4 4.5,-1.4 2,0.8 2.9,4 0,2.3 -2.9,4 -2,0.8 -4.5,-1.4 -1.4,-1.4"
+             transform="translate(78,106) scale(0.85)"/>
+  </g>
+
+  <!-- Tier label -->
+  <text x="60" y="118" text-anchor="middle"
+        font-family="system-ui, Arial, sans-serif" font-size="8" font-weight="900"
+        fill="#ffd700" letter-spacing="1.5">EXPERT</text>
+</svg>

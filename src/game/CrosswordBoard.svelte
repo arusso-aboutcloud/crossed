@@ -344,10 +344,16 @@
     position: absolute;
     top: 1px;
     left: 2px;
-    font-size: 0.42rem;
-    color: var(--color-muted);
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #1a1a2e;
     pointer-events: none;
     line-height: 1;
+  }
+
+  .cell.focused .num,
+  .cell.active-word .num {
+    color: #1a1a2e;
   }
 
   .ltr {

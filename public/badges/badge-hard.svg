@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Hard badge">
+  <defs>
+    <linearGradient id="hg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#100620"/>
+      <stop offset="100%" stop-color="#341060"/>
+    </linearGradient>
+    <filter id="hglow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#6622aa" flood-opacity="0.7" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Shield background -->
+  <path d="M18 10 L102 10 Q110 10 110 18 C110 60 88 88 60 102 C32 88 10 60 10 18 Q10 10 18 10 Z"
+        fill="url(#hg)" filter="url(#hglow)"/>
+
+  <!-- Shield outline -->
+  <path d="M18 10 L102 10 Q110 10 110 18 C110 60 88 88 60 102 C32 88 10 60 10 18 Q10 10 18 10 Z"
+        fill="none" stroke="#9944dd" stroke-width="3"/>
+
+  <!-- Banner ribbon -->
+  <rect x="18" y="22" width="84" height="20" fill="#f2eefa"/>
+  <rect x="18" y="22" width="84" height="2" fill="#9944dd"/>
+  <rect x="18" y="40" width="84" height="2" fill="#9944dd"/>
+  <text x="60" y="35" text-anchor="middle" dominant-baseline="middle"
+        font-family="system-ui, Arial, sans-serif" font-size="8" font-weight="800"
+        fill="#100620" letter-spacing="1">CROSSED</text>
+
+  <!-- Padlock icon (hard) -->
+  <g stroke="#bb66ff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- shackle -->
+    <path d="M49 66 L49 58 A11 11 0 0 1 71 58 L71 66"/>
+    <!-- body -->
+    <rect x="44" y="66" width="32" height="22" rx="3"/>
+    <!-- keyhole -->
+    <circle cx="60" cy="76" r="3.5"/>
+    <line x1="60" y1="79.5" x2="60" y2="84"/>
+  </g>
+  <rect x="44" y="66" width="32" height="22" rx="3" fill="#bb66ff" opacity="0.14"/>
+
+  <!-- 3 stars -->
+  <g fill="#ffffff">
+    <polygon points="0,-5 1.5,-1.5 5,-1.5 2.2,0.8 3.2,4.5 0,2.5 -3.2,4.5 -2.2,0.8 -5,-1.5 -1.5,-1.5"
+             transform="translate(48,105) scale(0.9)"/>
+    <polygon points="0,-5 1.5,-1.5 5,-1.5 2.2,0.8 3.2,4.5 0,2.5 -3.2,4.5 -2.2,0.8 -5,-1.5 -1.5,-1.5"
+             transform="translate(60,105) scale(0.9)"/>
+    <polygon points="0,-5 1.5,-1.5 5,-1.5 2.2,0.8 3.2,4.5 0,2.5 -3.2,4.5 -2.2,0.8 -5,-1.5 -1.5,-1.5"
+             transform="translate(72,105) scale(0.9)"/>
+  </g>
+
+  <!-- Tier label -->
+  <text x="60" y="116" text-anchor="middle"
+        font-family="system-ui, Arial, sans-serif" font-size="9" font-weight="900"
+        fill="#aa55ee" letter-spacing="1.5">HARD</text>
+</svg>
