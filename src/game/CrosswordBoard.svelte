@@ -265,7 +265,7 @@
 {/if}
 
 <style>
-  .board-wrap { width: 100%; }
+  .board-wrap { width: max-content; }
 
   .hidden-inp {
     position: fixed;
@@ -278,7 +278,7 @@
     border: none;
   }
 
-  .board-outer { position: relative; overflow: hidden; width: 100%; }
+  .board-outer { position: relative; overflow: hidden; width: max-content; }
 
   .board-scaler { display: inline-block; }
 
@@ -304,10 +304,10 @@
   }
 
   .cell.enterable { background: var(--color-surface); cursor: pointer; }
-  .cell.blocked { background: #111; }
-  .cell.active-word { background: rgba(0, 120, 212, 0.15); }
-  .cell.focused { background: rgba(0, 120, 212, 0.4); }
-  .cell.correct { background: rgba(16, 124, 16, 0.25); }
+  .cell.blocked { background: #1a1a1a; }
+  .cell.active-word { background: rgba(14, 165, 233, 0.15); }
+  .cell.focused { background: rgba(14, 165, 233, 0.35); }
+  .cell.correct { background: rgba(22, 163, 74, 0.2); }
   .cell:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
 
   .num {

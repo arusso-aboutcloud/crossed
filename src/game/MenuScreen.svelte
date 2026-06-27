@@ -55,7 +55,7 @@
     font-weight: 900;
     letter-spacing: 0.15em;
     color: var(--color-accent);
-    text-shadow: 0 0 40px rgba(0, 120, 212, 0.6);
+    text-shadow: 0 0 40px rgba(14, 165, 233, 0.4);
     margin: 0;
   }
 
@@ -99,12 +99,12 @@
   .btn-primary {
     background: var(--color-accent);
     color: #fff;
-    box-shadow: 0 4px 20px rgba(0, 120, 212, 0.4);
+    box-shadow: 0 4px 20px rgba(14, 165, 233, 0.35);
     font-size: 1.1rem;
     padding: var(--space-md) var(--space-xl);
   }
 
-  .btn-primary:hover { background: var(--color-accent-hover); box-shadow: 0 6px 28px rgba(0, 120, 212, 0.5); }
+  .btn-primary:hover { background: var(--color-accent-hover); box-shadow: 0 6px 28px rgba(14, 165, 233, 0.45); }
 
   .btn-secondary {
     background: var(--color-surface);

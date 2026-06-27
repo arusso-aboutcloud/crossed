@@ -1,14 +1,14 @@
-/* CSS custom properties - dark theme baseline */
+/* CSS custom properties - summer palette */
 :root {
-  --color-bg: #0f1117;
-  --color-surface: #1a1d27;
-  --color-border: #2e3148;
-  --color-text: #e8eaf0;
+  --color-bg: #fafaf7;
+  --color-surface: #ffffff;
+  --color-border: #e5e0d8;
+  --color-text: #1a1a2e;
   --color-muted: #6b7280;
-  --color-accent: #0078d4;
-  --color-accent-hover: #106ebe;
-  --color-correct: #107c10;
-  --color-wrong: #d13438;
+  --color-accent: #0ea5e9;
+  --color-accent-hover: #0284c7;
+  --color-correct: #16a34a;
+  --color-wrong: #dc2626;
 
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;

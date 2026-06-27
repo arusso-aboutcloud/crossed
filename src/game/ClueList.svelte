@@ -117,10 +117,10 @@
     transition: background 0.1s;
   }
 
-  .clue-item:hover { background: rgba(255,255,255,0.05); }
+  .clue-item:hover { background: rgba(14,165,233,0.08); }
 
   .clue-item.active-clue {
-    background: rgba(0, 120, 212, 0.2);
+    background: rgba(14, 165, 233, 0.15);
     color: var(--color-accent);
   }
 

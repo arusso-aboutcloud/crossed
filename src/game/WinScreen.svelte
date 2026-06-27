@@ -123,7 +123,7 @@
     font-weight: 900;
     color: var(--color-accent);
     margin: 0;
-    text-shadow: 0 0 30px rgba(0, 120, 212, 0.5);
+    text-shadow: 0 0 30px rgba(14, 165, 233, 0.4);
     letter-spacing: 0.05em;
   }
 
@@ -180,7 +180,7 @@
   .btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
 
   .btn-primary { background: var(--color-accent); color: #fff; }
-  .btn-primary:hover { background: var(--color-accent-hover); }
+  .btn-primary:hover { background: var(--color-accent-hover); color: #fff; }
 
   .btn-secondary { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); }
 
