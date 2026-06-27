@@ -102,6 +102,8 @@
     padding: var(--space-md);
     gap: var(--space-md);
     flex-direction: column;
+    position: relative;
+    z-index: 1;
   }
 
   .play-area-inner {

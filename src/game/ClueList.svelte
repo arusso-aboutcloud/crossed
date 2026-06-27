@@ -62,6 +62,12 @@
      */
     height: 40vh;
     overflow: hidden;
+    position: relative;
+    z-index: 1;
+    background: var(--color-surface);
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: var(--space-sm);
   }
 
   @media (min-width: 720px) {
@@ -70,6 +76,12 @@
       height: auto;
       max-height: calc(100vh - 64px);
       max-width: 320px;
+    }
+  }
+
+  @media (max-width: 719px) {
+    .clue-panel {
+      max-height: 40vh;
     }
   }
 

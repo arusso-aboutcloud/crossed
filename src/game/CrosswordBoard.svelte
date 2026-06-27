@@ -8,6 +8,11 @@
   import type { PlacedWord } from '$lib/types';
 
   const CELL_SIZE = 40;
+  // Top bar is ~48px, play-area has ~16px padding top, gap ~16px = ~80px total overhead
+  const TOPBAR_HEIGHT = 80;
+  // On mobile the clue list sits below the board; leave room for it (~40vh).
+  // On desktop we only need to fit the board vertically.
+  const MOBILE_CLUE_RESERVE = 0.40; // fraction of vh reserved for clue panel
 
   let boardEl: HTMLElement;
   let hiddenInput: HTMLInputElement;
@@ -193,9 +198,21 @@
 
   function computeScale() {
     if (!puz) return;
-    const avail = window.innerWidth;
-    const needed = puz.cols * CELL_SIZE + 4;
-    scale = Math.min(1, (avail - 24) / needed);
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    // Horizontal: board must not overflow the viewport width (with 24px margin).
+    const horizLimit = (vw - 24) / (puz.cols * CELL_SIZE + 4);
+
+    // Vertical: on mobile the clue list sits below the board and takes ~40vh.
+    // On desktop (>=720px) only the board needs to fit vertically.
+    const isMobile = vw < 720;
+    const availH = isMobile
+      ? (vh * (1 - MOBILE_CLUE_RESERVE)) - TOPBAR_HEIGHT
+      : vh - TOPBAR_HEIGHT;
+    const vertLimit = availH / (puz.rows * CELL_SIZE + 4);
+
+    scale = Math.min(1, horizLimit, vertLimit);
   }
 
   onMount(() => {
@@ -265,7 +282,14 @@
 {/if}
 
 <style>
-  .board-wrap { width: max-content; }
+  .board-wrap {
+    width: max-content;
+    position: relative;
+    z-index: 1;
+    background: var(--color-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  }
 
   .hidden-inp {
     position: fixed;
@@ -278,7 +302,13 @@
     border: none;
   }
 
-  .board-outer { position: relative; overflow: hidden; width: max-content; }
+  .board-outer {
+    position: relative;
+    overflow: hidden;
+    width: max-content;
+    background: var(--color-bg);
+    border-radius: 8px;
+  }
 
   .board-scaler { display: inline-block; }
 

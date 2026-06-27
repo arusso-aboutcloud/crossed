@@ -12,12 +12,12 @@ export interface BgController {
 const RESTING_COLORS = ['#f8f8f8', '#1a1a1a'];
 
 // Formation scheduler timing (seconds).
-const FIRST_TRIGGER_MIN = 20;
-const FIRST_TRIGGER_MAX = 40;
-const INTERVAL_MIN = 60;
-const INTERVAL_MAX = 120;
+const FIRST_TRIGGER_MIN = 8;
+const FIRST_TRIGGER_MAX = 15;
+const INTERVAL_MIN = 12;
+const INTERVAL_MAX = 25;
 const ENTER_DURATION = 2.0;
-const HOLD_DURATION = 4.0;
+const HOLD_DURATION = 5.0;
 const LEAVE_DURATION = 2.0;
 
 enum FormationState {
