@@ -14,30 +14,29 @@ export interface Formation {
   slots: FormationSlot[];
 }
 
-// Formation 1: Microsoft four-color abstract homage.
-// 2x2 arrangement of 2x2 blocks (total 4x4 grid = 16 cubes).
+// Formation 1: Microsoft four-color logo homage.
+// 4x4 grid: four 2x2 quadrants with a 1-col/row gap between them.
 // Top-left red, top-right green, bottom-left blue, bottom-right yellow.
-// This is an abstract, transient, rotating homage - not a frozen logo lockup.
-// Cubes visibly rotate throughout the hold phase.
+// 16 colored cubes in a recognizable MS logo formation.
 const FOUR_COLOR: Formation = {
   id: 'four-color',
   slots: [
-    // Top-left 2x2 block - red
+    // Top-left 2x2 block - red (#f25022)
     { col: 0, row: 0, color: '#f25022' },
     { col: 1, row: 0, color: '#f25022' },
     { col: 0, row: 1, color: '#f25022' },
     { col: 1, row: 1, color: '#f25022' },
-    // Top-right 2x2 block - green
+    // Top-right 2x2 block - green (#7fba00)
     { col: 3, row: 0, color: '#7fba00' },
     { col: 4, row: 0, color: '#7fba00' },
     { col: 3, row: 1, color: '#7fba00' },
     { col: 4, row: 1, color: '#7fba00' },
-    // Bottom-left 2x2 block - blue
+    // Bottom-left 2x2 block - blue (#00a4ef)
     { col: 0, row: 3, color: '#00a4ef' },
     { col: 1, row: 3, color: '#00a4ef' },
     { col: 0, row: 4, color: '#00a4ef' },
     { col: 1, row: 4, color: '#00a4ef' },
-    // Bottom-right 2x2 block - yellow
+    // Bottom-right 2x2 block - yellow (#ffb900)
     { col: 3, row: 3, color: '#ffb900' },
     { col: 4, row: 3, color: '#ffb900' },
     { col: 3, row: 4, color: '#ffb900' },
@@ -73,103 +72,161 @@ const SUN: Formation = {
   ],
 };
 
-// Formation 3: Cocktail / martini glass pixel outline in summer teal.
-// V-shape top, stem, base. About 16 cubes.
+// Formation 3: Toucan bird - pixel art, about 25 cubes.
+// Dark body, large colorful beak, white eye, teal wing accent, light belly.
+const TOUCAN: Formation = {
+  id: 'toucan',
+  slots: [
+    // Body (dark navy/black) - roughly 4 wide x 6 tall
+    { col: 3, row: 0, color: '#1a1a2e' },
+    { col: 4, row: 0, color: '#1a1a2e' },
+    { col: 2, row: 1, color: '#1a1a2e' },
+    { col: 3, row: 1, color: '#1a1a2e' },
+    { col: 4, row: 1, color: '#1a1a2e' },
+    { col: 2, row: 2, color: '#1a1a2e' },
+    { col: 3, row: 2, color: '#0d9488' }, // teal wing highlight
+    { col: 4, row: 2, color: '#1a1a2e' },
+    { col: 2, row: 3, color: '#1a1a2e' },
+    { col: 3, row: 3, color: '#f0fdf4' }, // light belly
+    { col: 4, row: 3, color: '#f0fdf4' }, // light belly
+    { col: 2, row: 4, color: '#1a1a2e' },
+    { col: 3, row: 4, color: '#1a1a2e' },
+    { col: 4, row: 4, color: '#1a1a2e' },
+    { col: 3, row: 5, color: '#1a1a2e' },
+    { col: 4, row: 5, color: '#1a1a2e' },
+    // Eye (white) - upper right of body
+    { col: 5, row: 0, color: '#ffffff' },
+    // Beak (orange-yellow) - large triangular pointing right
+    { col: 5, row: 1, color: '#f97316' },
+    { col: 6, row: 1, color: '#f97316' },
+    { col: 7, row: 1, color: '#fb923c' },
+    { col: 5, row: 2, color: '#f97316' },
+    { col: 6, row: 2, color: '#fbbf24' },
+    { col: 5, row: 3, color: '#f97316' },
+    // Feet (dark)
+    { col: 3, row: 6, color: '#1a1a2e' },
+    { col: 5, row: 6, color: '#1a1a2e' },
+  ],
+};
+
+// Formation 4: Tropical cocktail - about 18 cubes.
+// V-shape glass with bright pink drink, yellow straw, orange garnish.
 const COCKTAIL: Formation = {
   id: 'cocktail',
   slots: [
-    // Rim - top row
-    { col: 0, row: 0, color: '#0d9488' },
-    { col: 1, row: 0, color: '#0d9488' },
-    { col: 2, row: 0, color: '#0d9488' },
-    { col: 3, row: 0, color: '#0d9488' },
-    { col: 4, row: 0, color: '#0d9488' },
-    { col: 5, row: 0, color: '#0d9488' },
-    // V sides converging inward
-    { col: 1, row: 1, color: '#0d9488' },
-    { col: 4, row: 1, color: '#0d9488' },
-    { col: 2, row: 2, color: '#0d9488' },
-    { col: 3, row: 2, color: '#0d9488' },
+    // Rim top row
+    { col: 0, row: 0, color: '#ec4899' },
+    { col: 1, row: 0, color: '#ec4899' },
+    { col: 2, row: 0, color: '#ec4899' },
+    { col: 3, row: 0, color: '#ec4899' },
+    { col: 4, row: 0, color: '#ec4899' },
+    { col: 5, row: 0, color: '#ec4899' },
+    // Fruit garnish on rim
+    { col: 5, row: 0, color: '#f97316' },
+    // V-shape sides with drink inside
+    { col: 1, row: 1, color: '#ec4899' },
+    { col: 2, row: 1, color: '#f472b6' }, // lighter pink inside
+    { col: 3, row: 1, color: '#f472b6' },
+    { col: 4, row: 1, color: '#ec4899' },
+    { col: 2, row: 2, color: '#ec4899' },
+    { col: 3, row: 2, color: '#ec4899' },
+    // Straw (yellow vertical)
+    { col: 3, row: 0, color: '#fde047' },
+    { col: 3, row: 1, color: '#fde047' },
     // Stem
     { col: 2, row: 3, color: '#0d9488' },
     { col: 3, row: 3, color: '#0d9488' },
+    // Base
+    { col: 1, row: 4, color: '#0d9488' },
     { col: 2, row: 4, color: '#0d9488' },
     { col: 3, row: 4, color: '#0d9488' },
-    // Base
-    { col: 1, row: 5, color: '#0d9488' },
-    { col: 2, row: 5, color: '#0d9488' },
-    { col: 3, row: 5, color: '#0d9488' },
-    { col: 4, row: 5, color: '#0d9488' },
+    { col: 4, row: 4, color: '#0d9488' },
   ],
 };
 
-// Formation 4: Watermelon slice.
-// D-shape: curved green rind on top, red interior, a few black seeds.
-// About 20 cubes.
+// Formation 5: Watermelon slice - D-shape, about 25 cubes.
+// Outer green rind, red flesh interior, black seeds.
 const WATERMELON: Formation = {
   id: 'watermelon',
   slots: [
-    // Top arc rind (green)
+    // Top arc rind (green outer)
     { col: 2, row: 0, color: '#16a34a' },
     { col: 3, row: 0, color: '#16a34a' },
     { col: 4, row: 0, color: '#16a34a' },
+    { col: 5, row: 0, color: '#16a34a' },
     { col: 1, row: 1, color: '#16a34a' },
-    { col: 5, row: 1, color: '#16a34a' },
+    { col: 6, row: 1, color: '#16a34a' },
     { col: 0, row: 2, color: '#16a34a' },
-    { col: 6, row: 2, color: '#16a34a' },
-    // Red interior
+    { col: 7, row: 2, color: '#16a34a' },
+    { col: 0, row: 3, color: '#16a34a' },
+    { col: 7, row: 3, color: '#16a34a' },
+    // Red interior flesh
     { col: 2, row: 1, color: '#ef4444' },
     { col: 3, row: 1, color: '#ef4444' },
     { col: 4, row: 1, color: '#ef4444' },
+    { col: 5, row: 1, color: '#ef4444' },
     { col: 1, row: 2, color: '#ef4444' },
     { col: 2, row: 2, color: '#ef4444' },
-    { col: 3, row: 2, color: '#ef4444' },
     { col: 4, row: 2, color: '#ef4444' },
     { col: 5, row: 2, color: '#ef4444' },
-    // Flat base (green)
-    { col: 0, row: 3, color: '#16a34a' },
-    { col: 1, row: 3, color: '#16a34a' },
-    { col: 2, row: 3, color: '#16a34a' },
-    { col: 3, row: 3, color: '#16a34a' },
-    { col: 4, row: 3, color: '#16a34a' },
-    { col: 5, row: 3, color: '#16a34a' },
-    { col: 6, row: 3, color: '#16a34a' },
+    { col: 6, row: 2, color: '#ef4444' },
+    { col: 1, row: 3, color: '#ef4444' },
+    { col: 3, row: 3, color: '#ef4444' },
+    { col: 5, row: 3, color: '#ef4444' },
+    { col: 6, row: 3, color: '#ef4444' },
     // Seeds (dark)
-    { col: 2, row: 2, color: '#1a1a1a' }, // overrides red at that slot - seed
-    { col: 4, row: 2, color: '#1a1a1a' }, // overrides red at that slot - seed
-    { col: 3, row: 1, color: '#1a1a1a' }, // overrides red at that slot - seed
+    { col: 3, row: 2, color: '#1a1a1a' },
+    { col: 2, row: 3, color: '#1a1a1a' },
+    { col: 4, row: 3, color: '#1a1a1a' },
+    // Flat base (green rind)
+    { col: 0, row: 4, color: '#16a34a' },
+    { col: 1, row: 4, color: '#16a34a' },
+    { col: 2, row: 4, color: '#16a34a' },
+    { col: 3, row: 4, color: '#16a34a' },
+    { col: 4, row: 4, color: '#16a34a' },
+    { col: 5, row: 4, color: '#16a34a' },
+    { col: 6, row: 4, color: '#16a34a' },
+    { col: 7, row: 4, color: '#16a34a' },
   ],
 };
 
-// Formation 5: Lemon.
-// Oval/rounded yellow shape with a small green stem.
-// About 15 cubes.
-const LEMON: Formation = {
-  id: 'lemon',
+// Formation 6: Tropical fruit cluster - pineapple + mango, about 20 cubes.
+// Pineapple: yellow rectangular body with green crown on top.
+// Mango: orange-yellow oval beside it.
+const TROPICAL: Formation = {
+  id: 'tropical',
   slots: [
-    // Green stem
-    { col: 3, row: 0, color: '#86efac' },
-    // Top arc
-    { col: 2, row: 1, color: '#fde047' },
-    { col: 3, row: 1, color: '#fde047' },
-    { col: 4, row: 1, color: '#fde047' },
-    // Middle body
-    { col: 1, row: 2, color: '#fde047' },
-    { col: 2, row: 2, color: '#fde047' },
-    { col: 3, row: 2, color: '#fde047' },
-    { col: 4, row: 2, color: '#fde047' },
-    { col: 5, row: 2, color: '#fde047' },
-    { col: 1, row: 3, color: '#fde047' },
-    { col: 2, row: 3, color: '#fde047' },
-    { col: 3, row: 3, color: '#fde047' },
-    { col: 4, row: 3, color: '#fde047' },
-    { col: 5, row: 3, color: '#fde047' },
-    // Bottom arc
-    { col: 2, row: 4, color: '#fde047' },
-    { col: 3, row: 4, color: '#fde047' },
-    { col: 4, row: 4, color: '#fde047' },
-    // Tip nub (pointed lemon end)
-    { col: 5, row: 4, color: '#fde047' },
+    // Pineapple crown (green)
+    { col: 1, row: 0, color: '#16a34a' },
+    { col: 2, row: 0, color: '#16a34a' },
+    { col: 0, row: 1, color: '#16a34a' },
+    { col: 3, row: 1, color: '#16a34a' },
+    // Pineapple body (golden yellow)
+    { col: 0, row: 2, color: '#fbbf24' },
+    { col: 1, row: 2, color: '#fbbf24' },
+    { col: 2, row: 2, color: '#fbbf24' },
+    { col: 3, row: 2, color: '#fbbf24' },
+    { col: 0, row: 3, color: '#f59e0b' },
+    { col: 1, row: 3, color: '#fbbf24' },
+    { col: 2, row: 3, color: '#fbbf24' },
+    { col: 3, row: 3, color: '#f59e0b' },
+    { col: 0, row: 4, color: '#fbbf24' },
+    { col: 1, row: 4, color: '#fbbf24' },
+    { col: 2, row: 4, color: '#fbbf24' },
+    { col: 3, row: 4, color: '#fbbf24' },
+    { col: 1, row: 5, color: '#fbbf24' },
+    { col: 2, row: 5, color: '#fbbf24' },
+    // Mango (orange-yellow oval beside pineapple)
+    { col: 5, row: 1, color: '#fb923c' },
+    { col: 6, row: 1, color: '#fb923c' },
+    { col: 4, row: 2, color: '#fb923c' },
+    { col: 5, row: 2, color: '#f97316' },
+    { col: 6, row: 2, color: '#fb923c' },
+    { col: 7, row: 2, color: '#fb923c' },
+    { col: 5, row: 3, color: '#fb923c' },
+    { col: 6, row: 3, color: '#fb923c' },
+    // Mango leaf stem
+    { col: 6, row: 0, color: '#16a34a' },
   ],
 };
 
@@ -185,7 +242,8 @@ function dedupeSlots(slots: FormationSlot[]): FormationSlot[] {
 export const FORMATIONS: Formation[] = [
   { ...FOUR_COLOR, slots: dedupeSlots(FOUR_COLOR.slots) },
   { ...SUN,        slots: dedupeSlots(SUN.slots) },
+  { ...TOUCAN,     slots: dedupeSlots(TOUCAN.slots) },
   { ...COCKTAIL,   slots: dedupeSlots(COCKTAIL.slots) },
   { ...WATERMELON, slots: dedupeSlots(WATERMELON.slots) },
-  { ...LEMON,      slots: dedupeSlots(LEMON.slots) },
+  { ...TROPICAL,   slots: dedupeSlots(TROPICAL.slots) },
 ];

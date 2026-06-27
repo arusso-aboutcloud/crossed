@@ -202,16 +202,19 @@
     const vh = window.innerHeight;
 
     // Horizontal: board must not overflow the viewport width (with 24px margin).
-    const horizLimit = (vw - 24) / (puz.cols * CELL_SIZE + 4);
+    // On desktop the clue list sits beside the board and takes up to 320px + gaps.
+    const isMobile = vw < 720;
+    const horizReserve = isMobile ? 16 : 360; // clue panel width on desktop
+    const horizLimit = (vw - horizReserve) / (puz.cols * CELL_SIZE + 4);
 
     // Vertical: on mobile the clue list sits below the board and takes ~40vh.
-    // On desktop (>=720px) only the board needs to fit vertically.
-    const isMobile = vw < 720;
+    // On desktop we need the board to fit vertically within available height.
     const availH = isMobile
       ? (vh * (1 - MOBILE_CLUE_RESERVE)) - TOPBAR_HEIGHT
       : vh - TOPBAR_HEIGHT;
     const vertLimit = availH / (puz.rows * CELL_SIZE + 4);
 
+    // Never exceed 1.0 (no upscaling) and always use the tighter constraint.
     scale = Math.min(1, horizLimit, vertLimit);
   }
 
@@ -239,7 +242,7 @@
       on:input={handleInput}
     />
 
-    <div class="board-outer" style="height: {puz.rows * CELL_SIZE * scale + 8}px;">
+    <div class="board-outer" style="height: {puz.rows * CELL_SIZE * scale + 8}px; --rows: {puz.rows}; --cols: {puz.cols};">
       <div class="board-scaler" style="transform: scale({scale}); transform-origin: top center;">
         <div
           bind:this={boardEl}

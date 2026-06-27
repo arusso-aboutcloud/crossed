@@ -18,9 +18,13 @@
 
     <!-- Hero section -->
     <div class="brand">
-      <h1 class="title">CROSSED</h1>
-      <p class="subtitle">The Microsoft Cloud Security Crossword</p>
-      <p class="tagline">aboutcloud.io</p>
+      <div class="hero-accents" aria-hidden="true">
+        <span class="accent-icon">&#9728;</span>
+        <span class="accent-icon accent-right">&#127768;</span>
+      </div>
+      <h1 class="title">CROSSEC</h1>
+      <p class="subtitle">The Ultimate Summer Security Challenge</p>
+      <p class="tagline">Microsoft Cloud Security - Summer Edition | aboutcloud.io</p>
     </div>
 
     <!-- Badge showcase -->
@@ -72,9 +76,9 @@
 
   /* Frosted card surface for legibility over the WebGL background */
   .card {
-    background: rgba(250, 250, 247, 0.88);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(250, 250, 247, 0.93);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 20px;
     padding: 2.5rem;
     max-width: 480px;
@@ -94,6 +98,24 @@
     flex-direction: column;
     align-items: center;
     gap: var(--space-sm);
+    position: relative;
+  }
+
+  .hero-accents {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    padding: 0 0.5rem;
+  }
+
+  .accent-icon {
+    font-size: 1.5rem;
+    opacity: 0.45;
+    line-height: 1;
   }
 
   /* Shimmer animation - disabled under prefers-reduced-motion */
@@ -107,12 +129,10 @@
     font-weight: 900;
     letter-spacing: 0.12em;
     background: linear-gradient(
-      90deg,
+      135deg,
       #0ea5e9 0%,
-      #1a1a2e 30%,
-      #0ea5e9 50%,
-      #f59e0b 70%,
-      #0ea5e9 100%
+      #f59e0b 50%,
+      #ef4444 100%
     );
     background-size: 200% auto;
     -webkit-background-clip: text;
