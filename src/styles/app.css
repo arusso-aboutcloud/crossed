@@ -49,6 +49,12 @@ body {
 /* Z-index hierarchy: canvas=0, game UI=1+, overlays=10+, modals=100+ */
 /* The WebGL canvas is fixed at z-index:0; all game content sits above it. */
 
+/* Shimmer animation used by the landing title. */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
 a {
   color: var(--color-accent);
   text-decoration: none;

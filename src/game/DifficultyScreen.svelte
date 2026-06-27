@@ -12,19 +12,21 @@
 </script>
 
 <div class="diff-screen">
-  <h2 class="heading">Choose Difficulty</h2>
+  <div class="card">
+    <h2 class="heading">Choose Difficulty</h2>
 
-  <div class="tiers">
-    {#each tiers as t}
-      <button class="tier-card {t.cls}" on:click={() => newPuzzle(t.diff)}>
-        <span class="tier-label">{t.label}</span>
-        <span class="tier-desc">{t.desc}</span>
-        <span class="tier-words">{DIFFICULTY_CONFIG[t.diff].targetWords} words</span>
-      </button>
-    {/each}
+    <div class="tiers">
+      {#each tiers as t}
+        <button class="tier-card {t.cls}" on:click={() => newPuzzle(t.diff)}>
+          <span class="tier-label">{t.label}</span>
+          <span class="tier-desc">{t.desc}</span>
+          <span class="tier-words">{DIFFICULTY_CONFIG[t.diff].targetWords} words</span>
+        </button>
+      {/each}
+    </div>
+
+    <button class="back-btn" on:click={() => exitToMenu()}>Back</button>
   </div>
-
-  <button class="back-btn" on:click={() => exitToMenu()}>Back</button>
 </div>
 
 <style>
@@ -34,8 +36,24 @@
     align-items: center;
     min-height: 100vh;
     padding: var(--space-lg);
-    gap: var(--space-lg);
     justify-content: center;
+  }
+
+  /* Frosted card surface matching MenuScreen for visual consistency. */
+  .card {
+    background: rgba(250, 250, 247, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 480px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-lg);
+    border: 1px solid rgba(229, 224, 216, 0.7);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
   }
 
   .heading {
@@ -50,7 +68,6 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--space-md);
     width: 100%;
-    max-width: 480px;
   }
 
   .tier-card {
@@ -111,7 +128,7 @@
     border: 1px solid var(--color-border);
     color: var(--color-muted);
     padding: var(--space-sm) var(--space-lg);
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-family: inherit;
     font-size: 0.9rem;
