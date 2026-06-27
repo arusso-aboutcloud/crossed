@@ -1,49 +1,51 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Medium badge">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="200" height="240" role="img" aria-label="Medium badge">
   <defs>
-    <linearGradient id="mg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#04082a"/>
-      <stop offset="100%" stop-color="#0a2068"/>
+    <linearGradient id="border-medium" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
     </linearGradient>
-    <filter id="mglow">
-      <feGaussianBlur stdDeviation="2.5" result="blur"/>
-      <feFlood flood-color="#2055cc" flood-opacity="0.6" result="color"/>
-      <feComposite in="color" in2="blur" operator="in" result="glow"/>
-      <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    <clipPath id="shield-clip-medium">
+      <path d="M100,8 L185,40 L185,120 Q185,185 100,220 Q15,185 15,120 L15,40 Z"/>
+    </clipPath>
+    <filter id="shadow-medium" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#3b82f6" flood-opacity="0.4"/>
     </filter>
   </defs>
 
-  <!-- Shield background -->
-  <path d="M18 10 L102 10 Q110 10 110 18 C110 60 88 88 60 102 C32 88 10 60 10 18 Q10 10 18 10 Z"
-        fill="url(#mg)" filter="url(#mglow)"/>
+  <!-- Shield outer border -->
+  <path d="M100,8 L185,40 L185,120 Q185,185 100,220 Q15,185 15,120 L15,40 Z"
+        fill="url(#border-medium)" filter="url(#shadow-medium)"/>
 
-  <!-- Shield outline -->
-  <path d="M18 10 L102 10 Q110 10 110 18 C110 60 88 88 60 102 C32 88 10 60 10 18 Q10 10 18 10 Z"
-        fill="none" stroke="#4a88ff" stroke-width="3"/>
+  <!-- Shield inner dark body -->
+  <path d="M100,16 L178,45 L178,120 Q178,178 100,212 Q22,178 22,120 L22,45 Z"
+        fill="#0d1117"/>
 
-  <!-- Banner ribbon -->
-  <rect x="18" y="22" width="84" height="20" fill="#eef1fa"/>
-  <rect x="18" y="22" width="84" height="2" fill="#4a88ff"/>
-  <rect x="18" y="40" width="84" height="2" fill="#4a88ff"/>
-  <text x="60" y="35" text-anchor="middle" dominant-baseline="middle"
-        font-family="system-ui, Arial, sans-serif" font-size="8" font-weight="800"
-        fill="#04082a" letter-spacing="1">CROSSED</text>
+  <!-- Microsoft 4-color logo -->
+  <rect x="80" y="25" width="18" height="18" fill="#f25022" rx="1"/>
+  <rect x="101" y="25" width="18" height="18" fill="#7fba00" rx="1"/>
+  <rect x="80" y="46" width="18" height="18" fill="#00a4ef" rx="1"/>
+  <rect x="101" y="46" width="18" height="18" fill="#ffb900" rx="1"/>
 
-  <!-- Shield-check icon (medium) -->
-  <g stroke="#4a9fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M44 52 L52 52 Q76 52 76 66 C76 80 68 86 60 90 C52 86 44 80 44 66 Z"/>
-    <path d="M52 70 L57 76 L70 62"/>
-  </g>
-  <path d="M44 52 L52 52 Q76 52 76 66 C76 80 68 86 60 90 C52 86 44 80 44 66 Z"
-        fill="#4a9fff" opacity="0.12"/>
+  <!-- Ribbon banner -->
+  <polygon points="15,90 185,90 185,118 15,118" fill="#ffffff"/>
+  <polygon points="15,90 30,104 15,118" fill="#d1d5db"/>
+  <polygon points="185,90 170,104 185,118" fill="#d1d5db"/>
+  <text x="100" y="101" font-family="Arial Black, Arial, sans-serif" font-size="8" font-weight="900" fill="#1a1a2e" text-anchor="middle" letter-spacing="1">SUMMER SECURITY</text>
+  <text x="100" y="112" font-family="Arial Black, Arial, sans-serif" font-size="8" font-weight="900" fill="#1a1a2e" text-anchor="middle" letter-spacing="1">CROSSWORD</text>
 
-  <!-- 2 stars -->
-  <g fill="#ffffff" transform="translate(-8,0)">
-    <polygon points="60,90 61.4,94.3 66,94.3 62.3,96.9 63.7,101.2 60,98.6 56.3,101.2 57.7,96.9 54,94.3 58.6,94.3" transform="scale(0.55) translate(46,68)"/>
-    <polygon points="60,90 61.4,94.3 66,94.3 62.3,96.9 63.7,101.2 60,98.6 56.3,101.2 57.7,96.9 54,94.3 58.6,94.3" transform="scale(0.55) translate(75,68)"/>
-  </g>
+  <!-- Shield with checkmark icon (Medium) -->
+  <path d="M100,132 L118,140 L118,155 Q118,168 100,174 Q82,168 82,155 L82,140 Z" fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+  <polyline points="91,154 97,160 111,146" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 
-  <!-- Tier label -->
-  <text x="60" y="113" text-anchor="middle"
-        font-family="system-ui, Arial, sans-serif" font-size="8" font-weight="900"
-        fill="#4a88ff" letter-spacing="1">MEDIUM</text>
+  <!-- Star rating pill: 2 stars -->
+  <rect x="65" y="190" width="70" height="20" rx="10" fill="#0d1117" stroke="#3b82f6" stroke-width="1.5"/>
+  <!-- Star 1 at cx=93, cy=200, r=7 -->
+  <path d="M93,193 L95.45,199.16 L102.65,199.16 L97.06,203.24 L99.06,209.5 L93,205.5 L86.94,209.5 L88.94,203.24 L83.35,199.16 L90.55,199.16 Z" fill="white"/>
+  <!-- Star 2 at cx=107, cy=200, r=7 -->
+  <path d="M107,193 L109.45,199.16 L116.65,199.16 L111.06,203.24 L113.06,209.5 L107,205.5 L100.94,209.5 L102.94,203.24 L97.35,199.16 L104.55,199.16 Z" fill="white"/>
+
+  <!-- Tier label with horizontal lines -->
+  <line x1="15" y1="230" x2="65" y2="230" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="100" y="234" font-family="Arial Black, Arial, sans-serif" font-size="11" font-weight="900" fill="#3b82f6" text-anchor="middle" letter-spacing="2">MEDIUM</text>
+  <line x1="135" y1="230" x2="185" y2="230" stroke="#3b82f6" stroke-width="1.5"/>
 </svg>

@@ -47,7 +47,7 @@
 {/if}
 
 <style>
-  .board-screen { display: flex; flex-direction: column; min-height: 100vh; }
+  .board-screen { display: flex; flex-direction: column; min-height: 100vh; max-height: 100vh; overflow: hidden; }
 
   .top-bar {
     display: flex;
@@ -99,6 +99,8 @@
     justify-content: center;
     align-items: flex-start;
     flex: 1;
+    min-height: 0;
+    overflow: hidden;
     padding: var(--space-md);
     gap: var(--space-md);
     flex-direction: column;
