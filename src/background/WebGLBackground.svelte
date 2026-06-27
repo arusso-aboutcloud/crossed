@@ -12,6 +12,10 @@
   $: if (controller) controller.setEnabled($bgEnabled);
   $: if (controller) controller.setPaused($gamePhase === 'win');
 
+  // Dim the background heavily during play so cubes do not compete with grid.
+  // Lighter overlay on menu/difficulty/win/paused phases so formations are visible.
+  $: overlayOpacity = $gamePhase === 'playing' ? 0.82 : 0.35;
+
   onMount(() => {
     try {
       controller = createBackground(canvas);
@@ -43,6 +47,11 @@
   {:else}
     <div class="bg-fallback"></div>
   {/if}
+  <!-- Dim overlay: heavy during play, light on other screens -->
+  <div
+    class="bg-dim"
+    style="background: rgba(250,250,247,{overlayOpacity});"
+  ></div>
 </div>
 
 <style>
@@ -64,5 +73,11 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, #fafaf7 0%, #e0f2fe 60%, #f0fdf4 100%);
+  }
+
+  .bg-dim {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
   }
 </style>

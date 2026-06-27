@@ -46,6 +46,9 @@ body {
   min-height: 100vh;
 }
 
+/* Z-index hierarchy: canvas=0, game UI=1+, overlays=10+, modals=100+ */
+/* The WebGL canvas is fixed at z-index:0; all game content sits above it. */
+
 a {
   color: var(--color-accent);
   text-decoration: none;
