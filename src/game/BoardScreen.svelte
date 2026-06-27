@@ -26,8 +26,10 @@
 
   {#if $puzzle}
     <div class="play-area">
-      <CrosswordBoard />
-      <ClueList />
+      <div class="play-area-inner">
+        <CrosswordBoard />
+        <ClueList />
+      </div>
     </div>
   {/if}
 </div>
@@ -94,22 +96,37 @@
 
   .play-area {
     display: flex;
+    justify-content: center;
+    align-items: flex-start;
     flex: 1;
-    gap: var(--space-md);
     padding: var(--space-md);
+    gap: var(--space-md);
     flex-direction: column;
+  }
+
+  .play-area-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    width: 100%;
   }
 
   @media (min-width: 720px) {
     /*
-     * Use CSS grid so the board column is sized to its natural (grid) width
-     * and the clue panel fills the remainder. A flex row with board-wrap at
-     * width:100% would claim the entire row and leave ClueList 0px.
+     * Center the board+clue pair horizontally. The inner grid sizes board to
+     * its natural (content) width and clue panel to a bounded column beside it.
+     * max-content on play-area-inner prevents it from stretching to full width.
      */
     .play-area {
+      flex-direction: row;
+    }
+
+    .play-area-inner {
       display: grid;
-      grid-template-columns: max-content 1fr;
+      grid-template-columns: max-content minmax(240px, 320px);
       align-items: start;
+      gap: var(--space-md);
+      width: max-content;
     }
   }
 

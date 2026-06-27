@@ -63,6 +63,6 @@
   .bg-fallback {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #0f1117 0%, #1a2744 60%, #0d1b2a 100%);
+    background: linear-gradient(135deg, #fafaf7 0%, #e0f2fe 60%, #f0fdf4 100%);
   }
 </style>
