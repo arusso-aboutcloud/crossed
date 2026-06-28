@@ -54,12 +54,18 @@
               width="64"
               height="64"
             />
-            <span class="ab-tier">{earnedSet.has(tier) ? tier : '???'}</span>
+            <span class="ab-tier">{tier}</span>
           </div>
         {/each}
       </div>
       <div class="ab-footer">
-        <span class="ab-global">0 badge holders worldwide - be the first!</span>
+        {#if earnedCount === 0}
+          <span class="ab-global">Complete a difficulty to earn your first badge!</span>
+        {:else if earnedCount < 4}
+          <span class="ab-global earned-msg">{earnedCount}/4 earned - keep going!</span>
+        {:else}
+          <span class="ab-global earned-msg">Full set unlocked - share your badges!</span>
+        {/if}
       </div>
     </div>
 
@@ -369,17 +375,20 @@
   }
 
   .ab-img {
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
     display: block;
     border-radius: 4px;
-    transition: filter 0.3s;
-    filter: grayscale(0.8) brightness(0.65);
+    transition: box-shadow 0.3s, transform 0.3s;
+    /* Always show real badge colors - no grayscale */
+    filter: none;
+    opacity: 0.55;
   }
 
   .ab-badge.earned .ab-img {
-    filter: none;
-    box-shadow: 0 0 10px rgba(255,215,0,0.5);
+    opacity: 1;
+    box-shadow: 0 0 14px rgba(255,215,0,0.65), 0 0 4px rgba(255,215,0,0.4);
+    transform: scale(1.06);
   }
 
   .ab-tier {
@@ -404,6 +413,12 @@
     color: #7ea8cc;
     font-family: var(--font-body);
     font-style: italic;
+  }
+
+  .ab-global.earned-msg {
+    color: #ffd700;
+    font-style: normal;
+    font-weight: 600;
   }
 
   /* ---- Footer links ---- */
