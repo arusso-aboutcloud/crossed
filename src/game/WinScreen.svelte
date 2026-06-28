@@ -13,6 +13,10 @@
   $: if (result) {
     isRepeatWin = hasEarned(result.difficulty);
     markEarned(result.difficulty);
+    if (!isRepeatWin) {
+      // Fire Umami analytics event for first-time badge earn (no PII).
+      try { (window as any).umami?.track('badge_earned', { difficulty: result.difficulty }); } catch (_) {/* ignore */}
+    }
   }
 
   function formatTime(s: number): string {
