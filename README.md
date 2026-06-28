@@ -1,5 +1,5 @@
 <!-- Banner: save the promotional image as docs/assets/banner.png and this renders automatically -->
-![CROSSEC Summer Security Crossword](docs/assets/banner.png)
+![CROSSEC Summer Security Crossword](docs/assets/docs/assets/ChatGPT Image Jun 28, 2026, 07_50_40 PM.png)
 
 # CROSSEC - Summer Security Crossword
 
