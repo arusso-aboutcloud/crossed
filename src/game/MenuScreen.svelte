@@ -141,28 +141,51 @@
     gap: 0.3rem;
   }
 
-  /* Title wrap - decorative blue glow container */
+  /* Retro arcade title panel */
   .title-wrap {
-    background: rgba(37, 99, 235, 0.08);
-    border: 2px solid #2563eb;
+    background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
+    border: 3px solid #ffd700;
     border-radius: 8px;
-    padding: 0.3rem 1.2rem;
-    box-shadow: 0 0 12px rgba(37,99,235,0.25);
+    padding: 0.5rem 1.6rem 0.6rem;
+    box-shadow:
+      0 0 24px rgba(255,215,0,0.35),
+      inset 0 0 20px rgba(0,0,0,0.6),
+      4px 4px 0 #78350f;
+    position: relative;
+    overflow: hidden;
   }
 
-  /* Mario-style pixel font title - vivid blue */
+  /* Scanline overlay inside title panel */
+  .title-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.18) 3px,
+      rgba(0,0,0,0.18) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Retro arcade pixel font title - gold gradient */
   .title {
     font-family: var(--font-display);
-    font-size: clamp(1rem, 5vw, 1.8rem);
-    color: #2563eb;
-    text-shadow:
-      3px 3px 0 #1e3a8a,
-      -1px -1px 0 #1d4ed8,
-      1px -1px 0 #1d4ed8,
-      -1px 1px 0 #1d4ed8;
+    font-size: clamp(1.3rem, 6vw, 2.2rem);
+    background: linear-gradient(180deg, #fff9c4 0%, #ffd700 45%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter:
+      drop-shadow(3px 3px 0 #92400e)
+      drop-shadow(0 0 10px rgba(255,215,0,0.5));
     margin: 0;
-    letter-spacing: 0.05em;
-    background: none;
+    letter-spacing: 0.08em;
+    position: relative;
+    z-index: 1;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -298,12 +321,12 @@
   /* ---- Achievement board ---- */
   .achievement-board {
     width: 100%;
-    background: #1a1a2e;
+    background: linear-gradient(135deg, #1e3a5f 0%, #162d4a 100%);
     border: 2px solid #ffd700;
     border-radius: 8px;
     padding: 0.7rem 1rem;
     box-sizing: border-box;
-    box-shadow: inset 0 0 16px rgba(255,215,0,0.08), 3px 3px 0 #0d0d1a;
+    box-shadow: inset 0 0 20px rgba(255,215,0,0.10), 3px 3px 0 #0a1628;
   }
 
   .ab-header {
@@ -351,7 +374,7 @@
     display: block;
     border-radius: 4px;
     transition: filter 0.3s;
-    filter: grayscale(1) brightness(0.4);
+    filter: grayscale(0.8) brightness(0.65);
   }
 
   .ab-badge.earned .ab-img {
@@ -362,7 +385,7 @@
   .ab-tier {
     font-family: var(--font-display);
     font-size: 0.42rem;
-    color: #4a4a6a;
+    color: #7ea8cc;
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
@@ -378,7 +401,7 @@
 
   .ab-global {
     font-size: 0.65rem;
-    color: #4a4a6a;
+    color: #7ea8cc;
     font-family: var(--font-body);
     font-style: italic;
   }
