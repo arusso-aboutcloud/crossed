@@ -230,6 +230,144 @@ const TROPICAL: Formation = {
   ],
 };
 
+// Formation 7: Ocean waves - sinusoidal row of cubes in ocean blue and white.
+// Two layers form a wave pattern across ~8 columns using offset rows.
+const WAVES: Formation = {
+  id: 'waves',
+  slots: (() => {
+    const out: FormationSlot[] = [];
+    const baseRow = 4;
+    const colors = ['#0891b2', '#0e7490', '#ffffff', '#67e8f9'];
+    for (let col = 0; col < 8; col++) {
+      const rowOffset = Math.round(2 * Math.sin(col * 0.8));
+      out.push({ col, row: baseRow + rowOffset, color: '#0891b2' });
+      out.push({ col, row: baseRow + rowOffset - 1, color: colors[col % colors.length] });
+      if (col % 2 === 0) {
+        out.push({ col, row: baseRow + rowOffset + 1, color: '#ffffff' });
+      }
+    }
+    return out;
+  })(),
+};
+
+// Formation 8: Pixel palm tree - brown trunk with green leaf crown.
+// Trunk: 2 cols wide x 5 rows tall in brown. Crown: diagonal green leaves.
+const PALM: Formation = {
+  id: 'palm',
+  slots: [
+    // Trunk (brown)
+    { col: 4, row: 4, color: '#92400e' },
+    { col: 5, row: 4, color: '#92400e' },
+    { col: 4, row: 5, color: '#92400e' },
+    { col: 5, row: 5, color: '#92400e' },
+    { col: 4, row: 6, color: '#92400e' },
+    { col: 5, row: 6, color: '#92400e' },
+    { col: 4, row: 7, color: '#78350f' },
+    { col: 5, row: 7, color: '#78350f' },
+    { col: 4, row: 8, color: '#78350f' },
+    { col: 5, row: 8, color: '#78350f' },
+    // Crown - left sweeping leaves
+    { col: 0, row: 2, color: '#16a34a' },
+    { col: 1, row: 2, color: '#16a34a' },
+    { col: 1, row: 3, color: '#16a34a' },
+    { col: 2, row: 3, color: '#22c55e' },
+    // Crown - right sweeping leaves
+    { col: 7, row: 2, color: '#16a34a' },
+    { col: 8, row: 2, color: '#16a34a' },
+    { col: 7, row: 3, color: '#16a34a' },
+    { col: 6, row: 3, color: '#22c55e' },
+    // Crown - top leaves
+    { col: 3, row: 1, color: '#16a34a' },
+    { col: 4, row: 1, color: '#22c55e' },
+    { col: 5, row: 1, color: '#22c55e' },
+    { col: 6, row: 1, color: '#16a34a' },
+    { col: 4, row: 0, color: '#4ade80' },
+    { col: 5, row: 0, color: '#4ade80' },
+    // Coconuts
+    { col: 3, row: 3, color: '#92400e' },
+    { col: 6, row: 3, color: '#92400e' },
+  ],
+};
+
+// Formation 9: Beach umbrella - inverted V canopy with colored stripes + pole.
+// Canopy spans ~15 cubes in alternating red/yellow/blue stripes. Pole: 3 cubes.
+const BEACH_UMBRELLA: Formation = {
+  id: 'beach-umbrella',
+  slots: [
+    // Canopy top point
+    { col: 5, row: 0, color: '#ef4444' },
+    // Canopy row 1
+    { col: 4, row: 1, color: '#fbbf24' },
+    { col: 5, row: 1, color: '#ef4444' },
+    { col: 6, row: 1, color: '#3b82f6' },
+    // Canopy row 2
+    { col: 3, row: 2, color: '#fbbf24' },
+    { col: 4, row: 2, color: '#ef4444' },
+    { col: 5, row: 2, color: '#fbbf24' },
+    { col: 6, row: 2, color: '#ef4444' },
+    { col: 7, row: 2, color: '#3b82f6' },
+    // Canopy row 3 (widest)
+    { col: 1, row: 3, color: '#3b82f6' },
+    { col: 2, row: 3, color: '#ef4444' },
+    { col: 3, row: 3, color: '#fbbf24' },
+    { col: 4, row: 3, color: '#3b82f6' },
+    { col: 5, row: 3, color: '#ef4444' },
+    { col: 6, row: 3, color: '#fbbf24' },
+    { col: 7, row: 3, color: '#3b82f6' },
+    { col: 8, row: 3, color: '#ef4444' },
+    { col: 9, row: 3, color: '#fbbf24' },
+    // Pole (brown/tan)
+    { col: 5, row: 4, color: '#92400e' },
+    { col: 5, row: 5, color: '#92400e' },
+    { col: 5, row: 6, color: '#78350f' },
+  ],
+};
+
+// Formation 10: Starburst - central gold cube with rays extending 8 directions.
+// Center cube with 2-3 cube rays at N/NE/E/SE/S/SW/W/NW angles.
+const STARBURST: Formation = {
+  id: 'starburst',
+  slots: [
+    // Center 2x2 core
+    { col: 5, row: 5, color: '#fbbf24' },
+    { col: 6, row: 5, color: '#fbbf24' },
+    { col: 5, row: 6, color: '#fbbf24' },
+    { col: 6, row: 6, color: '#fbbf24' },
+    // North ray
+    { col: 5, row: 3, color: '#fde68a' },
+    { col: 5, row: 4, color: '#fbbf24' },
+    { col: 6, row: 4, color: '#fbbf24' },
+    { col: 6, row: 3, color: '#fde68a' },
+    // South ray
+    { col: 5, row: 7, color: '#fbbf24' },
+    { col: 5, row: 8, color: '#fde68a' },
+    { col: 6, row: 7, color: '#fbbf24' },
+    { col: 6, row: 8, color: '#fde68a' },
+    // West ray
+    { col: 3, row: 5, color: '#fbbf24' },
+    { col: 4, row: 5, color: '#fbbf24' },
+    { col: 3, row: 6, color: '#fde68a' },
+    { col: 4, row: 6, color: '#fbbf24' },
+    // East ray
+    { col: 7, row: 5, color: '#fbbf24' },
+    { col: 8, row: 5, color: '#fde68a' },
+    { col: 7, row: 6, color: '#fbbf24' },
+    { col: 8, row: 6, color: '#fde68a' },
+    // NW diagonal
+    { col: 3, row: 3, color: '#fde68a' },
+    { col: 4, row: 4, color: '#fbbf24' },
+    // NE diagonal
+    { col: 8, row: 3, color: '#fde68a' },
+    { col: 7, row: 4, color: '#fbbf24' },
+    // SW diagonal
+    { col: 3, row: 8, color: '#fde68a' },
+    { col: 4, row: 7, color: '#fbbf24' },
+    // SE diagonal
+    { col: 8, row: 8, color: '#fde68a' },
+    { col: 7, row: 7, color: '#fbbf24' },
+  ],
+};
+
 // Deduplicate slots: if two entries share the same col/row, the later one wins.
 function dedupeSlots(slots: FormationSlot[]): FormationSlot[] {
   const map = new Map<string, FormationSlot>();
@@ -240,10 +378,14 @@ function dedupeSlots(slots: FormationSlot[]): FormationSlot[] {
 }
 
 export const FORMATIONS: Formation[] = [
-  { ...FOUR_COLOR, slots: dedupeSlots(FOUR_COLOR.slots) },
-  { ...SUN,        slots: dedupeSlots(SUN.slots) },
-  { ...TOUCAN,     slots: dedupeSlots(TOUCAN.slots) },
-  { ...COCKTAIL,   slots: dedupeSlots(COCKTAIL.slots) },
-  { ...WATERMELON, slots: dedupeSlots(WATERMELON.slots) },
-  { ...TROPICAL,   slots: dedupeSlots(TROPICAL.slots) },
+  { ...FOUR_COLOR,     slots: dedupeSlots(FOUR_COLOR.slots) },
+  { ...SUN,            slots: dedupeSlots(SUN.slots) },
+  { ...TOUCAN,         slots: dedupeSlots(TOUCAN.slots) },
+  { ...COCKTAIL,       slots: dedupeSlots(COCKTAIL.slots) },
+  { ...WATERMELON,     slots: dedupeSlots(WATERMELON.slots) },
+  { ...TROPICAL,       slots: dedupeSlots(TROPICAL.slots) },
+  { ...WAVES,          slots: dedupeSlots(WAVES.slots) },
+  { ...PALM,           slots: dedupeSlots(PALM.slots) },
+  { ...BEACH_UMBRELLA, slots: dedupeSlots(BEACH_UMBRELLA.slots) },
+  { ...STARBURST,      slots: dedupeSlots(STARBURST.slots) },
 ];

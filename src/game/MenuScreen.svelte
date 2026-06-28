@@ -18,6 +18,9 @@
 
     <!-- Hero section -->
     <div class="brand">
+      <div class="ms-logo-wrap">
+        <img src="/ms-security-pixel.svg" alt="Microsoft Security" class="ms-logo" width="240" height="75" />
+      </div>
       <h1 class="title">CROSSEC</h1>
       <p class="subtitle">The Ultimate Security Challenge</p>
       <p class="tagline">Microsoft Cloud Security | aboutcloud.io</p>
@@ -53,7 +56,6 @@
       <button class="reset-link" on:click={handleReset} aria-live="polite">
         {resetDone ? 'Progress cleared.' : 'Reset my local progress'}
       </button>
-      <p class="legal">MIT code - CC-BY-4.0 content</p>
     </div>
 
   </div>
@@ -293,5 +295,15 @@
   .reset-link:hover { opacity: 1; color: var(--color-text); }
   .reset-link:focus-visible { outline: 2px solid #ffd700; outline-offset: 3px; border-radius: 2px; }
 
-  .legal { font-size: 0.7rem; color: var(--color-muted); margin: 0; font-family: var(--font-body); }
+  .ms-logo-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-md);
+  }
+  .ms-logo {
+    width: 240px;
+    max-width: 90%;
+    height: auto;
+    border-radius: 8px;
+  }
 </style>

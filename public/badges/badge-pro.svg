@@ -1,58 +1,79 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="200" height="240" role="img" aria-label="Expert badge">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 290" width="220" height="290" role="img" aria-label="Expert badge">
   <defs>
-    <linearGradient id="border-pro" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#fcd34d"/>
-      <stop offset="100%" stop-color="#b45309"/>
+    <linearGradient id="outer-pro" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="40%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#78350f"/>
     </linearGradient>
-    <clipPath id="shield-clip-pro">
-      <path d="M100,8 L185,40 L185,120 Q185,185 100,220 Q15,185 15,120 L15,40 Z"/>
-    </clipPath>
-    <filter id="shadow-pro" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#f59e0b" flood-opacity="0.4"/>
+    <linearGradient id="inner-pro" x1="0.2" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a2040"/>
+      <stop offset="100%" stop-color="#0b0d1a"/>
+    </linearGradient>
+    <linearGradient id="ribbon-pro" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#e8e8e8"/>
+      <stop offset="100%" stop-color="#cccccc"/>
+    </linearGradient>
+    <filter id="shadow-pro">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#78350f" flood-opacity="0.6"/>
     </filter>
   </defs>
 
-  <!-- Shield outer border -->
-  <path d="M100,8 L185,40 L185,120 Q185,185 100,220 Q15,185 15,120 L15,40 Z"
-        fill="url(#border-pro)" filter="url(#shadow-pro)"/>
+  <!-- OUTER SHIELD (metallic border) -->
+  <path d="M110,6 L204,42 L204,130 Q204,200 110,238 Q16,200 16,130 L16,42 Z"
+        fill="url(#outer-pro)" filter="url(#shadow-pro)"/>
 
-  <!-- Shield inner dark body -->
-  <path d="M100,16 L178,45 L178,120 Q178,178 100,212 Q22,178 22,120 L22,45 Z"
-        fill="#0d1117"/>
+  <!-- INNER SHIELD (dark body) -->
+  <path d="M110,18 L192,50 L192,130 Q192,192 110,224 Q28,192 28,130 L28,50 Z"
+        fill="url(#inner-pro)"/>
 
-  <!-- Microsoft 4-color logo -->
-  <rect x="80" y="25" width="18" height="18" fill="#f25022" rx="1"/>
-  <rect x="101" y="25" width="18" height="18" fill="#7fba00" rx="1"/>
-  <rect x="80" y="46" width="18" height="18" fill="#00a4ef" rx="1"/>
-  <rect x="101" y="46" width="18" height="18" fill="#ffb900" rx="1"/>
+  <!-- Highlight edges for 3D effect -->
+  <path d="M110,18 L192,50" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
+  <path d="M110,18 L28,50" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
 
-  <!-- Ribbon banner -->
-  <polygon points="15,90 185,90 185,118 15,118" fill="#ffffff"/>
-  <polygon points="15,90 30,104 15,118" fill="#d1d5db"/>
-  <polygon points="185,90 170,104 185,118" fill="#d1d5db"/>
-  <text x="100" y="101" font-family="Arial Black, Arial, sans-serif" font-size="8" font-weight="900" fill="#1a1a2e" text-anchor="middle" letter-spacing="1">SUMMER SECURITY</text>
-  <text x="100" y="112" font-family="Arial Black, Arial, sans-serif" font-size="8" font-weight="900" fill="#1a1a2e" text-anchor="middle" letter-spacing="1">CROSSWORD</text>
+  <!-- MS LOGO: 2x2 colored squares -->
+  <rect x="89" y="30" width="19" height="19" fill="#f25022" rx="2"/>
+  <rect x="112" y="30" width="19" height="19" fill="#7fba00" rx="2"/>
+  <rect x="89" y="53" width="19" height="19" fill="#00a4ef" rx="2"/>
+  <rect x="112" y="53" width="19" height="19" fill="#ffb900" rx="2"/>
 
-  <!-- Trophy icon (Expert) -->
-  <path d="M86,132 L114,132 L114,152 Q114,165 100,168 Q86,165 86,152 Z" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
-  <path d="M86,138 Q76,138 76,148 Q76,156 86,158" fill="none" stroke="#f59e0b" stroke-width="2"/>
-  <path d="M114,138 Q124,138 124,148 Q124,156 114,158" fill="none" stroke="#f59e0b" stroke-width="2"/>
-  <rect x="95" y="168" width="10" height="8" fill="none" stroke="#f59e0b" stroke-width="2"/>
-  <line x1="87" y1="178" x2="113" y2="178" stroke="#f59e0b" stroke-width="2.5"/>
+  <!-- RIBBON BANNER -->
+  <polygon points="16,96 204,96 204,126 16,126" fill="url(#ribbon-pro)"/>
+  <polygon points="16,96 34,111 16,126" fill="#bbbbbb"/>
+  <polygon points="204,96 186,111 204,126" fill="#bbbbbb"/>
+  <line x1="16" y1="96" x2="204" y2="96" stroke="rgba(255,255,255,0.8)" stroke-width="1"/>
+  <text x="110" y="109" font-family="Arial Black, Arial, sans-serif" font-size="9.5" font-weight="900"
+        fill="#0a0a1a" text-anchor="middle" letter-spacing="1.5">SUMMER SECURITY</text>
+  <text x="110" y="121" font-family="Arial Black, Arial, sans-serif" font-size="9.5" font-weight="900"
+        fill="#0a0a1a" text-anchor="middle" letter-spacing="1.5">CROSSWORD</text>
 
-  <!-- Star rating pill: 4 stars -->
-  <rect x="65" y="190" width="70" height="20" rx="10" fill="#0d1117" stroke="#f59e0b" stroke-width="1.5"/>
-  <!-- Star 1 at cx=82, cy=200, r=7 -->
-  <path d="M82,193 L84.45,199.16 L91.65,199.16 L86.06,203.24 L88.06,209.5 L82,205.5 L75.94,209.5 L77.94,203.24 L72.35,199.16 L79.55,199.16 Z" fill="white"/>
-  <!-- Star 2 at cx=94, cy=200, r=7 -->
-  <path d="M94,193 L96.45,199.16 L103.65,199.16 L98.06,203.24 L100.06,209.5 L94,205.5 L87.94,209.5 L89.94,203.24 L84.35,199.16 L91.55,199.16 Z" fill="white"/>
-  <!-- Star 3 at cx=106, cy=200, r=7 -->
-  <path d="M106,193 L108.45,199.16 L115.65,199.16 L110.06,203.24 L112.06,209.5 L106,205.5 L99.94,209.5 L101.94,203.24 L96.35,199.16 L103.55,199.16 Z" fill="white"/>
-  <!-- Star 4 at cx=118, cy=200, r=7 -->
-  <path d="M118,193 L120.45,199.16 L127.65,199.16 L122.06,203.24 L124.06,209.5 L118,205.5 L111.94,209.5 L113.94,203.24 L108.35,199.16 L115.55,199.16 Z" fill="white"/>
+  <!-- ICON: Trophy (Expert) -->
+  <path d="M93,140 L127,140 L127,162 Q127,178 110,184 Q93,178 93,162 Z"
+        fill="none" stroke="#f59e0b" stroke-width="3"/>
+  <path d="M93,147 Q80,147 80,159 Q80,169 93,172" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+  <path d="M127,147 Q140,147 140,159 Q140,169 127,172" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+  <rect x="105" y="184" width="10" height="10" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+  <line x1="92" y1="196" x2="128" y2="196" stroke="#f59e0b" stroke-width="3"/>
+  <!-- Laurel hints -->
+  <path d="M88,172 Q82,168 84,161 Q88,165 88,172" fill="#f59e0b" opacity="0.7"/>
+  <path d="M132,172 Q138,168 136,161 Q132,165 132,172" fill="#f59e0b" opacity="0.7"/>
 
-  <!-- Tier label with horizontal lines -->
-  <line x1="15" y1="230" x2="65" y2="230" stroke="#f59e0b" stroke-width="1.5"/>
-  <text x="100" y="234" font-family="Arial Black, Arial, sans-serif" font-size="11" font-weight="900" fill="#f59e0b" text-anchor="middle" letter-spacing="2">EXPERT</text>
-  <line x1="135" y1="230" x2="185" y2="230" stroke="#f59e0b" stroke-width="1.5"/>
+  <!-- STAR PILL -->
+  <rect x="72" y="203" width="76" height="22" rx="11" fill="#0b0d1a" stroke="#f59e0b" stroke-width="2"/>
+  <!-- 4 stars at cx=82, cx=100, cx=120, cx=138, cy=214 -->
+  <polygon points="82,207 84.0,212.2 89.6,212.8 85.3,216.1 86.7,221.7 82,218.0 77.3,221.7 78.7,216.1 74.4,212.8 80.0,212.2" fill="white"/>
+  <polygon points="100,207 102.0,212.2 107.6,212.8 103.3,216.1 104.7,221.7 100,218.0 95.3,221.7 96.7,216.1 92.4,212.8 98.0,212.2" fill="white"/>
+  <polygon points="120,207 122.0,212.2 127.6,212.8 123.3,216.1 124.7,221.7 120,218.0 115.3,221.7 116.7,216.1 112.4,212.8 118.0,212.2" fill="white"/>
+  <polygon points="138,207 140.0,212.2 145.6,212.8 141.3,216.1 142.7,221.7 138,218.0 133.3,221.7 134.7,216.1 130.4,212.8 136.0,212.2" fill="white"/>
+
+  <!-- TIER LABEL SECTION -->
+  <line x1="16" y1="248" x2="68" y2="248" stroke="#f59e0b" stroke-width="2"/>
+  <text x="110" y="252" font-family="Arial Black, Arial, sans-serif" font-size="13" font-weight="900"
+        fill="#f59e0b" text-anchor="middle" letter-spacing="3">EXPERT</text>
+  <line x1="152" y1="248" x2="204" y2="248" stroke="#f59e0b" stroke-width="2"/>
+
+  <text x="110" y="268" font-family="Arial, sans-serif" font-size="9" font-weight="700"
+        fill="#ffffff" text-anchor="middle">Legendary!</text>
+
+  <text x="110" y="282" font-family="Arial, sans-serif" font-size="7.5" fill="#aaaaaa" text-anchor="middle">True security champion</text>
 </svg>

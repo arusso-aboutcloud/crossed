@@ -44,6 +44,8 @@ interface Cube {
   restColorIdx: number;
   // Formation color (hex string) assigned when a formation starts
   formColor: string;
+  // Random phase offset for individual idle bob animation (0..2*PI)
+  phaseOffset: number;
 }
 
 function rnd(min: number, max: number): number {
@@ -124,6 +126,7 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
       formTarget: null,
       restColorIdx,
       formColor: RESTING_COLORS[restColorIdx],
+      phaseOffset: rnd(0, Math.PI * 2),
     };
     cubes.push(cube);
     tmpColor.set(RESTING_COLORS[restColorIdx]);
@@ -146,14 +149,44 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   let lastFormationIdx = -1;
   let transitionProgress = 0; // 0..1
 
+  // Shuffled formation queue for varied sequencing
+  let formationQueue: number[] = [];
+  let formationQueuePos = 0;
+
+  function buildShuffledQueue(): number[] {
+    const indices = FORMATIONS.map((_, i) => i);
+    // Fisher-Yates shuffle using Math.random
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = indices[i]; indices[i] = indices[j]; indices[j] = tmp;
+    }
+    return indices;
+  }
+  formationQueue = buildShuffledQueue();
+
   const reducedMotion = typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function pickNextFormation(): number {
-    let idx: number;
-    do {
-      idx = rndInt(0, FORMATIONS.length - 1);
-    } while (FORMATIONS.length > 1 && idx === lastFormationIdx);
+    // Walk through the shuffled queue, rebuilding when exhausted
+    // Skip the immediately-previous formation to avoid repeats at queue boundaries
+    let idx = formationQueue[formationQueuePos];
+    formationQueuePos++;
+    if (formationQueuePos >= formationQueue.length) {
+      formationQueue = buildShuffledQueue();
+      formationQueuePos = 0;
+    }
+    // If same as last (can happen at queue boundary), swap with next slot
+    if (FORMATIONS.length > 1 && idx === lastFormationIdx) {
+      const next = formationQueue[formationQueuePos];
+      formationQueue[formationQueuePos] = idx;
+      idx = next;
+      formationQueuePos++;
+      if (formationQueuePos >= formationQueue.length) {
+        formationQueue = buildShuffledQueue();
+        formationQueuePos = 0;
+      }
+    }
     return idx;
   }
 
@@ -292,8 +325,11 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
       const c = cubes[i];
 
       if (formationState === FormationState.DRIFTING) {
-        // Pure drift
+        // Pure drift + subtle individual bob
         c.pos.addScaledVector(c.vel, dt * 60);
+        // Subtle individual floating bob (amplitude 0.3, each cube at its own phase)
+        const bobY = Math.sin(now * 0.0008 + c.phaseOffset) * 0.3;
+        c.pos.y += bobY * dt * 60 * 0.016; // scale to be frame-rate independent subtle nudge
         // Wrap
         if (c.pos.x > 30)  c.pos.x = -30;
         if (c.pos.x < -30) c.pos.x = 30;

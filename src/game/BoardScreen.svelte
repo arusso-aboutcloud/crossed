@@ -17,7 +17,17 @@
 <div class="board-screen">
   <header class="top-bar">
     <span class="diff-label">{$difficulty}</span>
-    <span class="timer">{formatTime($elapsedSeconds)}</span>
+    <span class="timer">
+      <span class="ms-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 16 16">
+          <rect x="0" y="0" width="7" height="7" fill="#f25022"/>
+          <rect x="9" y="0" width="7" height="7" fill="#7fba00"/>
+          <rect x="0" y="9" width="7" height="7" fill="#00a4ef"/>
+          <rect x="9" y="9" width="7" height="7" fill="#ffb900"/>
+        </svg>
+      </span>
+      {formatTime($elapsedSeconds)}
+    </span>
     <div class="top-actions">
       <button class="bar-btn" on:click={pauseGame}>Pause</button>
       <button class="bar-btn" on:click={() => (confirmNew = true)}>New</button>
@@ -78,6 +88,15 @@
     margin: 0 auto;
     letter-spacing: 0.1em;
     text-shadow: 1px 1px 0 #8b0000;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .ms-icon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
   }
 
   .top-actions { display: flex; gap: var(--space-sm); }
