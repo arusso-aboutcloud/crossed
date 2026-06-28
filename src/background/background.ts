@@ -161,6 +161,10 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   let lastFormationIdx = -1;
   let transitionProgress = 0; // 0..1
 
+  // Pre-formation drift positions: saved when ENTERING starts so LEAVING can
+  // lerp cubes back to where they were before the formation gathered them.
+  const preDriftPos: THREE.Vector3[] = Array.from({ length: COUNT }, () => new THREE.Vector3());
+
   // Shuffled formation queue for varied sequencing
   let formationQueue: number[] = [];
   let formationQueuePos = 0;
@@ -221,9 +225,12 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     const centerCol = (minCol + maxCol) / 2;
     const centerRow = (minRow + maxRow) / 2;
 
-    // Save current drift position as the lerp source
+    // Save current drift position as both the lerp source (ENTERING) and the
+    // return target (LEAVING). preDriftPos persists unchanged through the whole
+    // formation cycle so LEAVING can bring every cube back to its pre-gather spot.
     for (let i = 0; i < COUNT; i++) {
       cubes[i].driftPos.copy(cubes[i].pos);
+      preDriftPos[i].copy(cubes[i].pos);
       cubes[i].formTarget = null;
       cubes[i].formColor = RESTING_COLORS[cubes[i].restColorIdx];
     }
@@ -302,7 +309,8 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
           formationTimer = 0;
           formationState = FormationState.LEAVING;
           transitionProgress = 1;
-          // Save current (formation) position as departure point for lerp back
+          // Save the current (formation) positions as the LEAVING start point.
+          // preDriftPos already holds the pre-gather positions as the LEAVING end target.
           for (let i = 0; i < COUNT; i++) {
             cubes[i].driftPos.copy(cubes[i].pos);
           }
@@ -317,7 +325,9 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
           formationState = FormationState.DRIFTING;
           nextFormationTime = rnd(INTERVAL_MIN, INTERVAL_MAX);
           formationTimer = 0;
-          // Clear formation targets
+          // Clear formation targets; positions are already lerped to preDriftPos
+          // for formation cubes. Non-formation cubes kept drifting normally and
+          // their pos is correct as-is.
           for (let i = 0; i < COUNT; i++) {
             cubes[i].formTarget = null;
           }
@@ -357,15 +367,10 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
           c.pos.x += Math.sin(now * 0.0005 + i * 0.8) * 0.05;
           c.pos.y += Math.cos(now * 0.0004 + i * 0.7) * 0.05;
         } else {
-          // LEAVING: lerp from saved departure position back toward drift
-          // Drift continues accumulating during leave
-          c.pos.addScaledVector(c.vel, dt * 60 * (1 - blend));
-          const target = new THREE.Vector3(
-            c.driftPos.x + c.vel.x * dt * 60,
-            c.driftPos.y + c.vel.y * dt * 60,
-            c.driftPos.z
-          );
-          c.pos.lerpVectors(c.driftPos, target, 1 - blend);
+          // LEAVING: lerp from saved formation position (driftPos) back to the
+          // pre-gather drift position (preDriftPos). blend goes 1->0 so
+          // (1-blend) goes 0->1, bringing cubes fully back to preDriftPos.
+          c.pos.lerpVectors(c.driftPos, preDriftPos[i], 1 - blend);
           // Wrap
           if (c.pos.x > 30)  c.pos.x = -30;
           if (c.pos.x < -30) c.pos.x = 30;
