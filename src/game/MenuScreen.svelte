@@ -67,8 +67,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    padding: var(--space-lg);
+    min-height: 100svh;
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow: hidden;
     text-align: center;
   }
 
@@ -79,13 +81,47 @@
     border-radius: 12px;
     box-shadow: 6px 6px 0 #2c2c2c, 0 0 0 2px #ffd700;
     padding: 2.5rem;
-    max-width: 480px;
+    max-width: 460px;
+    max-height: calc(100svh - 2rem);
+    overflow-y: auto;
     width: 100%;
     margin: 0 auto;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--space-xl);
+    /* Thin styled scrollbar for overflow content */
+    scrollbar-width: thin;
+    scrollbar-color: #2c2c2c transparent;
+  }
+
+  .card::-webkit-scrollbar {
+    width: 4px;
+  }
+  .card::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .card::-webkit-scrollbar-thumb {
+    background: #2c2c2c;
+    border-radius: 2px;
+  }
+
+  @media (max-height: 700px) {
+    .card {
+      padding: 1.2rem;
+      gap: var(--space-md);
+    }
+    .badge-preview img {
+      width: 56px;
+      height: 56px;
+    }
+    .title {
+      font-size: clamp(1rem, 5vw, 1.8rem);
+    }
+    .ms-logo {
+      width: 180px;
+    }
   }
 
   /* ---- Brand / Hero ---- */
