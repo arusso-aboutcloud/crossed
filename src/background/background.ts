@@ -8,8 +8,20 @@ export interface BgController {
   resize(w: number, h: number): void;
 }
 
-// Resting-state palette: Mario-inspired colorful cubes (red, sky blue, green, gold, white, dark).
-const RESTING_COLORS = ['#e52222', '#5c94fc', '#43b047', '#ffd700', '#ffffff', '#2c2c2c'];
+// Resting-state palette: Mario-inspired + summer colors (bright, warm, tropical).
+// Dark cubes reduced to 1 entry out of 10 so the background reads light and summery.
+const RESTING_COLORS = [
+  '#5c94fc', // Mario sky blue
+  '#43b047', // Mario green
+  '#e52222', // Mario red
+  '#ffd700', // Gold
+  '#ffffff', // White
+  '#ec4899', // Flamingo pink
+  '#0891b2', // Ocean teal
+  '#fbbf24', // Pineapple yellow
+  '#f97316', // Orange
+  '#7dd3fc', // Light blue
+];
 
 // Formation scheduler timing (seconds).
 const FIRST_TRIGGER_MIN = 8;
