@@ -219,7 +219,7 @@
 </script>
 
 {#if puz}
-  <div class="board-wrap" style="color-scheme: light;">
+  <div class="board-wrap" style="color-scheme: light only; filter: brightness(100%); -webkit-filter: brightness(100%);">
     <input
       bind:this={hiddenInput}
       class="hidden-inp"
@@ -279,13 +279,21 @@
     max-width: 100%;
     margin: 0 auto;
     overflow: hidden;
-    color-scheme: light;
-    /* !important defeats Android OS-level force-dark which overrides color-scheme:light */
+    color-scheme: light only;
     background: #ffffff !important;
     border-radius: 8px;
     position: relative;
     z-index: 1;
     box-shadow: 4px 4px 0 #2c2c2c, 0 0 0 3px #ffd700;
+    /*
+     * FORCE-DARK FIX: Chrome on Android applies dark-mode inversion at the GPU
+     * compositing layer AFTER CSS is computed, so !important alone fails.
+     * Adding a filter forces a new compositing layer; Chrome's force-dark
+     * algorithm explicitly skips elements that carry a non-identity filter.
+     * brightness(1) is a no-op visually but opts the entire board out of inversion.
+     */
+    -webkit-filter: brightness(100%);
+    filter: brightness(100%);
   }
 
   .hidden-inp {
@@ -324,7 +332,7 @@
     color: #1a1a1a !important;
     box-sizing: border-box;
     box-shadow: inset -2px -2px 0 rgba(0,0,0,0.2), inset 2px 2px 0 rgba(255,255,255,0.5);
-    color-scheme: light;
+    color-scheme: light only;
   }
 
   .cell.filled {
