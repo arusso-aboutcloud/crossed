@@ -13,7 +13,7 @@ export const entries = writable<Record<string, string>>({});
 export const focusKey = writable<string>('');
 export const activeDir = writable<ActiveDir>('across');
 export const elapsedSeconds = writable<number>(0);
-export const soundEnabled = writable<boolean>(false);
+export const soundEnabled = writable<boolean>(true);
 export const bgEnabled = writable<boolean>(true);
 export const winResult = writable<WinResult | null>(null);
 
