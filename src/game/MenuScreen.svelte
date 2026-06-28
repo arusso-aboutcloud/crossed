@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { soundEnabled, goToDifficulty } from './store';
-  import { clearProgress } from './badgeMemory';
+  import { clearProgress, hasEarned } from './badgeMemory';
 
   export let onRules: () => void = () => {};
 
@@ -11,6 +12,15 @@
     resetDone = true;
     setTimeout(() => (resetDone = false), 2500);
   }
+
+  const TIERS: Array<'easy' | 'medium' | 'hard' | 'pro'> = ['easy', 'medium', 'hard', 'pro'];
+  let earnedSet = new Set<string>();
+
+  onMount(() => {
+    earnedSet = new Set(TIERS.filter(t => hasEarned(t)));
+  });
+
+  $: earnedCount = earnedSet.size;
 </script>
 
 <div class="menu">
@@ -21,28 +31,36 @@
       <div class="ms-logo-wrap">
         <img src="/ms-security-pixel.svg" alt="Microsoft Security" class="ms-logo" width="240" height="75" />
       </div>
-      <h1 class="title">CROSSEC</h1>
+      <div class="title-wrap">
+        <h1 class="title">CROSSEC</h1>
+      </div>
       <p class="subtitle">The Ultimate Security Challenge</p>
       <p class="tagline">Microsoft Cloud Security | aboutcloud.io</p>
     </div>
 
-    <!-- Badge counter: social proof -->
-    <div class="badge-counter" aria-label="Community badge count">
-      <span class="badge-count-num">73+</span>
-      <span class="badge-count-label">players have already earned a badge</span>
-    </div>
-
-    <!-- Badge showcase -->
-    <div class="badge-showcase">
-      <div class="badge-row">
-        {#each ['easy','medium','hard','pro'] as tier}
-          <div class="badge-preview">
-            <img src="/badges/badge-{tier}.svg" alt="{tier} badge" width="80" height="80" />
-            <span class="badge-label">{tier}</span>
+    <!-- Achievement board - personal progress HUD -->
+    <div class="achievement-board" role="region" aria-label="Your badge progress">
+      <div class="ab-header">
+        <span class="ab-title">BADGE BOARD</span>
+        <span class="ab-score">{earnedCount}/4</span>
+      </div>
+      <div class="ab-badges">
+        {#each TIERS as tier}
+          <div class="ab-badge" class:earned={earnedSet.has(tier)} title="{tier}">
+            <img
+              src="/badges/badge-{tier}.svg"
+              alt="{tier} badge"
+              class="ab-img"
+              width="64"
+              height="64"
+            />
+            <span class="ab-tier">{earnedSet.has(tier) ? tier : '???'}</span>
           </div>
         {/each}
       </div>
-      <p class="badge-caption">Earn a badge for completing each difficulty</p>
+      <div class="ab-footer">
+        <span class="ab-global">0 badge holders worldwide - be the first!</span>
+      </div>
     </div>
 
     <!-- Primary CTA -->
@@ -82,11 +100,10 @@
 <style>
   .menu {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100svh;
-    padding: 1rem;
+    padding: 0.5rem;
     box-sizing: border-box;
     overflow: hidden;
     text-align: center;
@@ -98,48 +115,22 @@
     border: 4px solid #2c2c2c;
     border-radius: 12px;
     box-shadow: 6px 6px 0 #2c2c2c, 0 0 0 2px #ffd700;
-    padding: 2.5rem;
-    max-width: 460px;
-    max-height: calc(100svh - 2rem);
-    overflow-y: auto;
+    padding: 1.2rem 1.5rem;
+    max-width: 440px;
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--space-xl);
-    /* Thin styled scrollbar for overflow content */
-    scrollbar-width: thin;
-    scrollbar-color: #2c2c2c transparent;
+    gap: 0.7rem;
   }
 
-  .card::-webkit-scrollbar {
-    width: 4px;
-  }
-  .card::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .card::-webkit-scrollbar-thumb {
-    background: #2c2c2c;
-    border-radius: 2px;
-  }
-
-  @media (max-height: 700px) {
-    .card {
-      padding: 1.2rem;
-      gap: var(--space-md);
-    }
-    .badge-preview img {
-      width: 56px;
-      height: 56px;
-    }
-    .title {
-      font-size: clamp(1rem, 5vw, 1.8rem);
-    }
-    .ms-logo {
-      width: 180px;
-    }
+  @media (max-height: 680px) {
+    .card { padding: 0.7rem 1.2rem; gap: 0.4rem; }
+    .ms-logo { width: 140px; }
+    .ab-img { width: 48px; height: 48px; }
+    .achievement-board { padding: 0.5rem; }
   }
 
   /* ---- Brand / Hero ---- */
@@ -147,22 +138,30 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--space-sm);
+    gap: 0.3rem;
   }
 
-  /* Mario-style pixel font title */
+  /* Title wrap - decorative blue glow container */
+  .title-wrap {
+    background: rgba(37, 99, 235, 0.08);
+    border: 2px solid #2563eb;
+    border-radius: 8px;
+    padding: 0.3rem 1.2rem;
+    box-shadow: 0 0 12px rgba(37,99,235,0.25);
+  }
+
+  /* Mario-style pixel font title - vivid blue */
   .title {
     font-family: var(--font-display);
-    font-size: clamp(1.2rem, 6vw, 2.2rem);
-    color: #e52222;
+    font-size: clamp(1rem, 5vw, 1.8rem);
+    color: #2563eb;
     text-shadow:
-      3px 3px 0 #8b0000,
-      -1px -1px 0 #2c2c2c,
-      1px -1px 0 #2c2c2c,
-      -1px 1px 0 #2c2c2c;
+      3px 3px 0 #1e3a8a,
+      -1px -1px 0 #1d4ed8,
+      1px -1px 0 #1d4ed8,
+      -1px 1px 0 #1d4ed8;
     margin: 0;
     letter-spacing: 0.05em;
-    -webkit-text-fill-color: unset;
     background: none;
   }
 
@@ -189,68 +188,15 @@
     font-family: var(--font-body);
   }
 
-  /* ---- Badge showcase ---- */
-  .badge-showcase {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-sm);
-    width: 100%;
-  }
-
-  .badge-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: var(--space-md);
-    flex-wrap: wrap;
-  }
-
-  .badge-preview {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.3rem;
-  }
-
-  .badge-preview img {
-    width: 80px;
-    height: 80px;
-    display: block;
-  }
-
-  @media (max-width: 400px) {
-    .badge-preview img {
-      width: 56px;
-      height: 56px;
-    }
-  }
-
-  .badge-label {
-    font-size: 0.55rem;
-    color: var(--color-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.10em;
-    font-family: var(--font-display);
-  }
-
-  .badge-caption {
-    font-size: 0.75rem;
-    color: var(--color-muted);
-    font-style: italic;
-    margin: 0;
-    font-family: var(--font-body);
-  }
-
   /* ---- Play button - Mario style ---- */
   .play-btn {
     font-family: var(--font-display);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     background: #e52222;
     color: #ffffff;
     border: none;
     border-radius: 6px;
-    padding: 1rem 2rem;
+    padding: 0.7rem 2rem;
     box-shadow: 4px 4px 0 #8b0000;
     letter-spacing: 0.05em;
     transition: transform 0.1s, box-shadow 0.1s;
@@ -284,9 +230,9 @@
   }
 
   .btn {
-    padding: var(--space-sm) var(--space-lg);
+    padding: 0.5rem 1rem;
     border-radius: 8px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     cursor: pointer;
     border: none;
@@ -349,33 +295,92 @@
   .reset-link:hover { opacity: 1; color: var(--color-text); }
   .reset-link:focus-visible { outline: 2px solid #ffd700; outline-offset: 3px; border-radius: 2px; }
 
-  /* ---- Badge counter ---- */
-  .badge-counter {
+  /* ---- Achievement board ---- */
+  .achievement-board {
+    width: 100%;
+    background: #1a1a2e;
+    border: 2px solid #ffd700;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    box-sizing: border-box;
+    box-shadow: inset 0 0 16px rgba(255,215,0,0.08), 3px 3px 0 #0d0d1a;
+  }
+
+  .ab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .ab-title {
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    color: #ffd700;
+    letter-spacing: 0.12em;
+    text-shadow: 0 0 8px rgba(255,215,0,0.6);
+  }
+
+  .ab-score {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    background: #ffd700;
+    color: #1a1a2e;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+  .ab-badges {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    flex-wrap: nowrap;
+  }
+
+  .ab-badge {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.2rem;
-    background: linear-gradient(135deg, #fef9c3, #fef3c7);
-    border: 2px solid #fbbf24;
-    border-radius: 8px;
-    padding: 0.6rem 1.2rem;
-    width: 100%;
-    box-sizing: border-box;
   }
 
-  .badge-count-num {
+  .ab-img {
+    width: 56px;
+    height: 56px;
+    display: block;
+    border-radius: 4px;
+    transition: filter 0.3s;
+    filter: grayscale(1) brightness(0.4);
+  }
+
+  .ab-badge.earned .ab-img {
+    filter: none;
+    box-shadow: 0 0 10px rgba(255,215,0,0.5);
+  }
+
+  .ab-tier {
     font-family: var(--font-display);
-    font-size: clamp(1rem, 4vw, 1.4rem);
-    color: #b45309;
-    text-shadow: 1px 1px 0 #78350f;
-    line-height: 1;
+    font-size: 0.42rem;
+    color: #4a4a6a;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
-  .badge-count-label {
-    font-size: 0.7rem;
-    color: #92400e;
+  .ab-badge.earned .ab-tier {
+    color: #ffd700;
+  }
+
+  .ab-footer {
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+
+  .ab-global {
+    font-size: 0.65rem;
+    color: #4a4a6a;
     font-family: var(--font-body);
-    letter-spacing: 0.04em;
+    font-style: italic;
   }
 
   /* ---- Footer links ---- */
@@ -417,11 +422,10 @@
   .ms-logo-wrap {
     display: flex;
     justify-content: center;
-    margin-bottom: var(--space-md);
   }
   .ms-logo {
-    width: 240px;
-    max-width: 90%;
+    width: 180px;
+    max-width: 80%;
     height: auto;
     border-radius: 8px;
   }
