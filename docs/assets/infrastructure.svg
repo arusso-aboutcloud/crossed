@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" font-family="'Segoe UI',Arial,sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#3b82f6"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#f97316"/>
+    </marker>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#00000022"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="580" fill="#f8fafc" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="34" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">CROSSEC - Cloudflare Infrastructure</text>
+  <text x="450" y="52" text-anchor="middle" font-size="11" fill="#64748b">Static SPA - no backend, no database, no runtime server</text>
+
+  <!-- ===== ROW 1: Source + CI ===== -->
+
+  <!-- GitHub -->
+  <rect x="40" y="80" width="150" height="80" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="40" y="80" width="150" height="28" rx="8" fill="#1f2937"/>
+  <rect x="40" y="96" width="150" height="12" fill="#1f2937"/>
+  <text x="115" y="99" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">GitHub</text>
+  <text x="115" y="120" text-anchor="middle" font-size="10" fill="#374151">arusso-aboutcloud</text>
+  <text x="115" y="134" text-anchor="middle" font-size="10" fill="#374151">/crossed</text>
+  <text x="115" y="150" text-anchor="middle" font-size="9" fill="#6b7280">main - branch protected</text>
+
+  <!-- Arrow: GitHub -> GitHub Actions -->
+  <line x1="190" y1="120" x2="248" y2="120" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4 2"/>
+  <text x="219" y="113" text-anchor="middle" font-size="9" fill="#64748b">push</text>
+
+  <!-- GitHub Actions -->
+  <rect x="250" y="80" width="160" height="80" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="250" y="80" width="160" height="28" rx="8" fill="#2563eb"/>
+  <rect x="250" y="96" width="160" height="12" fill="#2563eb"/>
+  <text x="330" y="99" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">GitHub Actions</text>
+  <text x="330" y="120" text-anchor="middle" font-size="10" fill="#374151">.github/workflows</text>
+  <text x="330" y="134" text-anchor="middle" font-size="10" fill="#374151">/deploy.yml</text>
+  <text x="330" y="150" text-anchor="middle" font-size="9" fill="#6b7280">npm ci + vite build + wrangler</text>
+
+  <!-- Arrow: GH Actions -> CF Pages -->
+  <line x1="410" y1="120" x2="468" y2="120" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <text x="439" y="113" text-anchor="middle" font-size="9" fill="#f97316">deploy</text>
+
+  <!-- Cloudflare Pages -->
+  <rect x="470" y="70" width="180" height="100" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="470" y="70" width="180" height="28" rx="8" fill="#f97316"/>
+  <rect x="470" y="86" width="180" height="12" fill="#f97316"/>
+  <text x="560" y="89" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">Cloudflare Pages</text>
+  <text x="560" y="113" text-anchor="middle" font-size="10" font-weight="600" fill="#c2410c">Global CDN - 100+ PoPs</text>
+  <text x="560" y="128" text-anchor="middle" font-size="10" fill="#7c3aed">crossec.aboutcloud.io</text>
+  <text x="560" y="143" text-anchor="middle" font-size="9" fill="#6b7280">Free tier - static assets only</text>
+  <text x="560" y="158" text-anchor="middle" font-size="9" fill="#6b7280">dist/ served from edge</text>
+
+  <!-- CF Worker (optional, dashed) -->
+  <rect x="700" y="80" width="160" height="80" rx="8" fill="#fafafa" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="6 3" filter="url(#shadow)"/>
+  <text x="780" y="108" text-anchor="middle" font-size="11" font-weight="700" fill="#9ca3af">CF Worker</text>
+  <text x="780" y="124" text-anchor="middle" font-size="10" fill="#9ca3af">OG image generator</text>
+  <text x="780" y="138" text-anchor="middle" font-size="9" fill="#d1d5db">(stub - follow-up task)</text>
+  <text x="780" y="152" text-anchor="middle" font-size="9" fill="#d1d5db">returns 501 currently</text>
+
+  <!-- Arrow: CF Pages -> CF Worker (dashed, optional) -->
+  <line x1="650" y1="105" x2="698" y2="105" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+  <text x="674" y="98" text-anchor="middle" font-size="8" fill="#9ca3af">OG req</text>
+
+  <!-- ===== ARROW DOWN: CF Pages -> Browser ===== -->
+  <line x1="560" y1="170" x2="560" y2="218" stroke="#f97316" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <text x="580" y="200" font-size="9" fill="#f97316">HTTPS</text>
+
+  <!-- ===== Browser box ===== -->
+  <rect x="100" y="220" width="660" height="280" rx="10" fill="#f0f9ff" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="100" y="220" width="660" height="32" rx="10" fill="#3b82f6"/>
+  <rect x="100" y="238" width="660" height="14" fill="#3b82f6"/>
+  <text x="430" y="242" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Browser (Visitor's Device) - All logic runs here</text>
+
+  <!-- Svelte SPA -->
+  <rect x="120" y="266" width="145" height="110" rx="7" fill="#ffffff" stroke="#8b5cf6" stroke-width="1.5"/>
+  <rect x="120" y="266" width="145" height="24" rx="7" fill="#8b5cf6"/>
+  <rect x="120" y="278" width="145" height="12" fill="#8b5cf6"/>
+  <text x="192" y="283" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">Svelte 5 SPA</text>
+  <text x="192" y="303" text-anchor="middle" font-size="9" fill="#374151">GameShell (phase router)</text>
+  <text x="192" y="317" text-anchor="middle" font-size="9" fill="#374151">MenuScreen</text>
+  <text x="192" y="331" text-anchor="middle" font-size="9" fill="#374151">DifficultyScreen</text>
+  <text x="192" y="345" text-anchor="middle" font-size="9" fill="#374151">BoardScreen</text>
+  <text x="192" y="359" text-anchor="middle" font-size="9" fill="#374151">WinScreen</text>
+  <text x="192" y="370" text-anchor="middle" font-size="8" fill="#6b7280">src/game/store.ts (writable stores)</text>
+
+  <!-- Crossword Generator -->
+  <rect x="285" y="266" width="145" height="110" rx="7" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="285" y="266" width="145" height="24" rx="7" fill="#10b981"/>
+  <rect x="285" y="278" width="145" height="12" fill="#10b981"/>
+  <text x="357" y="283" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">Crossword Generator</text>
+  <text x="357" y="303" text-anchor="middle" font-size="9" fill="#374151">Mulberry32 PRNG (seeded)</text>
+  <text x="357" y="317" text-anchor="middle" font-size="9" fill="#374151">Greedy word placer</text>
+  <text x="357" y="331" text-anchor="middle" font-size="9" fill="#374151">4 difficulty levels</text>
+  <text x="357" y="345" text-anchor="middle" font-size="9" fill="#374151">Bounding-box trim</text>
+  <text x="357" y="359" text-anchor="middle" font-size="9" fill="#374151">Clue numbering</text>
+  <text x="357" y="373" text-anchor="middle" font-size="8" fill="#6b7280">src/lib/generator.ts</text>
+
+  <!-- Clue bank JSON -->
+  <rect x="450" y="266" width="145" height="110" rx="7" fill="#ffffff" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="450" y="266" width="145" height="24" rx="7" fill="#f59e0b"/>
+  <rect x="450" y="278" width="145" height="12" fill="#f59e0b"/>
+  <text x="522" y="283" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">Clue Bank (JSON)</text>
+  <text x="522" y="303" text-anchor="middle" font-size="9" fill="#374151">60+ entries shipped</text>
+  <text x="522" y="317" text-anchor="middle" font-size="9" fill="#374151">Microsoft Defender</text>
+  <text x="522" y="331" text-anchor="middle" font-size="9" fill="#374151">Entra / Intune / Sentinel</text>
+  <text x="522" y="345" text-anchor="middle" font-size="9" fill="#374151">Zero Trust / Cloud</text>
+  <text x="522" y="359" text-anchor="middle" font-size="9" fill="#374151">4 clues per entry</text>
+  <text x="522" y="373" text-anchor="middle" font-size="8" fill="#6b7280">src/data/bank.json</text>
+
+  <!-- WebGL + Storage + Badge -->
+  <rect x="615" y="266" width="130" height="110" rx="7" fill="#ffffff" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="615" y="266" width="130" height="24" rx="7" fill="#ec4899"/>
+  <rect x="615" y="278" width="130" height="12" fill="#ec4899"/>
+  <text x="680" y="283" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">Client APIs</text>
+  <text x="680" y="303" text-anchor="middle" font-size="9" fill="#374151">Three.js WebGL bg</text>
+  <text x="680" y="317" text-anchor="middle" font-size="9" fill="#374151">Canvas (badge PNG)</text>
+  <text x="680" y="331" text-anchor="middle" font-size="9" fill="#374151">Web Share API</text>
+  <text x="680" y="345" text-anchor="middle" font-size="9" fill="#374151">localStorage</text>
+  <text x="680" y="359" text-anchor="middle" font-size="9" fill="#374151">(badge progress)</text>
+  <text x="680" y="373" text-anchor="middle" font-size="8" fill="#6b7280">src/background/ src/badge/</text>
+
+  <!-- Row 2 inside browser: connection arrows -->
+  <line x1="265" y1="321" x2="283" y2="321" stroke="#64748b" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="430" y1="321" x2="448" y2="321" stroke="#64748b" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="595" y1="321" x2="613" y2="321" stroke="#64748b" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- Umami analytics row -->
+  <rect x="175" y="400" width="500" height="52" rx="7" fill="#ffffff" stroke="#64748b" stroke-width="1.2"/>
+  <text x="425" y="421" text-anchor="middle" font-size="10" font-weight="600" fill="#374151">Umami Analytics (self-hosted at analytics.aboutcloud.io)</text>
+  <text x="425" y="437" text-anchor="middle" font-size="9" fill="#6b7280">No cookies - No PII - fires badge_earned event on first completion only</text>
+  <text x="425" y="449" text-anchor="middle" font-size="8" fill="#9ca3af">analytics.aboutcloud.io/script.js | GDPR-compliant</text>
+
+  <!-- Arrow: browser -> umami -->
+  <line x1="430" y1="392" x2="430" y2="398" stroke="#64748b" stroke-width="1.2" marker-end="url(#arr)" stroke-dasharray="3 2"/>
+
+  <!-- Legend -->
+  <rect x="40" y="520" width="820" height="44" rx="6" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="55" y="534" width="12" height="2" stroke="#f97316" stroke-width="2" fill="none"/>
+  <text x="72" y="537" font-size="9" fill="#64748b">Cloudflare / CDN</text>
+  <rect x="170" y="534" width="12" height="2" stroke="#8b5cf6" stroke-width="2" fill="none"/>
+  <text x="187" y="537" font-size="9" fill="#64748b">Svelte / UI layer</text>
+  <rect x="290" y="534" width="12" height="2" stroke="#10b981" stroke-width="2" fill="none"/>
+  <text x="307" y="537" font-size="9" fill="#64748b">Generator (TypeScript)</text>
+  <rect x="430" y="534" width="12" height="2" stroke="#f59e0b" stroke-width="2" fill="none"/>
+  <text x="447" y="537" font-size="9" fill="#64748b">Content / data</text>
+  <rect x="540" y="534" width="12" height="2" stroke="#d1d5db" stroke-width="1.5" stroke-dasharray="4 2" fill="none"/>
+  <text x="557" y="537" font-size="9" fill="#64748b">Optional / stub</text>
+  <text x="55" y="553" font-size="9" fill="#64748b">All game logic, generation, and badge rendering runs entirely in the visitor's browser. Zero server-side compute at runtime.</text>
+</svg>

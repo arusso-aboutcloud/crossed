@@ -1,5 +1,4 @@
-// Set VITE_SITE_URL in your Cloudflare Pages environment variables.
-// Replace the placeholder below with the actual production URL once known.
+// Override with VITE_SITE_URL in Cloudflare Pages environment variables for forks.
 export const SITE_URL: string =
   (import.meta.env as Record<string, string>).VITE_SITE_URL ??
-  'https://crossed.pages.dev';
+  'https://crossec.aboutcloud.io';

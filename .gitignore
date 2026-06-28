@@ -29,5 +29,6 @@ build/
 .DS_Store
 Thumbs.db
 
-# wrangler
+# wrangler temp dirs
 worker/.wrangler/
+.wrangler/
