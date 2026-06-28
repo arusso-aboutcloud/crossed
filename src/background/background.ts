@@ -93,6 +93,7 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(canvas.clientWidth || 800, canvas.clientHeight || 600, false);
   renderer.setClearColor(0x000000, 0);
+  renderer.outputColorSpace = (THREE as any).SRGBColorSpace ?? (THREE as any).LinearEncoding;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
@@ -103,13 +104,10 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   );
   camera.position.z = 35;
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-  const dir = new THREE.DirectionalLight(0xffffff, 0.8);
-  dir.position.set(5, 10, 8);
-  scene.add(dir);
-
-  const geo = new THREE.BoxGeometry(0.85, 0.85, 0.85);
-  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.5, metalness: 0.1 });
+  // MeshBasicMaterial: no lighting calculations, instance colors render exactly as specified.
+  // This prevents cubes from appearing dark due to face-away-from-light shading.
+  const geo = new THREE.BoxGeometry(1.0, 1.0, 1.0);
+  const mat = new THREE.MeshBasicMaterial({ vertexColors: true });
   const mesh = new THREE.InstancedMesh(geo, mat, COUNT);
   mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   scene.add(mesh);
