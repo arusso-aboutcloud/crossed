@@ -121,22 +121,27 @@
     border: 4px solid #2c2c2c;
     border-radius: 12px;
     box-shadow: 6px 6px 0 #2c2c2c, 0 0 0 2px #ffd700;
-    padding: 1.2rem 1.5rem;
-    max-width: 440px;
+    padding: 1.4rem 2rem;
+    /* Wider on desktop, full-width on mobile, capped so it never swallows the screen */
+    max-width: min(640px, 94vw);
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.7rem;
+    gap: 0.8rem;
+  }
+
+  @media (max-width: 480px) {
+    .card { padding: 1rem 1.1rem; gap: 0.6rem; }
   }
 
   @media (max-height: 680px) {
-    .card { padding: 0.7rem 1.2rem; gap: 0.4rem; }
+    .card { padding: 0.7rem 1.4rem; gap: 0.4rem; }
     .ms-logo { width: 140px; }
-    .ab-img { width: 48px; height: 48px; }
-    .achievement-board { padding: 0.5rem; }
+    .ab-img { width: 52px !important; height: 52px !important; }
+    .achievement-board { padding: 0.5rem 0.8rem; }
   }
 
   /* ---- Brand / Hero ---- */
@@ -225,13 +230,13 @@
     color: #ffffff;
     border: none;
     border-radius: 6px;
-    padding: 0.7rem 2rem;
+    padding: 0.8rem 2rem;
     box-shadow: 4px 4px 0 #8b0000;
     letter-spacing: 0.05em;
     transition: transform 0.1s, box-shadow 0.1s;
     cursor: pointer;
     width: 100%;
-    max-width: 280px;
+    max-width: 400px;
   }
 
   .play-btn:hover {
@@ -255,7 +260,7 @@
     flex-direction: column;
     gap: var(--space-sm);
     width: 100%;
-    max-width: 280px;
+    max-width: 400px;
   }
 
   .btn {
@@ -327,12 +332,12 @@
   /* ---- Achievement board ---- */
   .achievement-board {
     width: 100%;
-    background: linear-gradient(135deg, #1e3a5f 0%, #162d4a 100%);
+    background: linear-gradient(135deg, #3b5fa0 0%, #2a4a82 100%);
     border: 2px solid #ffd700;
     border-radius: 8px;
-    padding: 0.7rem 1rem;
+    padding: 0.8rem 1.2rem;
     box-sizing: border-box;
-    box-shadow: inset 0 0 20px rgba(255,215,0,0.10), 3px 3px 0 #0a1628;
+    box-shadow: inset 0 0 24px rgba(255,215,0,0.12), 3px 3px 0 #1a2e5a;
   }
 
   .ab-header {
@@ -363,7 +368,7 @@
   .ab-badges {
     display: flex;
     justify-content: center;
-    gap: 0.6rem;
+    gap: 1rem;
     flex-wrap: nowrap;
   }
 
@@ -375,8 +380,8 @@
   }
 
   .ab-img {
-    width: 60px;
-    height: 60px;
+    width: 76px;
+    height: 76px;
     display: block;
     border-radius: 4px;
     transition: box-shadow 0.3s, transform 0.3s;
