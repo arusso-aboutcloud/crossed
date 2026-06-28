@@ -383,4 +383,30 @@
     text-transform: uppercase;
     line-height: 1;
   }
+
+  /*
+   * Edge dark mode (and any browser that honours prefers-color-scheme: dark but
+   * ignores the filter compositing-layer trick) needs explicit color overrides
+   * scoped here so Svelte's attribute selector gives them correct specificity.
+   * The !important beats any leftover cascade from OS dark-mode injection.
+   */
+  @media (prefers-color-scheme: dark) {
+    .board-wrap {
+      background: #ffffff !important;
+      -webkit-filter: brightness(100%);
+      filter: brightness(100%);
+    }
+    .cell {
+      background: #ffffff !important;
+      color: #1a1a1a !important;
+      border-color: #2c2c2c !important;
+    }
+    .cell.filled    { background: #2c2c2c !important; }
+    .cell.enterable { background: #ffffff !important; }
+    .cell.active-word { background: #b3d9ff !important; }
+    .cell.focused   { background: #ffd700 !important; }
+    .cell.correct   { background: rgba(67,176,71,0.35) !important; }
+    .num { color: #1a1a1a !important; }
+    .ltr { color: #1a1a1a !important; }
+  }
 </style>
