@@ -140,7 +140,6 @@
   @media (max-height: 680px) {
     .card { padding: 0.7rem 1.4rem; gap: 0.4rem; }
     .ms-logo { width: 140px; }
-    .ab-img { width: 52px !important; height: 52px !important; }
     .achievement-board { padding: 0.5rem 0.8rem; }
   }
 
@@ -368,11 +367,17 @@
   .ab-badges {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    /* Gap shrinks on narrow viewports so badges never overflow the card */
+    gap: clamp(0.3rem, 2vw, 1rem);
     flex-wrap: nowrap;
+    width: 100%;
   }
 
   .ab-badge {
+    /* Badges share available width equally and shrink below 76px if needed */
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -380,12 +385,14 @@
   }
 
   .ab-img {
-    width: 76px;
-    height: 76px;
+    /* Fluid: fills badge column, capped at 76px, never overflows */
+    width: 100%;
+    max-width: 76px;
+    height: auto;
+    aspect-ratio: 1;
     display: block;
     border-radius: 4px;
     transition: box-shadow 0.3s, transform 0.3s;
-    /* Always show real badge colors - no grayscale */
     filter: none;
     opacity: 0.55;
   }
