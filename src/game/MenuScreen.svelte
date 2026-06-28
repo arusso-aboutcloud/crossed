@@ -53,6 +53,9 @@
 
     <!-- Footer row -->
     <div class="footer-row">
+      <a href="https://blog.aboutcloud.io" target="_blank" rel="noopener noreferrer" class="blog-link">
+        blog.aboutcloud.io
+      </a>
       <button class="reset-link" on:click={handleReset} aria-live="polite">
         {resetDone ? 'Progress cleared.' : 'Reset my local progress'}
       </button>
@@ -330,6 +333,17 @@
 
   .reset-link:hover { opacity: 1; color: var(--color-text); }
   .reset-link:focus-visible { outline: 2px solid #ffd700; outline-offset: 3px; border-radius: 2px; }
+
+  .blog-link {
+    color: #0891b2;
+    font-size: 0.75rem;
+    font-family: var(--font-body);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    opacity: 0.85;
+  }
+  .blog-link:hover { opacity: 1; color: #0369a1; }
+  .blog-link:focus-visible { outline: 2px solid #ffd700; outline-offset: 3px; border-radius: 2px; }
 
   .ms-logo-wrap {
     display: flex;

@@ -9,7 +9,6 @@ export interface BgController {
 }
 
 // Resting-state palette: Mario-inspired + summer colors (bright, warm, tropical).
-// Dark cubes reduced to 1 entry out of 10 so the background reads light and summery.
 const RESTING_COLORS = [
   '#5c94fc', // Mario sky blue
   '#43b047', // Mario green
@@ -24,13 +23,18 @@ const RESTING_COLORS = [
 ];
 
 // Formation scheduler timing (seconds).
-const FIRST_TRIGGER_MIN = 8;
-const FIRST_TRIGGER_MAX = 15;
-const INTERVAL_MIN = 15;
-const INTERVAL_MAX = 25;
-const ENTER_DURATION = 2.0;
-const HOLD_DURATION = 5.0;
+const FIRST_TRIGGER_MIN = 4;
+const FIRST_TRIGGER_MAX = 8;
+const INTERVAL_MIN = 8;
+const INTERVAL_MAX = 15;
+const ENTER_DURATION = 2.5;
+const HOLD_DURATION = 6.0;
 const LEAVE_DURATION = 2.0;
+
+// Scale applied to non-formation cubes during formation so only the shape is visible.
+const BYSTANDER_SCALE_MIN = 0.08;
+// Scale applied to formation cubes during HOLDING for visual pop.
+const FORMATION_SCALE_MAX = 1.25;
 
 enum FormationState {
   DRIFTING,
@@ -40,23 +44,16 @@ enum FormationState {
 }
 
 interface Cube {
-  // Current world position
   pos: THREE.Vector3;
-  // Drift velocity (world units per second)
   vel: THREE.Vector3;
-  // Current rotation
   rot: THREE.Euler;
-  // Rotation speed (radians per second per axis)
   rotSpeed: THREE.Vector3;
-  // Drift position saved when formation starts (lerp source during ENTERING)
+  // Position saved at start of ENTERING (lerp source for ENTERING, return target via preDriftPos)
   driftPos: THREE.Vector3;
-  // Target formation position (null when cube has no slot in the current formation)
+  // Target formation world position (null = bystander)
   formTarget: THREE.Vector3 | null;
-  // Resting color index (0 = white, 1 = black)
   restColorIdx: number;
-  // Formation color (hex string) assigned when a formation starts
   formColor: string;
-  // Random phase offset for individual idle bob animation (0..2*PI)
   phaseOffset: number;
 }
 
@@ -64,22 +61,18 @@ function rnd(min: number, max: number): number {
   return Math.random() * (max - min) + min;
 }
 
-function rndInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 // Ease-in-out cubic
 function easeInOut(t: number): number {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
-// Parse a hex color string into r, g, b in [0,1]
 function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace('#', '');
-  const ri = parseInt(h.slice(0, 2), 16) / 255;
-  const gi = parseInt(h.slice(2, 4), 16) / 255;
-  const bi = parseInt(h.slice(4, 6), 16) / 255;
-  return [ri, gi, bi];
+  return [
+    parseInt(h.slice(0, 2), 16) / 255,
+    parseInt(h.slice(2, 4), 16) / 255,
+    parseInt(h.slice(4, 6), 16) / 255,
+  ];
 }
 
 export function createBackground(canvas: HTMLCanvasElement): BgController | null {
@@ -94,7 +87,8 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     navigator.hardwareConcurrency !== undefined &&
     navigator.hardwareConcurrency <= 2;
 
-  const COUNT = isLowPower ? 80 : 260;
+  // Fewer cubes so formations (17-45 cubes) are a large fraction and clearly visible.
+  const COUNT = isLowPower ? 40 : 90;
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(canvas.clientWidth || 800, canvas.clientHeight || 600, false);
@@ -120,7 +114,6 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   scene.add(mesh);
 
-  // Pre-allocate lerp buffer for colors - no per-frame heap allocation
   const colorBuf = new Float32Array(COUNT * 3);
   const tmpColor = new THREE.Color();
   const dummy = new THREE.Object3D();
@@ -130,10 +123,10 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   for (let i = 0; i < COUNT; i++) {
     const restColorIdx = Math.floor(Math.random() * RESTING_COLORS.length);
     const cube: Cube = {
-      pos: new THREE.Vector3(rnd(-28, 28), rnd(-18, 18), rnd(-10, 10)),
-      vel: new THREE.Vector3(rnd(-0.008, 0.008), rnd(-0.008, 0.008), 0),
+      pos: new THREE.Vector3(rnd(-28, 28), rnd(-18, 18), rnd(-8, 8)),
+      vel: new THREE.Vector3(rnd(-0.012, 0.012), rnd(-0.008, 0.008), 0),
       rot: new THREE.Euler(rnd(0, Math.PI * 2), rnd(0, Math.PI * 2), rnd(0, Math.PI * 2)),
-      rotSpeed: new THREE.Vector3(rnd(-0.015, 0.015), rnd(-0.015, 0.015), rnd(-0.006, 0.006)),
+      rotSpeed: new THREE.Vector3(rnd(-0.018, 0.018), rnd(-0.018, 0.018), rnd(-0.008, 0.008)),
       driftPos: new THREE.Vector3(),
       formTarget: null,
       restColorIdx,
@@ -143,35 +136,33 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     cubes.push(cube);
     tmpColor.set(RESTING_COLORS[restColorIdx]);
     mesh.setColorAt(i, tmpColor);
-    applyMatrix(i, cube);
+    applyMatrix(i, cube, 1.0);
   }
   if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
 
-  function applyMatrix(i: number, c: Cube) {
+  // Sets position, rotation, and SCALE on the instanced mesh slot.
+  function applyMatrix(i: number, c: Cube, scale: number) {
     dummy.position.copy(c.pos);
     dummy.rotation.copy(c.rot);
+    dummy.scale.setScalar(scale);
     dummy.updateMatrix();
     mesh.setMatrixAt(i, dummy.matrix);
   }
 
-  // Formation scheduler state
   let formationState: FormationState = FormationState.DRIFTING;
   let formationTimer = 0;
   let nextFormationTime = rnd(FIRST_TRIGGER_MIN, FIRST_TRIGGER_MAX);
   let lastFormationIdx = -1;
-  let transitionProgress = 0; // 0..1
+  let transitionProgress = 0;
 
-  // Pre-formation drift positions: saved when ENTERING starts so LEAVING can
-  // lerp cubes back to where they were before the formation gathered them.
+  // Positions saved at ENTERING start; used by LEAVING to scatter cubes back.
   const preDriftPos: THREE.Vector3[] = Array.from({ length: COUNT }, () => new THREE.Vector3());
 
-  // Shuffled formation queue for varied sequencing
   let formationQueue: number[] = [];
   let formationQueuePos = 0;
 
   function buildShuffledQueue(): number[] {
     const indices = FORMATIONS.map((_, i) => i);
-    // Fisher-Yates shuffle using Math.random
     for (let i = indices.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       const tmp = indices[i]; indices[i] = indices[j]; indices[j] = tmp;
@@ -184,15 +175,12 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function pickNextFormation(): number {
-    // Walk through the shuffled queue, rebuilding when exhausted
-    // Skip the immediately-previous formation to avoid repeats at queue boundaries
     let idx = formationQueue[formationQueuePos];
     formationQueuePos++;
     if (formationQueuePos >= formationQueue.length) {
       formationQueue = buildShuffledQueue();
       formationQueuePos = 0;
     }
-    // If same as last (can happen at queue boundary), swap with next slot
     if (FORMATIONS.length > 1 && idx === lastFormationIdx) {
       const next = formationQueue[formationQueuePos];
       formationQueue[formationQueuePos] = idx;
@@ -206,14 +194,13 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     return idx;
   }
 
-  // Grid spacing between cubes in a formation (world units)
-  const GRID_STEP = 2.2;
+  // World-space gap between adjacent cubes in a formation.
+  const GRID_STEP = 2.0;
 
   function assignFormation(formIdx: number) {
     const form = FORMATIONS[formIdx];
     const slots = form.slots;
 
-    // Find bounding box of slots to center the grid in world space
     let minCol = Infinity, maxCol = -Infinity;
     let minRow = Infinity, maxRow = -Infinity;
     for (const s of slots) {
@@ -225,9 +212,6 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     const centerCol = (minCol + maxCol) / 2;
     const centerRow = (minRow + maxRow) / 2;
 
-    // Save current drift position as both the lerp source (ENTERING) and the
-    // return target (LEAVING). preDriftPos persists unchanged through the whole
-    // formation cycle so LEAVING can bring every cube back to its pre-gather spot.
     for (let i = 0; i < COUNT; i++) {
       cubes[i].driftPos.copy(cubes[i].pos);
       preDriftPos[i].copy(cubes[i].pos);
@@ -235,12 +219,13 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
       cubes[i].formColor = RESTING_COLORS[cubes[i].restColorIdx];
     }
 
-    // Assign cubes to slots in order (first COUNT cubes that have slots)
     for (let si = 0; si < slots.length && si < COUNT; si++) {
       const s = slots[si];
-      const wx = (s.col - centerCol) * GRID_STEP;
-      const wy = -(s.row - centerRow) * GRID_STEP; // invert Y (row 0 = top)
-      cubes[si].formTarget = new THREE.Vector3(wx, wy, 0);
+      cubes[si].formTarget = new THREE.Vector3(
+        (s.col - centerCol) * GRID_STEP,
+        -(s.row - centerRow) * GRID_STEP,
+        0
+      );
       cubes[si].formColor = s.color;
     }
   }
@@ -256,7 +241,7 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
       paused = true;
     } else {
       paused = false;
-      lastT = performance.now(); // reset dt to avoid huge jump
+      lastT = performance.now();
     }
   }
   document.addEventListener('visibilitychange', onVisibility);
@@ -266,7 +251,6 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     if (!enabled || paused) return;
 
     if (reducedMotion) {
-      // Static frame only - no formations, no animation
       if (!staticRendered) {
         renderer.render(scene, camera);
         staticRendered = true;
@@ -278,7 +262,7 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     const dt = Math.min((now - lastT) / 1000, 0.1);
     lastT = now;
 
-    // Formation state machine
+    // State machine
     switch (formationState) {
       case FormationState.DRIFTING: {
         formationTimer += dt;
@@ -292,7 +276,6 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
         }
         break;
       }
-
       case FormationState.ENTERING: {
         transitionProgress += dt / ENTER_DURATION;
         if (transitionProgress >= 1) {
@@ -302,22 +285,17 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
         }
         break;
       }
-
       case FormationState.HOLDING: {
         formationTimer += dt;
         if (formationTimer >= HOLD_DURATION) {
-          formationTimer = 0;
           formationState = FormationState.LEAVING;
           transitionProgress = 1;
-          // Save the current (formation) positions as the LEAVING start point.
-          // preDriftPos already holds the pre-gather positions as the LEAVING end target.
           for (let i = 0; i < COUNT; i++) {
             cubes[i].driftPos.copy(cubes[i].pos);
           }
         }
         break;
       }
-
       case FormationState.LEAVING: {
         transitionProgress -= dt / LEAVE_DURATION;
         if (transitionProgress <= 0) {
@@ -325,9 +303,6 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
           formationState = FormationState.DRIFTING;
           nextFormationTime = rnd(INTERVAL_MIN, INTERVAL_MAX);
           formationTimer = 0;
-          // Clear formation targets; positions are already lerped to preDriftPos
-          // for formation cubes. Non-formation cubes kept drifting normally and
-          // their pos is correct as-is.
           for (let i = 0; i < COUNT; i++) {
             cubes[i].formTarget = null;
           }
@@ -336,49 +311,41 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
       }
     }
 
-    const isTransitioning = formationState === FormationState.ENTERING ||
-                            formationState === FormationState.HOLDING ||
-                            formationState === FormationState.LEAVING;
+    const isFormationActive =
+      formationState === FormationState.ENTERING ||
+      formationState === FormationState.HOLDING ||
+      formationState === FormationState.LEAVING;
 
-    // Blend factor: how far into the formation we are (0 = pure drift, 1 = pure formation)
+    // blend: 0 = pure drift, 1 = fully in formation
     const blend = easeInOut(Math.max(0, Math.min(1, transitionProgress)));
 
     for (let i = 0; i < COUNT; i++) {
       const c = cubes[i];
+      const isMember = c.formTarget !== null;
 
-      if (formationState === FormationState.DRIFTING) {
-        // Pure drift + subtle individual bob
+      // --- Position ---
+      if (!isFormationActive) {
+        // Pure drift with gentle bob
         c.pos.addScaledVector(c.vel, dt * 60);
-        // Subtle individual floating bob (amplitude 0.3, each cube at its own phase)
-        const bobY = Math.sin(now * 0.0008 + c.phaseOffset) * 0.3;
-        c.pos.y += bobY * dt * 60 * 0.016; // scale to be frame-rate independent subtle nudge
-        // Wrap
+        c.pos.y += Math.sin(now * 0.0008 + c.phaseOffset) * 0.004;
         if (c.pos.x > 30)  c.pos.x = -30;
         if (c.pos.x < -30) c.pos.x = 30;
         if (c.pos.y > 20)  c.pos.y = -20;
         if (c.pos.y < -20) c.pos.y = 20;
-      } else if (isTransitioning && c.formTarget !== null) {
-        // Cube has a formation slot: lerp between drift position and formation target
+      } else if (isMember) {
         if (formationState === FormationState.ENTERING) {
-          c.pos.lerpVectors(c.driftPos, c.formTarget, blend);
+          c.pos.lerpVectors(c.driftPos, c.formTarget!, blend);
         } else if (formationState === FormationState.HOLDING) {
-          c.pos.copy(c.formTarget);
-          // Gentle drift within formation during hold - tiny oscillation
-          c.pos.x += Math.sin(now * 0.0005 + i * 0.8) * 0.05;
-          c.pos.y += Math.cos(now * 0.0004 + i * 0.7) * 0.05;
+          c.pos.copy(c.formTarget!);
+          // Tiny oscillation so cubes feel alive during hold
+          c.pos.x += Math.sin(now * 0.0006 + i * 0.9) * 0.06;
+          c.pos.y += Math.cos(now * 0.0005 + i * 0.8) * 0.06;
         } else {
-          // LEAVING: lerp from saved formation position (driftPos) back to the
-          // pre-gather drift position (preDriftPos). blend goes 1->0 so
-          // (1-blend) goes 0->1, bringing cubes fully back to preDriftPos.
+          // LEAVING: from held position back to pre-gather position
           c.pos.lerpVectors(c.driftPos, preDriftPos[i], 1 - blend);
-          // Wrap
-          if (c.pos.x > 30)  c.pos.x = -30;
-          if (c.pos.x < -30) c.pos.x = 30;
-          if (c.pos.y > 20)  c.pos.y = -20;
-          if (c.pos.y < -20) c.pos.y = 20;
         }
-      } else if (isTransitioning) {
-        // No formation slot for this cube - keep drifting normally
+      } else {
+        // Bystander: keep drifting, will scale to near-invisible
         c.pos.addScaledVector(c.vel, dt * 60);
         if (c.pos.x > 30)  c.pos.x = -30;
         if (c.pos.x < -30) c.pos.x = 30;
@@ -386,16 +353,37 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
         if (c.pos.y < -20) c.pos.y = 20;
       }
 
-      // Rotation always continues
+      // --- Rotation (always) ---
       c.rot.x += c.rotSpeed.x * dt * 60;
       c.rot.y += c.rotSpeed.y * dt * 60;
       c.rot.z += c.rotSpeed.z * dt * 60;
 
-      applyMatrix(i, c);
+      // --- Scale ---
+      // Formation members: 1 -> FORMATION_SCALE_MAX -> 1
+      // Bystanders: 1 -> BYSTANDER_SCALE_MIN -> 1
+      // This makes formations unmistakably visible.
+      let scale = 1.0;
+      if (isFormationActive) {
+        if (isMember) {
+          if (formationState === FormationState.ENTERING) {
+            scale = 1.0 + (FORMATION_SCALE_MAX - 1.0) * blend;
+          } else if (formationState === FormationState.HOLDING) {
+            scale = FORMATION_SCALE_MAX;
+          } else {
+            // LEAVING: blend goes 1->0, so scale goes FORMATION_SCALE_MAX -> 1
+            scale = 1.0 + (FORMATION_SCALE_MAX - 1.0) * blend;
+          }
+        } else {
+          // Bystander: shrink as blend rises, grow back as blend falls
+          scale = 1.0 + (BYSTANDER_SCALE_MIN - 1.0) * blend;
+        }
+      }
 
-      // Color lerp
+      applyMatrix(i, c, scale);
+
+      // --- Color ---
       const restColor = RESTING_COLORS[c.restColorIdx];
-      if (isTransitioning && c.formTarget !== null && formationState !== FormationState.DRIFTING) {
+      if (isFormationActive && isMember) {
         const [rr, rg, rb] = hexToRgb(restColor);
         const [fr, fg, fb] = hexToRgb(c.formColor);
         colorBuf[i * 3 + 0] = rr + (fr - rr) * blend;
