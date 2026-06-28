@@ -15,7 +15,7 @@
   // Dim the background during play so cubes do not compete with the grid.
   // Lighter overlay on menu/difficulty/win/paused phases so formations are visible.
   // Mario sky blue overlay preserves the palette during play.
-  $: overlayOpacity = $gamePhase === 'playing' ? 0.75 : 0.25;
+  $: overlayOpacity = $gamePhase === 'playing' ? 0.52 : 0.20;
 
   onMount(() => {
     try {
