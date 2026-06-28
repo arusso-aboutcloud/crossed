@@ -3,10 +3,10 @@ import { mulberry32, shuffle } from './rng';
 import { makeGrid, cloneGrid, boundingBox, commitWord, findCandidates } from './grid';
 
 export const DIFFICULTY_CONFIG: Record<Difficulty, DifficultyConfig> = {
-  easy:   { minDim:  9, maxDim: 11, targetWords:  8 },
-  medium: { minDim: 11, maxDim: 13, targetWords: 12 },
-  hard:   { minDim: 13, maxDim: 15, targetWords: 16 },
-  pro:    { minDim: 15, maxDim: 17, targetWords: 20 },
+  easy:   { minDim: 10, maxDim: 13, targetWords: 10 },
+  medium: { minDim: 12, maxDim: 15, targetWords: 14 },
+  hard:   { minDim: 14, maxDim: 17, targetWords: 18 },
+  pro:    { minDim: 16, maxDim: 19, targetWords: 22 },
 };
 
 const ATTEMPT_BUDGET = 4000;

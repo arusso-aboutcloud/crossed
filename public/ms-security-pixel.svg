@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 100" width="320" height="100" role="img" aria-label="Microsoft Security">
+  <!-- Dark background -->
+  <rect width="320" height="100" fill="#0f0f0f" rx="8"/>
+
+  <!-- MS 4-color squares (pixel art style with inner highlight) -->
+  <!-- Red top-left -->
+  <rect x="12" y="12" width="42" height="42" fill="#f25022"/>
+  <rect x="12" y="12" width="21" height="4" fill="rgba(255,255,255,0.3)"/>
+  <rect x="12" y="12" width="4" height="21" fill="rgba(255,255,255,0.3)"/>
+  <!-- Green top-right -->
+  <rect x="58" y="12" width="42" height="42" fill="#7fba00"/>
+  <rect x="58" y="12" width="21" height="4" fill="rgba(255,255,255,0.3)"/>
+  <rect x="58" y="12" width="4" height="21" fill="rgba(255,255,255,0.3)"/>
+  <!-- Blue bottom-left -->
+  <rect x="12" y="58" width="42" height="42" fill="#00a4ef"/>
+  <rect x="12" y="58" width="21" height="4" fill="rgba(255,255,255,0.3)"/>
+  <rect x="12" y="58" width="4" height="21" fill="rgba(255,255,255,0.3)"/>
+  <!-- Yellow bottom-right -->
+  <rect x="58" y="58" width="42" height="42" fill="#ffb900"/>
+  <rect x="58" y="58" width="21" height="4" fill="rgba(255,255,255,0.3)"/>
+  <rect x="58" y="58" width="4" height="21" fill="rgba(255,255,255,0.3)"/>
+
+  <!-- "Microsoft" text in pixel style (grey) -->
+  <text x="116" y="44" font-family="'Courier New', monospace" font-size="28"
+        font-weight="bold" fill="#9ca3af" letter-spacing="2">Microsoft</text>
+  <!-- "Security" text -->
+  <text x="116" y="78" font-family="'Courier New', monospace" font-size="28"
+        font-weight="bold" fill="#9ca3af" letter-spacing="2">Security</text>
+</svg>

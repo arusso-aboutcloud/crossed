@@ -1,48 +1,73 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="200" height="240" role="img" aria-label="Easy badge">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 290" width="220" height="290" role="img" aria-label="Easy badge">
   <defs>
-    <linearGradient id="border-easy" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="outer-easy" x1="0" y1="0" x2="0.3" y2="1">
       <stop offset="0%" stop-color="#4ade80"/>
-      <stop offset="100%" stop-color="#16a34a"/>
+      <stop offset="40%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#166534"/>
     </linearGradient>
-    <clipPath id="shield-clip-easy">
-      <path d="M100,8 L185,40 L185,120 Q185,185 100,220 Q15,185 15,120 L15,40 Z"/>
-    </clipPath>
-    <filter id="shadow-easy" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#22c55e" flood-opacity="0.4"/>
+    <linearGradient id="inner-easy" x1="0.2" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a2040"/>
+      <stop offset="100%" stop-color="#0b0d1a"/>
+    </linearGradient>
+    <linearGradient id="ribbon-easy" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#e8e8e8"/>
+      <stop offset="100%" stop-color="#cccccc"/>
+    </linearGradient>
+    <filter id="glow-easy" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="shadow-easy">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#166534" flood-opacity="0.6"/>
     </filter>
   </defs>
 
-  <!-- Shield outer border -->
-  <path d="M100,8 L185,40 L185,120 Q185,185 100,220 Q15,185 15,120 L15,40 Z"
-        fill="url(#border-easy)" filter="url(#shadow-easy)"/>
+  <!-- OUTER SHIELD (metallic border) -->
+  <path d="M110,6 L204,42 L204,130 Q204,200 110,238 Q16,200 16,130 L16,42 Z"
+        fill="url(#outer-easy)" filter="url(#shadow-easy)"/>
 
-  <!-- Shield inner dark body -->
-  <path d="M100,16 L178,45 L178,120 Q178,178 100,212 Q22,178 22,120 L22,45 Z"
-        fill="#0d1117"/>
+  <!-- INNER SHIELD (dark body) -->
+  <path d="M110,18 L192,50 L192,130 Q192,192 110,224 Q28,192 28,130 L28,50 Z"
+        fill="url(#inner-easy)"/>
 
-  <!-- Microsoft 4-color logo -->
-  <rect x="80" y="25" width="18" height="18" fill="#f25022" rx="1"/>
-  <rect x="101" y="25" width="18" height="18" fill="#7fba00" rx="1"/>
-  <rect x="80" y="46" width="18" height="18" fill="#00a4ef" rx="1"/>
-  <rect x="101" y="46" width="18" height="18" fill="#ffb900" rx="1"/>
+  <!-- Highlight edges for 3D effect -->
+  <path d="M110,18 L192,50" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
+  <path d="M110,18 L28,50" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
 
-  <!-- Ribbon banner -->
-  <polygon points="15,90 185,90 185,118 15,118" fill="#ffffff"/>
-  <polygon points="15,90 30,104 15,118" fill="#d1d5db"/>
-  <polygon points="185,90 170,104 185,118" fill="#d1d5db"/>
-  <text x="100" y="101" font-family="Arial Black, Arial, sans-serif" font-size="8" font-weight="900" fill="#1a1a2e" text-anchor="middle" letter-spacing="1">SUMMER SECURITY</text>
-  <text x="100" y="112" font-family="Arial Black, Arial, sans-serif" font-size="8" font-weight="900" fill="#1a1a2e" text-anchor="middle" letter-spacing="1">CROSSWORD</text>
+  <!-- MS LOGO: 2x2 colored squares -->
+  <rect x="89" y="30" width="19" height="19" fill="#f25022" rx="2"/>
+  <rect x="112" y="30" width="19" height="19" fill="#7fba00" rx="2"/>
+  <rect x="89" y="53" width="19" height="19" fill="#00a4ef" rx="2"/>
+  <rect x="112" y="53" width="19" height="19" fill="#ffb900" rx="2"/>
 
-  <!-- Puzzle piece icon (Easy) -->
-  <path d="M85,138 L95,138 Q95,130 100,130 Q105,130 105,138 L115,138 L115,148 Q123,148 123,153 Q123,158 115,158 L115,168 L85,168 L85,158 Q77,158 77,153 Q77,148 85,148 Z" fill="none" stroke="#22c55e" stroke-width="2.5"/>
+  <!-- RIBBON BANNER -->
+  <polygon points="16,96 204,96 204,126 16,126" fill="url(#ribbon-easy)"/>
+  <polygon points="16,96 34,111 16,126" fill="#bbbbbb"/>
+  <polygon points="204,96 186,111 204,126" fill="#bbbbbb"/>
+  <line x1="16" y1="96" x2="204" y2="96" stroke="rgba(255,255,255,0.8)" stroke-width="1"/>
+  <text x="110" y="109" font-family="Arial Black, Arial, sans-serif" font-size="9.5" font-weight="900"
+        fill="#0a0a1a" text-anchor="middle" letter-spacing="1.5">SUMMER SECURITY</text>
+  <text x="110" y="121" font-family="Arial Black, Arial, sans-serif" font-size="9.5" font-weight="900"
+        fill="#0a0a1a" text-anchor="middle" letter-spacing="1.5">CROSSWORD</text>
 
-  <!-- Star rating pill: 1 star -->
-  <rect x="65" y="190" width="70" height="20" rx="10" fill="#0d1117" stroke="#22c55e" stroke-width="1.5"/>
-  <!-- 1 star at cx=100, cy=200, r=7 -->
-  <path d="M100,193 L102.45,199.16 L109.65,199.16 L104.06,203.24 L106.06,209.5 L100,205.5 L93.94,209.5 L95.94,203.24 L90.35,199.16 L97.55,199.16 Z" fill="white"/>
+  <!-- ICON: Puzzle piece (Easy) -->
+  <path d="M93,148 L103,148 Q103,139 110,139 Q117,139 117,148 L127,148 L127,160 Q136,160 136,166 Q136,172 127,172 L127,184 L93,184 L93,172 Q84,172 84,166 Q84,160 93,160 Z"
+        fill="none" stroke="#22c55e" stroke-width="3" stroke-linejoin="round"/>
 
-  <!-- Tier label with horizontal lines -->
-  <line x1="15" y1="230" x2="75" y2="230" stroke="#22c55e" stroke-width="1.5"/>
-  <text x="100" y="234" font-family="Arial Black, Arial, sans-serif" font-size="11" font-weight="900" fill="#22c55e" text-anchor="middle" letter-spacing="2">EASY</text>
-  <line x1="125" y1="230" x2="185" y2="230" stroke="#22c55e" stroke-width="1.5"/>
+  <!-- STAR PILL -->
+  <rect x="72" y="203" width="76" height="22" rx="11" fill="#0b0d1a" stroke="#22c55e" stroke-width="2"/>
+  <!-- 1 star at cx=110, cy=214 -->
+  <polygon points="110,207 112.0,212.2 117.6,212.8 113.3,216.1 114.7,221.7 110,218.0 105.3,221.7 106.7,216.1 102.4,212.8 108.0,212.2" fill="white"/>
+
+  <!-- TIER LABEL SECTION -->
+  <line x1="16" y1="248" x2="82" y2="248" stroke="#22c55e" stroke-width="2"/>
+  <text x="110" y="252" font-family="Arial Black, Arial, sans-serif" font-size="13" font-weight="900"
+        fill="#22c55e" text-anchor="middle" letter-spacing="3">EASY</text>
+  <line x1="138" y1="248" x2="204" y2="248" stroke="#22c55e" stroke-width="2"/>
+
+  <text x="110" y="268" font-family="Arial, sans-serif" font-size="9" font-weight="700"
+        fill="#ffffff" text-anchor="middle">Well done!</text>
+
+  <text x="110" y="282" font-family="Arial, sans-serif" font-size="7.5" fill="#aaaaaa" text-anchor="middle">You've got the basics down</text>
 </svg>
