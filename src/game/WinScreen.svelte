@@ -35,6 +35,7 @@
 
   <div class="content">
     <h1 class="heading">Puzzle Complete!</h1>
+    <h2 class="awesome-text">You are awesome!</h2>
 
     {#if result}
       <div class="stats">
@@ -87,10 +88,10 @@
   .piece {
     position: absolute;
     top: -20px;
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 2px;
-    animation: fall 3s ease-in forwards;
+    animation: fall 3s ease-in infinite;
   }
 
   /* Mario palette confetti colors */
@@ -98,12 +99,13 @@
   .p1 { background: #ffd700; }
   .p2 { background: #e52222; }
   .p3 { background: #43b047; }
-  .p4 { background: #ffffff; }
-  .p5 { background: #2c2c2c; }
+  .p4 { background: #ec4899; }
+  .p5 { background: #fbbf24; }
 
   @keyframes fall {
     0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    85%  { opacity: 0.7; }
+    100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -133,6 +135,25 @@
     letter-spacing: 0.05em;
   }
 
+  .awesome-text {
+    font-family: var(--font-display);
+    font-size: clamp(0.65rem, 3vw, 1.0rem);
+    color: #ffd700;
+    text-shadow: 2px 2px 0 #b45309, -1px -1px 0 #92400e;
+    text-align: center;
+    margin: 0;
+    animation: awesome-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes awesome-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.06); opacity: 0.88; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .awesome-text { animation: none; }
+  }
+
   .stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -143,14 +164,14 @@
 
   .stat {
     background: rgba(255,255,255,0.95);
-    border: 3px solid #2c2c2c;
+    border: 2px solid #ffd700;
     border-radius: 8px;
     padding: var(--space-md);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--space-xs);
-    box-shadow: 3px 3px 0 #2c2c2c;
+    box-shadow: 0 0 10px rgba(255,215,0,0.35), 3px 3px 0 #b45309;
   }
 
   .stat-label {

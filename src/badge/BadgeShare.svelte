@@ -240,10 +240,12 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.85);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     z-index: 70;
     padding: var(--space-md);
+    overflow-y: auto;
+    box-sizing: border-box;
   }
 
   .panel {
@@ -256,9 +258,11 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
-    max-height: 92vh;
+    max-height: calc(100svh - 2rem);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    margin: auto;
+    box-sizing: border-box;
   }
 
   .hdr { display: flex; align-items: center; justify-content: space-between; }
@@ -303,6 +307,8 @@
   .preview {
     display: block;
     max-width: 100%;
+    max-height: 320px;
+    width: auto;
     height: auto;
     border-radius: 6px;
   }
