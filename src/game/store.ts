@@ -53,6 +53,13 @@ export function newPuzzle(diff: Difficulty): void {
     }
   }, 1000);
   gamePhase.set('playing');
+  if (get(soundEnabled)) {
+    try {
+      const snd = new Audio('/sounds/xp-startup.mp3');
+      snd.volume = 0.7;
+      snd.play().catch(() => {/* browser may block if no prior interaction */});
+    } catch (_) {/* SSR or unsupported - ignore */}
+  }
 }
 
 export function pauseGame(): void {
