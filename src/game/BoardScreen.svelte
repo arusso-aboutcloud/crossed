@@ -26,10 +26,8 @@
 
   {#if $puzzle}
     <div class="play-area">
-      <div class="play-area-inner">
-        <CrosswordBoard />
-        <ClueList />
-      </div>
+      <CrosswordBoard />
+      <ClueList />
     </div>
   {/if}
 </div>
@@ -53,8 +51,10 @@
     display: flex;
     align-items: center;
     padding: var(--space-sm) var(--space-md);
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
+    background: #e52222;
+    border-bottom: 3px solid #8b0000;
+    color: #ffffff;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.3);
     gap: var(--space-md);
     position: sticky;
     top: 0;
@@ -62,75 +62,73 @@
   }
 
   .diff-label {
-    font-weight: 700;
-    color: var(--color-accent);
-    font-size: 0.85rem;
-    letter-spacing: 0.08em;
+    font-family: var(--font-display);
+    font-size: 0.5rem;
+    color: #ffffff;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
+    text-shadow: 1px 1px 0 #8b0000;
+    font-weight: normal;
   }
 
   .timer {
-    font-family: var(--font-mono);
-    font-size: 1rem;
-    color: var(--color-text);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    color: #ffffff;
     margin: 0 auto;
     letter-spacing: 0.1em;
+    text-shadow: 1px 1px 0 #8b0000;
   }
 
   .top-actions { display: flex; gap: var(--space-sm); }
 
   .bar-btn {
     padding: var(--space-xs) var(--space-sm);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    color: var(--color-text);
+    background: #ffffff;
+    color: #e52222;
+    border: 2px solid #8b0000;
+    font-family: var(--font-display);
+    font-size: 0.4rem;
     border-radius: 4px;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 0.8rem;
-    transition: border-color 0.15s;
+    box-shadow: 2px 2px 0 #8b0000;
+    transition: transform 0.1s, box-shadow 0.1s;
+    letter-spacing: 0.05em;
   }
 
-  .bar-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
-  .bar-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .bar-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 #8b0000;
+  }
+
+  .bar-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 #8b0000;
+  }
+
+  .bar-btn:focus-visible { outline: 2px solid #ffd700; outline-offset: 2px; }
 
   .play-area {
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
     flex: 1;
     min-height: 0;
     overflow: hidden;
-    padding: var(--space-md);
-    gap: var(--space-md);
-    flex-direction: column;
+    padding: var(--space-sm);
+    gap: var(--space-sm);
     position: relative;
     z-index: 1;
   }
 
-  .play-area-inner {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-md);
-    width: 100%;
-  }
-
   @media (min-width: 720px) {
-    /*
-     * Center the board+clue pair horizontally. The inner grid sizes board to
-     * its natural (content) width and clue panel to a bounded column beside it.
-     * max-content on play-area-inner prevents it from stretching to full width.
-     */
     .play-area {
       flex-direction: row;
-    }
-
-    .play-area-inner {
-      display: grid;
-      grid-template-columns: max-content minmax(240px, 320px);
-      align-items: start;
+      justify-content: center;
+      align-items: flex-start;
+      padding: var(--space-md);
       gap: var(--space-md);
-      width: max-content;
     }
   }
 
@@ -145,8 +143,8 @@
   }
 
   .confirm-box {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    background: #ffffff;
+    border: 4px solid #2c2c2c;
     border-radius: 12px;
     padding: var(--space-xl);
     max-width: 320px;
@@ -155,30 +153,46 @@
     flex-direction: column;
     gap: var(--space-lg);
     text-align: center;
+    box-shadow: 6px 6px 0 #2c2c2c;
   }
 
-  .confirm-box p { color: var(--color-text); margin: 0; }
+  .confirm-box p { color: var(--color-text); margin: 0; font-family: var(--font-body); }
 
   .confirm-actions { display: flex; gap: var(--space-md); justify-content: center; }
 
   .btn-confirm-yes {
-    background: var(--color-wrong);
+    background: #e52222;
     color: #fff;
-    border: none;
+    border: 2px solid #8b0000;
     padding: var(--space-sm) var(--space-md);
     border-radius: 6px;
     cursor: pointer;
-    font-family: inherit;
-    font-weight: 600;
+    font-family: var(--font-display);
+    font-size: 0.45rem;
+    box-shadow: 3px 3px 0 #8b0000;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  .btn-confirm-yes:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 #8b0000;
   }
 
   .btn-confirm-no {
-    background: var(--color-surface);
-    color: var(--color-text);
-    border: 1px solid var(--color-border);
+    background: #ffffff;
+    color: #2c2c2c;
+    border: 2px solid #2c2c2c;
     padding: var(--space-sm) var(--space-md);
     border-radius: 6px;
     cursor: pointer;
-    font-family: inherit;
+    font-family: var(--font-display);
+    font-size: 0.45rem;
+    box-shadow: 3px 3px 0 #2c2c2c;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  .btn-confirm-no:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 #2c2c2c;
   }
 </style>
