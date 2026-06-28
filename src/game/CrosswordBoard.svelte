@@ -25,11 +25,14 @@
   $: rows = puz ? puz.rows : 13;
   $: isMobile = viewportW < 720;
   $: {
-    const hPad = isMobile ? 24 : 48;
-    const vPad = isMobile ? 120 + Math.floor(viewportH * 0.4) : 120;
+    // Minimal horizontal margin so grid uses as much width as possible on mobile.
+    // Vertical: reserve top-bar (~56px) + clue panel (~38% of viewport height).
+    const hPad = isMobile ? 8 : 48;
+    const vPad = isMobile ? 56 + Math.floor(viewportH * 0.38) : 120;
     const maxW = Math.floor((viewportW - hPad) / cols);
     const maxH = Math.floor((viewportH - vPad) / rows);
-    cellSize = Math.max(18, Math.min(isMobile ? 30 : 38, maxW, maxH));
+    // Allow up to 34px on mobile (was 30) for larger phones.
+    cellSize = Math.max(18, Math.min(isMobile ? 34 : 38, maxW, maxH));
   }
 
   function getActiveWord(placed: PlacedWord[], fk: string, dir: 'across' | 'down'): PlacedWord | null {
@@ -277,7 +280,8 @@
     margin: 0 auto;
     overflow: hidden;
     color-scheme: light;
-    background: var(--cell-bg, #ffffff);
+    /* !important defeats Android OS-level force-dark which overrides color-scheme:light */
+    background: #ffffff !important;
     border-radius: 8px;
     position: relative;
     z-index: 1;
@@ -314,36 +318,40 @@
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-    border: 2px solid var(--cell-border, #2c2c2c);
-    background: var(--cell-bg, #ffffff);
+    border: 2px solid #2c2c2c !important;
+    /* Explicit white - !important defeats Android OS force-dark mode */
+    background: #ffffff !important;
+    color: #1a1a1a !important;
     box-sizing: border-box;
     box-shadow: inset -2px -2px 0 rgba(0,0,0,0.2), inset 2px 2px 0 rgba(255,255,255,0.5);
     color-scheme: light;
   }
 
   .cell.filled {
-    background: #2c2c2c;
+    /* Explicit dark for blocked cells - !important needed for same reason */
+    background: #2c2c2c !important;
     box-shadow: inset -2px -2px 0 rgba(0,0,0,0.5);
+    cursor: default;
   }
 
   .cell.enterable {
-    background: var(--cell-bg, #ffffff);
+    background: #ffffff !important;
     cursor: pointer;
   }
 
   .cell.active-word {
-    background: #b3d9ff;
+    background: #b3d9ff !important;
     box-shadow: inset -2px -2px 0 rgba(0,100,180,0.2), inset 2px 2px 0 rgba(255,255,255,0.6);
   }
 
   .cell.focused {
-    background: #ffd700;
+    background: #ffd700 !important;
     box-shadow: inset -2px -2px 0 rgba(180,140,0,0.5), inset 2px 2px 0 rgba(255,255,200,0.8);
     z-index: 2;
   }
 
   .cell.correct {
-    background: rgba(67, 176, 71, 0.25);
+    background: rgba(67, 176, 71, 0.35) !important;
   }
 
   .cell:focus-visible { outline: 2px solid #e52222; outline-offset: -2px; }
@@ -354,7 +362,7 @@
     left: 2px;
     font-size: calc(max(9px, var(--cell-size) * 0.28));
     font-weight: 700;
-    color: #1a1a1a;
+    color: #1a1a1a !important;
     pointer-events: none;
     line-height: 1;
   }
@@ -363,7 +371,7 @@
     font-family: 'Arial Black', Arial, sans-serif;
     font-weight: 900;
     font-size: calc(var(--cell-size) * 0.55);
-    color: #1a1a1a;
+    color: #1a1a1a !important;
     text-transform: uppercase;
     line-height: 1;
   }

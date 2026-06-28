@@ -1,6 +1,15 @@
-/* Force light mode - prevents system dark mode from overriding cell colors */
+/* Force light mode globally. color-scheme: light only is a hint; !important on
+   individual cell rules below handles Android OS-level force-dark override. */
 html {
   color-scheme: light only;
+}
+
+/* Extra safety net: if browser still applies dark mode, force game chrome to light */
+@media (prefers-color-scheme: dark) {
+  body { background: #5c94fc !important; }
+  .board-wrap { background: #ffffff !important; }
+  .cell { background: #ffffff !important; color: #1a1a1a !important; }
+  .cell.filled { background: #2c2c2c !important; }
 }
 
 /* Bundled pixel font - no external CDN at runtime */
