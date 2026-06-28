@@ -50,32 +50,30 @@
 
 <style>
   .clue-panel {
+    width: 100%;
+    max-width: 100%;
     flex: 1;
+    min-height: 0;
+    height: 0; /* triggers proper flex sizing on mobile */
     display: flex;
     flex-direction: column;
-    min-width: 0;
-    /*
-     * height (not max-height) gives the column flex a definite size, allowing
-     * .clue-list { flex: 1 } to fill the remainder and overflow-y: auto to
-     * actually scroll. max-height alone does not create a definite flex axis
-     * size, so flex:1 children collapse and the scroll never activates.
-     */
-    height: 40vh;
     overflow: hidden;
     position: relative;
     z-index: 1;
-    background: var(--color-surface);
+    background: rgba(255,255,255,0.97);
+    border: 3px solid #2c2c2c;
     border-radius: 8px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    box-shadow: 4px 4px 0 #2c2c2c;
     padding: var(--space-sm);
   }
 
   @media (min-width: 720px) {
-    /* In the grid layout, let height be determined by content up to the viewport. */
     .clue-panel {
-      height: auto;
-      max-height: calc(100vh - 64px);
+      width: 280px;
+      min-width: 240px;
       max-width: 320px;
+      height: calc(100vh - 80px);
+      max-height: calc(100vh - 80px);
     }
   }
 
@@ -85,24 +83,29 @@
     }
   }
 
-  .tabs { display: flex; gap: 2px; margin-bottom: var(--space-sm); }
+  .tabs { display: flex; gap: 4px; margin-bottom: var(--space-sm); }
 
   .tab {
     flex: 1;
     padding: var(--space-xs) var(--space-sm);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    color: var(--color-muted);
+    background: #5c94fc;
+    color: #ffffff;
+    border: 2px solid #2c2c2c;
     border-radius: 4px;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 0.8rem;
-    font-weight: 600;
-    transition: color 0.15s, border-color 0.15s;
+    font-family: var(--font-display);
+    font-size: 0.4rem;
+    font-weight: normal;
+    transition: background 0.15s;
+    letter-spacing: 0.05em;
   }
 
-  .tab.active { color: var(--color-accent); border-color: var(--color-accent); }
-  .tab:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .tab.active {
+    background: #e52222;
+    color: #ffffff;
+  }
+
+  .tab:focus-visible { outline: 2px solid #ffd700; outline-offset: 2px; }
 
   .clue-list {
     overflow-y: auto;
@@ -121,7 +124,7 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-family: inherit;
+    font-family: var(--font-body);
     font-size: 0.8rem;
     text-align: left;
     color: var(--color-text);
@@ -129,14 +132,23 @@
     transition: background 0.1s;
   }
 
-  .clue-item:hover { background: rgba(14,165,233,0.08); }
+  .clue-item:hover { background: rgba(92,148,252,0.12); }
 
   .clue-item.active-clue {
-    background: rgba(14, 165, 233, 0.15);
-    color: var(--color-accent);
+    background: rgba(92,148,252,0.2);
+    color: #2c2c2c;
+    font-weight: 600;
   }
 
-  .clue-item:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+  .clue-item:focus-visible { outline: 2px solid #ffd700; outline-offset: 2px; }
 
-  .clue-num { color: var(--color-muted); flex-shrink: 0; min-width: 1.8rem; font-weight: 600; }
+  .clue-num {
+    font-family: var(--font-display);
+    font-size: 0.45rem;
+    color: #e52222;
+    font-weight: normal;
+    flex-shrink: 0;
+    min-width: 1.8rem;
+    line-height: 1.8;
+  }
 </style>

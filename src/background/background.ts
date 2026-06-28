@@ -8,8 +8,8 @@ export interface BgController {
   resize(w: number, h: number): void;
 }
 
-// Resting-state palette: crossword-inspired white and near-black cubes.
-const RESTING_COLORS = ['#f8f8f8', '#1a1a1a'];
+// Resting-state palette: Mario-inspired colorful cubes (red, sky blue, green, gold, white, dark).
+const RESTING_COLORS = ['#e52222', '#5c94fc', '#43b047', '#ffd700', '#ffffff', '#2c2c2c'];
 
 // Formation scheduler timing (seconds).
 const FIRST_TRIGGER_MIN = 8;
@@ -80,7 +80,7 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     navigator.hardwareConcurrency !== undefined &&
     navigator.hardwareConcurrency <= 2;
 
-  const COUNT = isLowPower ? 80 : 200;
+  const COUNT = isLowPower ? 80 : 260;
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(canvas.clientWidth || 800, canvas.clientHeight || 600, false);
@@ -114,7 +114,7 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   const cubes: Cube[] = [];
 
   for (let i = 0; i < COUNT; i++) {
-    const restColorIdx = Math.random() < 0.5 ? 0 : 1;
+    const restColorIdx = Math.floor(Math.random() * RESTING_COLORS.length);
     const cube: Cube = {
       pos: new THREE.Vector3(rnd(-28, 28), rnd(-18, 18), rnd(-10, 10)),
       vel: new THREE.Vector3(rnd(-0.008, 0.008), rnd(-0.008, 0.008), 0),

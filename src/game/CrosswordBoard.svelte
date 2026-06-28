@@ -7,16 +7,12 @@
   } from './store';
   import type { PlacedWord } from '$lib/types';
 
-  const CELL_SIZE = 40;
-  // Top bar is ~48px, play-area has ~16px padding top, gap ~16px = ~80px total overhead
-  const TOPBAR_HEIGHT = 80;
-  // On mobile the clue list sits below the board; leave room for it (~40vh).
-  // On desktop we only need to fit the board vertically.
-  const MOBILE_CLUE_RESERVE = 0.40; // fraction of vh reserved for clue panel
-
   let boardEl: HTMLElement;
   let hiddenInput: HTMLInputElement;
-  let scale = 1;
+
+  let viewportW = 375; // SSR safe default
+  let viewportH = 667;
+  let cellSize = 32;
 
   $: puz = $puzzle;
   $: ents = $entries;
@@ -24,6 +20,17 @@
   $: aDir = $activeDir;
 
   $: activeWord = puz ? getActiveWord(puz.placed, fKey, aDir) : null;
+
+  $: cols = puz ? puz.cols : 13;
+  $: rows = puz ? puz.rows : 13;
+  $: isMobile = viewportW < 720;
+  $: {
+    const hPad = isMobile ? 24 : 48;
+    const vPad = isMobile ? 120 + Math.floor(viewportH * 0.4) : 120;
+    const maxW = Math.floor((viewportW - hPad) / cols);
+    const maxH = Math.floor((viewportH - vPad) / rows);
+    cellSize = Math.max(18, Math.min(isMobile ? 30 : 38, maxW, maxH));
+  }
 
   function getActiveWord(placed: PlacedWord[], fk: string, dir: 'across' | 'down'): PlacedWord | null {
     if (!fk) return null;
@@ -196,38 +203,20 @@
     }
   }
 
-  function computeScale() {
-    if (!puz) return;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    // Horizontal: board must not overflow the viewport width (with 24px margin).
-    // On desktop the clue list sits beside the board and takes up to 320px + gaps.
-    const isMobile = vw < 720;
-    const horizReserve = isMobile ? 16 : 360; // clue panel width on desktop
-    const horizLimit = (vw - horizReserve) / (puz.cols * CELL_SIZE + 4);
-
-    // Vertical: on mobile the clue list sits below the board and takes ~40vh.
-    // On desktop we need the board to fit vertically within available height.
-    const availH = isMobile
-      ? (vh * (1 - MOBILE_CLUE_RESERVE)) - TOPBAR_HEIGHT
-      : vh - TOPBAR_HEIGHT;
-    const vertLimit = availH / (puz.rows * CELL_SIZE + 4);
-
-    // Never exceed 1.0 (no upscaling) and always use the tighter constraint.
-    scale = Math.min(1, horizLimit, vertLimit);
-  }
-
   onMount(() => {
-    computeScale();
-    window.addEventListener('resize', computeScale);
+    viewportW = window.innerWidth;
+    viewportH = window.innerHeight;
+    const handleResize = () => {
+      viewportW = window.innerWidth;
+      viewportH = window.innerHeight;
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   });
-
-  onDestroy(() => window.removeEventListener('resize', computeScale));
 </script>
 
 {#if puz}
-  <div class="board-wrap">
+  <div class="board-wrap" style="color-scheme: light;">
     <input
       bind:this={hiddenInput}
       class="hidden-inp"
@@ -242,44 +231,41 @@
       on:input={handleInput}
     />
 
-    <div class="board-outer" style="height: {puz.rows * CELL_SIZE * scale + 8}px; --rows: {puz.rows}; --cols: {puz.cols};">
-      <div class="board-scaler" style="transform: scale({scale}); transform-origin: top center;">
-        <div
-          bind:this={boardEl}
-          class="grid"
-          style="grid-template-columns: repeat({puz.cols}, {CELL_SIZE}px); grid-template-rows: repeat({puz.rows}, {CELL_SIZE}px);"
-        >
-          {#each Array.from({ length: puz.rows }, (_, r) => r) as r}
-            {#each Array.from({ length: puz.cols }, (_, c) => c) as c}
-              {@const key = `${r},${c}`}
-              {@const isEnterable = !!puz.cells[key]}
-              {@const isFocused = fKey === key}
-              {@const isActive = isActiveCell(r, c)}
-              {@const letter = ents[key] ?? ''}
-              {@const isCorrect = !!letter && letter === puz.cells[key]}
-              {@const cn = isEnterable ? getClueNum(r, c) : null}
-              <div
-                class="cell"
-                class:enterable={isEnterable}
-                class:blocked={!isEnterable}
-                class:focused={isFocused}
-                class:active-word={isActive && !isFocused}
-                class:correct={isCorrect}
-                on:click={() => cellClick(r, c)}
-                on:keydown={(ev) => { if (ev.key === 'Enter' || ev.key === ' ') cellClick(r, c); }}
-                role={isEnterable ? 'button' : 'presentation'}
-                tabindex={isEnterable ? 0 : -1}
-                aria-label={isEnterable ? `Cell ${r + 1},${c + 1}` : undefined}
-              >
-                {#if isEnterable}
-                  {#if cn}<span class="num">{cn}</span>{/if}
-                  <span class="ltr">{letter}</span>
-                {/if}
-              </div>
-            {/each}
-          {/each}
-        </div>
-      </div>
+    <div
+      bind:this={boardEl}
+      class="board"
+      style="--rows: {puz.rows}; --cols: {puz.cols}; --cell-size: {cellSize}px; grid-template-columns: repeat({puz.cols}, {cellSize}px); grid-template-rows: repeat({puz.rows}, {cellSize}px);"
+    >
+      {#each Array.from({ length: puz.rows }, (_, r) => r) as r}
+        {#each Array.from({ length: puz.cols }, (_, c) => c) as c}
+          {@const key = `${r},${c}`}
+          {@const isEnterable = !!puz.cells[key]}
+          {@const isFocused = fKey === key}
+          {@const isActive = isActiveCell(r, c)}
+          {@const letter = ents[key] ?? ''}
+          {@const isCorrect = !!letter && letter === puz.cells[key]}
+          {@const cn = isEnterable ? getClueNum(r, c) : null}
+          <div
+            class="cell"
+            class:enterable={isEnterable}
+            class:filled={!isEnterable}
+            class:focused={isFocused}
+            class:active-word={isActive && !isFocused}
+            class:correct={isCorrect}
+            style="color-scheme: light;"
+            on:click={() => cellClick(r, c)}
+            on:keydown={(ev) => { if (ev.key === 'Enter' || ev.key === ' ') cellClick(r, c); }}
+            role={isEnterable ? 'button' : 'presentation'}
+            tabindex={isEnterable ? 0 : -1}
+            aria-label={isEnterable ? `Cell ${r + 1},${c + 1}` : undefined}
+          >
+            {#if isEnterable}
+              {#if cn}<span class="num">{cn}</span>{/if}
+              <span class="ltr">{letter}</span>
+            {/if}
+          </div>
+        {/each}
+      {/each}
     </div>
   </div>
 {/if}
@@ -287,11 +273,15 @@
 <style>
   .board-wrap {
     width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+    color-scheme: light;
+    background: var(--cell-bg, #ffffff);
+    border-radius: 8px;
     position: relative;
     z-index: 1;
-    background: var(--color-bg);
-    border-radius: 8px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    box-shadow: 4px 4px 0 #2c2c2c, 0 0 0 3px #ffd700;
   }
 
   .hidden-inp {
@@ -305,28 +295,18 @@
     border: none;
   }
 
-  .board-outer {
-    position: relative;
-    overflow: hidden;
-    width: max-content;
-    background: var(--color-bg);
-    border-radius: 8px;
-  }
-
-  .board-scaler { display: inline-block; }
-
-  .grid {
+  .board {
     display: grid;
-    gap: 2px;
-    background: var(--color-border);
-    border: 2px solid var(--color-border);
+    gap: 0;
+    margin: 0 auto;
+    border: 2px solid #2c2c2c;
     border-radius: 4px;
     overflow: hidden;
   }
 
   .cell {
-    width: 40px;
-    height: 40px;
+    width: var(--cell-size);
+    height: var(--cell-size);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -334,35 +314,57 @@
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
+    border: 2px solid var(--cell-border, #2c2c2c);
+    background: var(--cell-bg, #ffffff);
+    box-sizing: border-box;
+    box-shadow: inset -2px -2px 0 rgba(0,0,0,0.2), inset 2px 2px 0 rgba(255,255,255,0.5);
+    color-scheme: light;
   }
 
-  .cell.enterable { background: var(--color-surface); cursor: pointer; }
-  .cell.blocked { background: #1a1a1a; }
-  .cell.active-word { background: rgba(14, 165, 233, 0.15); }
-  .cell.focused { background: rgba(14, 165, 233, 0.35); }
-  .cell.correct { background: rgba(22, 163, 74, 0.2); }
-  .cell:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+  .cell.filled {
+    background: #2c2c2c;
+    box-shadow: inset -2px -2px 0 rgba(0,0,0,0.5);
+  }
+
+  .cell.enterable {
+    background: var(--cell-bg, #ffffff);
+    cursor: pointer;
+  }
+
+  .cell.active-word {
+    background: #b3d9ff;
+    box-shadow: inset -2px -2px 0 rgba(0,100,180,0.2), inset 2px 2px 0 rgba(255,255,255,0.6);
+  }
+
+  .cell.focused {
+    background: #ffd700;
+    box-shadow: inset -2px -2px 0 rgba(180,140,0,0.5), inset 2px 2px 0 rgba(255,255,200,0.8);
+    z-index: 2;
+  }
+
+  .cell.correct {
+    background: rgba(67, 176, 71, 0.25);
+  }
+
+  .cell:focus-visible { outline: 2px solid #e52222; outline-offset: -2px; }
 
   .num {
     position: absolute;
     top: 1px;
     left: 2px;
-    font-size: 0.65rem;
+    font-size: calc(max(9px, var(--cell-size) * 0.28));
     font-weight: 700;
-    color: #1a1a2e;
+    color: #1a1a1a;
     pointer-events: none;
     line-height: 1;
   }
 
-  .cell.focused .num,
-  .cell.active-word .num {
-    color: #1a1a2e;
-  }
-
   .ltr {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--color-text);
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-weight: 900;
+    font-size: calc(var(--cell-size) * 0.55);
+    color: #1a1a1a;
+    text-transform: uppercase;
     line-height: 1;
   }
 </style>

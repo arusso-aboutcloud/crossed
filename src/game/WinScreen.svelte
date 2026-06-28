@@ -93,12 +93,13 @@
     animation: fall 3s ease-in forwards;
   }
 
-  .p0 { background: #3b82f6; }
-  .p1 { background: #a855f7; }
-  .p2 { background: #0ea5e9; }
-  .p3 { background: #4ade80; }
-  .p4 { background: #f97316; }
-  .p5 { background: #ec4899; }
+  /* Mario palette confetti colors */
+  .p0 { background: #5c94fc; }
+  .p1 { background: #ffd700; }
+  .p2 { background: #e52222; }
+  .p3 { background: #43b047; }
+  .p4 { background: #ffffff; }
+  .p5 { background: #2c2c2c; }
 
   @keyframes fall {
     0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
@@ -118,12 +119,17 @@
     text-align: center;
   }
 
+  /* Mario-style win heading */
   .heading {
-    font-size: clamp(2rem, 10vw, 3.5rem);
-    font-weight: 900;
-    color: var(--color-accent);
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 6vw, 1.8rem);
+    color: #ffd700;
     margin: 0;
-    text-shadow: 0 0 30px rgba(14, 165, 233, 0.4);
+    text-shadow:
+      3px 3px 0 #c8a000,
+      -1px -1px 0 #2c2c2c,
+      1px -1px 0 #2c2c2c,
+      -1px 1px 0 #2c2c2c;
     letter-spacing: 0.05em;
   }
 
@@ -136,24 +142,38 @@
   }
 
   .stat {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
+    background: rgba(255,255,255,0.95);
+    border: 3px solid #2c2c2c;
+    border-radius: 8px;
     padding: var(--space-md);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--space-xs);
+    box-shadow: 3px 3px 0 #2c2c2c;
   }
 
-  .stat-label { font-size: 0.7rem; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .stat-label {
+    font-family: var(--font-display);
+    font-size: 0.35rem;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: normal;
+  }
 
-  .stat-value { font-size: 1.2rem; font-weight: 700; color: var(--color-text); text-transform: capitalize; }
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    color: var(--color-text);
+    text-transform: capitalize;
+    font-weight: normal;
+  }
 
-  .diff-easy   { color: #4ade80; }
-  .diff-medium { color: var(--color-accent); }
+  .diff-easy   { color: #43b047; }
+  .diff-medium { color: #5c94fc; }
   .diff-hard   { color: #f97316; }
-  .diff-pro    { color: #a855f7; }
+  .diff-pro    { color: #ffd700; }
 
   .actions {
     display: flex;
@@ -167,28 +187,59 @@
   .btn {
     width: 100%;
     padding: var(--space-sm) var(--space-md);
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-family: var(--font-display);
+    font-weight: normal;
     cursor: pointer;
-    font-family: inherit;
-    transition: transform 0.1s;
+    transition: transform 0.1s, box-shadow 0.1s;
     border: none;
+    letter-spacing: 0.05em;
   }
 
-  .btn:active { transform: scale(0.97); }
-  .btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  .btn:active { transform: translate(2px, 2px); }
+  .btn:focus-visible { outline: 2px solid #ffd700; outline-offset: 3px; }
 
-  .btn-primary { background: var(--color-accent); color: #fff; }
-  .btn-primary:hover { background: var(--color-accent-hover); color: #fff; }
+  .btn-primary {
+    background: #e52222;
+    color: #fff;
+    border: 2px solid #8b0000;
+    box-shadow: 4px 4px 0 #8b0000;
+  }
+  .btn-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #8b0000;
+  }
 
-  .btn-secondary { background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); }
+  .btn-secondary {
+    background: #ffffff;
+    color: #2c2c2c;
+    border: 2px solid #2c2c2c;
+    box-shadow: 3px 3px 0 #2c2c2c;
+  }
+  .btn-secondary:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 #2c2c2c;
+  }
 
   .btn-share {
-    background: linear-gradient(135deg, #a855f7, #3b82f6);
-    color: #fff;
+    background: #ffd700;
+    color: #2c2c2c;
+    border: 2px solid #c8a000;
+    box-shadow: 3px 3px 0 #c8a000;
+  }
+  .btn-share:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 #c8a000;
   }
 
-  .btn-ghost { background: transparent; color: var(--color-muted); font-weight: 400; }
-  .btn-ghost:hover { color: var(--color-text); }
+  .btn-ghost {
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.3);
+    font-size: 0.55rem;
+    font-family: var(--font-body);
+    box-shadow: none;
+  }
+  .btn-ghost:hover { color: #ffffff; border-color: rgba(255,255,255,0.6); }
 </style>
