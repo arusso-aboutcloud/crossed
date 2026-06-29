@@ -48,10 +48,12 @@
   {:else}
     <div class="bg-fallback"></div>
   {/if}
-  <!-- Dim overlay: heavier during play, lighter on other screens; Mario sky blue tint -->
+  <!-- Dim overlay: heavier during play, lighter on other screens; Mario sky blue tint.
+       The radial gradient shades the edges slightly darker than the center, giving a
+       natural focus vignette at zero GPU cost on all quality tiers. -->
   <div
     class="bg-dim"
-    style="background: rgba(92,148,252,{overlayOpacity});"
+    style="background: radial-gradient(ellipse at 50% 50%, rgba(92,148,252,{overlayOpacity * 0.75}) 0%, rgba(20,55,150,{Math.min(overlayOpacity + 0.18, 1)}) 100%);"
   ></div>
 </div>
 

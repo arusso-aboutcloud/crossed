@@ -1,4 +1,10 @@
 import * as THREE from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { VignetteShader } from 'three/examples/jsm/shaders/VignetteShader.js';
 import { FORMATIONS, FORMATION_SLOT_BUDGET } from './formations';
 
 export interface BgController {
@@ -8,7 +14,10 @@ export interface BgController {
   resize(w: number, h: number): void;
 }
 
-// Resting-state palette: Mario-inspired + summer colors (bright, warm, tropical).
+// ---------------------------------------------------------------------------
+// Palette
+// ---------------------------------------------------------------------------
+
 const RESTING_COLORS = [
   '#5c94fc', // Mario sky blue
   '#43b047', // Mario green
@@ -22,7 +31,10 @@ const RESTING_COLORS = [
   '#7dd3fc', // Light blue
 ];
 
-// Formation scheduler timing (seconds).
+// ---------------------------------------------------------------------------
+// Formation scheduler timing (seconds)
+// ---------------------------------------------------------------------------
+
 const FIRST_TRIGGER_MIN = 4;
 const FIRST_TRIGGER_MAX = 8;
 const INTERVAL_MIN = 8;
@@ -31,12 +43,96 @@ const ENTER_DURATION = 2.5;
 const HOLD_DURATION = 6.0;
 const LEAVE_DURATION = 2.0;
 
-// Bystanders scale to this during a formation. 0.001 is sub-pixel and fully invisible
-// while keeping the transform matrix invertible (avoids degenerate matrices).
-// 0.08 (previous value) left ~40-70 tiny visible flecks around every shape.
+// Bystanders scale to this during a formation (sub-pixel, fully invisible).
 const BYSTANDER_SCALE_MIN = 0.001;
-// Scale applied to formation cubes during HOLDING for visual pop.
+// Formation cubes scale to this at peak HOLDING for visual pop.
 const FORMATION_SCALE_MAX = 1.25;
+
+// ---------------------------------------------------------------------------
+// Quality tier system
+// ---------------------------------------------------------------------------
+
+type QualityTier = 'high' | 'medium' | 'low';
+
+// Device signals -> tier mapping.
+// low: hardwareConcurrency <= 2 OR explicitly flagged low-power
+// medium: concurrency <= 4 OR very high DPR (implies thin/hot phone)
+// high: everything else (desktop / capable tablet)
+function detectTier(isLowPower: boolean): QualityTier {
+  if (isLowPower) return 'low';
+  const cpu = (typeof navigator !== 'undefined' ? navigator.hardwareConcurrency : undefined) ?? 4;
+  const dpr = (typeof window !== 'undefined' ? window.devicePixelRatio : undefined) ?? 1;
+  if (cpu <= 4 || dpr > 2) return 'medium';
+  return 'high';
+}
+
+const DPR_CAP: Record<QualityTier, number> = {
+  high: 2,
+  medium: 1.5,
+  low: 1,
+};
+
+interface BloomConfig {
+  strength: number;
+  radius: number;
+  threshold: number;
+  resScale: number; // bloom render-target scale relative to canvas (0.5 = half-res bloom)
+}
+
+const BLOOM_CONFIG: Record<QualityTier, BloomConfig | null> = {
+  // High: full-res bloom, gentle glow on bright formation colors.
+  high: { strength: 0.28, radius: 0.40, threshold: 0.55, resScale: 1.0 },
+  // Medium: half-res bloom, slightly tighter to save fill-rate on mid phones.
+  medium: { strength: 0.18, radius: 0.35, threshold: 0.60, resScale: 0.5 },
+  // Low: no post-processing. Direct render.
+  low: null,
+};
+
+// ---------------------------------------------------------------------------
+// Easing library
+// ---------------------------------------------------------------------------
+
+// Classic ease-in-out cubic (used for LEAVING and color blend).
+function easeInOut(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+// Ease-out cubic: cubes rush to target and decelerate smoothly.
+// Used for formation member POSITION during ENTERING.
+function easeOut(t: number): number {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+// Back-out: arrives at destination with ~10 % overshoot then settles.
+// Used for formation member SCALE during ENTERING - gives a satisfying
+// "snap into place" pop without silly bounciness.
+function easeOutBack(t: number): number {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function rnd(min: number, max: number): number {
+  return Math.random() * (max - min) + min;
+}
+
+// Returns sRGB float components [0-1] from a '#rrggbb' hex string.
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace('#', '');
+  return [
+    parseInt(h.slice(0, 2), 16) / 255,
+    parseInt(h.slice(2, 4), 16) / 255,
+    parseInt(h.slice(4, 6), 16) / 255,
+  ];
+}
+
+// ---------------------------------------------------------------------------
+// State machine
+// ---------------------------------------------------------------------------
 
 enum FormationState {
   DRIFTING,
@@ -50,32 +146,16 @@ interface Cube {
   vel: THREE.Vector3;
   rot: THREE.Euler;
   rotSpeed: THREE.Vector3;
-  // Position saved at start of ENTERING (lerp source for ENTERING, return target via preDriftPos)
   driftPos: THREE.Vector3;
-  // Target formation world position (null = bystander)
   formTarget: THREE.Vector3 | null;
   restColorIdx: number;
   formColor: string;
   phaseOffset: number;
 }
 
-function rnd(min: number, max: number): number {
-  return Math.random() * (max - min) + min;
-}
-
-// Ease-in-out cubic
-function easeInOut(t: number): number {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-}
-
-function hexToRgb(hex: string): [number, number, number] {
-  const h = hex.replace('#', '');
-  return [
-    parseInt(h.slice(0, 2), 16) / 255,
-    parseInt(h.slice(2, 4), 16) / 255,
-    parseInt(h.slice(4, 6), 16) / 255,
-  ];
-}
+// ---------------------------------------------------------------------------
+// createBackground
+// ---------------------------------------------------------------------------
 
 export function createBackground(canvas: HTMLCanvasElement): BgController | null {
   let renderer: THREE.WebGLRenderer;
@@ -85,36 +165,73 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     return null;
   }
 
-  const isLowPower = typeof navigator !== 'undefined' &&
+  const isLowPower =
+    typeof navigator !== 'undefined' &&
     navigator.hardwareConcurrency !== undefined &&
     navigator.hardwareConcurrency <= 2;
 
-  // Fewer cubes so formations (17-45 cubes) are a large fraction and clearly visible.
+  const tier = detectTier(isLowPower);
   const COUNT = isLowPower ? 40 : 90;
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const dprCap = DPR_CAP[tier];
+  const dpr = Math.min(window.devicePixelRatio ?? 1, dprCap);
+
+  renderer.setPixelRatio(dpr);
   renderer.setSize(canvas.clientWidth || 800, canvas.clientHeight || 600, false);
   renderer.setClearColor(0x000000, 0);
-  renderer.outputColorSpace = (THREE as any).SRGBColorSpace ?? (THREE as any).LinearEncoding;
+
+  // Neutral tone mapping: well-suited to saturated game palettes; less
+  // contrast-crushing than ACES. OutputPass reads these settings.
+  renderer.toneMapping = (THREE as any).NeutralToneMapping ?? (THREE as any).ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.95;
+  renderer.outputColorSpace = (THREE as any).SRGBColorSpace ?? 'srgb';
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
     55,
     (canvas.clientWidth || 800) / (canvas.clientHeight || 600),
     0.1,
-    200
+    200,
   );
   camera.position.z = 35;
 
-  // MeshBasicMaterial: no lighting calculations, instance colors render exactly as specified.
-  // This prevents cubes from appearing dark due to face-away-from-light shading.
+  // ------------------------------------------------------------------
+  // Lighting rig
+  // ------------------------------------------------------------------
+  // Warm ambient ensures no face is fully black; summer-sky warmth.
+  const ambientLight = new THREE.AmbientLight(0xfff4e0, 0.85);
+  scene.add(ambientLight);
+
+  // Key light: warm summer sun from upper-right-front.
+  const keyLight = new THREE.DirectionalLight(0xffecc0, 1.0);
+  keyLight.position.set(8, 12, 10);
+  scene.add(keyLight);
+
+  // Fill light: cool sky reflection from upper-left. Skipped on low tier
+  // to reduce lighting calculations and keep the GPU load down.
+  if (tier !== 'low') {
+    const fillLight = new THREE.DirectionalLight(0xa8d8ff, 0.35);
+    fillLight.position.set(-10, 4, 8);
+    scene.add(fillLight);
+  }
+
+  // ------------------------------------------------------------------
+  // Geometry and material
+  // ------------------------------------------------------------------
+  // MeshStandardMaterial gives PBR shading: each cube face responds to
+  // the lighting rig, giving real depth and material feel.
+  // roughness=0.60 keeps it matte-ish (no harsh specular glints on mobile).
+  // metalness=0.05 adds a touch of surface response without looking metallic.
   const geo = new THREE.BoxGeometry(1.0, 1.0, 1.0);
-  const mat = new THREE.MeshBasicMaterial({ vertexColors: true });
+  const mat = new THREE.MeshStandardMaterial({
+    vertexColors: true,
+    roughness: 0.60,
+    metalness: 0.05,
+  });
   const mesh = new THREE.InstancedMesh(geo, mat, COUNT);
   mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   scene.add(mesh);
 
-  const colorBuf = new Float32Array(COUNT * 3);
   const tmpColor = new THREE.Color();
   const dummy = new THREE.Object3D();
 
@@ -140,7 +257,6 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   }
   if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
 
-  // Sets position, rotation, and SCALE on the instanced mesh slot.
   function applyMatrix(i: number, c: Cube, scale: number) {
     dummy.position.copy(c.pos);
     dummy.rotation.copy(c.rot);
@@ -149,13 +265,57 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     mesh.setMatrixAt(i, dummy.matrix);
   }
 
+  // ------------------------------------------------------------------
+  // Post-processing (high and medium tiers only)
+  // ------------------------------------------------------------------
+  const reducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let composer: EffectComposer | null = null;
+  let bloomPass: UnrealBloomPass | null = null;
+
+  const bloomConfig = BLOOM_CONFIG[tier];
+
+  if (bloomConfig && !reducedMotion) {
+    const w = canvas.clientWidth || 800;
+    const h = canvas.clientHeight || 600;
+
+    composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+
+    const bw = Math.max(1, Math.round(w * dpr * bloomConfig.resScale));
+    const bh = Math.max(1, Math.round(h * dpr * bloomConfig.resScale));
+    bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(bw, bh),
+      bloomConfig.strength,
+      bloomConfig.radius,
+      bloomConfig.threshold,
+    );
+    composer.addPass(bloomPass);
+
+    // Tasteful vignette: darkens edges slightly for a framed, premium feel.
+    // offset=0.85 keeps a generous bright center; darkness=1.1 ensures
+    // edges trend toward black (values > 1.0 clamp cleanly in the shader).
+    const vignettePass = new ShaderPass(VignetteShader);
+    (vignettePass.uniforms as Record<string, { value: unknown }>)['offset'].value = 0.85;
+    (vignettePass.uniforms as Record<string, { value: unknown }>)['darkness'].value = 1.10;
+    composer.addPass(vignettePass);
+
+    // OutputPass applies tone mapping + sRGB conversion as the final step.
+    composer.addPass(new OutputPass());
+  }
+
+  // ------------------------------------------------------------------
+  // Formation scheduler
+  // ------------------------------------------------------------------
+
   let formationState: FormationState = FormationState.DRIFTING;
   let formationTimer = 0;
   let nextFormationTime = rnd(FIRST_TRIGGER_MIN, FIRST_TRIGGER_MAX);
   let lastFormationIdx = -1;
   let transitionProgress = 0;
 
-  // Positions saved at ENTERING start; used by LEAVING to scatter cubes back.
   const preDriftPos: THREE.Vector3[] = Array.from({ length: COUNT }, () => new THREE.Vector3());
 
   let formationQueue: number[] = [];
@@ -170,9 +330,6 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     return indices;
   }
   formationQueue = buildShuffledQueue();
-
-  const reducedMotion = typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function pickNextFormation(): number {
     let idx = formationQueue[formationQueuePos];
@@ -194,22 +351,16 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     return idx;
   }
 
-  // World-space gap between adjacent cubes in a formation.
   const GRID_STEP = 2.0;
 
   function assignFormation(formIdx: number) {
     const form = FORMATIONS[formIdx];
     const slots = form.slots;
 
-    // Guard: a formation with more slots than COUNT can never fully render.
-    // This catches any formation added beyond the FORMATION_SLOT_BUDGET.
-    // The assignment loop below already clamps at COUNT, but we warn so
-    // the problem is visible in the console during development.
     if (slots.length > COUNT) {
       console.warn(
-        `[WebGL] Formation "${form.id}" has ${slots.length} slots but ` +
-        `cube pool is ${COUNT}. Slots beyond ${COUNT} will not render. ` +
-        `Keep formations at or below FORMATION_SLOT_BUDGET (${FORMATION_SLOT_BUDGET}).`
+        `[WebGL] Formation "${form.id}" has ${slots.length} slots but pool is ${COUNT}.` +
+        ` Keep formations at or below FORMATION_SLOT_BUDGET (${FORMATION_SLOT_BUDGET}).`,
       );
     }
 
@@ -236,11 +387,15 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
       cubes[si].formTarget = new THREE.Vector3(
         (s.col - centerCol) * GRID_STEP,
         -(s.row - centerRow) * GRID_STEP,
-        0
+        0,
       );
       cubes[si].formColor = s.color;
     }
   }
+
+  // ------------------------------------------------------------------
+  // Animation loop
+  // ------------------------------------------------------------------
 
   let paused = false;
   let enabled = true;
@@ -274,7 +429,7 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     const dt = Math.min((now - lastT) / 1000, 0.1);
     lastT = now;
 
-    // State machine
+    // -- State machine -----------------------------------------------
     switch (formationState) {
       case FormationState.DRIFTING: {
         formationTimer += dt;
@@ -328,16 +483,25 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
       formationState === FormationState.HOLDING ||
       formationState === FormationState.LEAVING;
 
-    // blend: 0 = pure drift, 1 = fully in formation
-    const blend = easeInOut(Math.max(0, Math.min(1, transitionProgress)));
+    // ENTERING uses two separate blends:
+    //   posBlend  (easeOut)     - smooth rush-to-position
+    //   scaleBlend (easeOutBack) - spring overshoot for satisfying pop
+    // LEAVING/HOLDING use a single easeInOut blend (smooth in both directions).
+    const rawT = Math.max(0, Math.min(1, transitionProgress));
+    const posBlend =
+      formationState === FormationState.ENTERING ? easeOut(rawT) : easeInOut(rawT);
+    const scaleBlend =
+      formationState === FormationState.ENTERING ? easeOutBack(rawT) : easeInOut(rawT);
+    // Color transitions on the same curve as position for visual coherence.
+    const colorBlend = posBlend;
 
+    // -- Per-cube update ---------------------------------------------
     for (let i = 0; i < COUNT; i++) {
       const c = cubes[i];
       const isMember = c.formTarget !== null;
 
-      // --- Position ---
+      // Position
       if (!isFormationActive) {
-        // Pure drift with gentle bob
         c.pos.addScaledVector(c.vel, dt * 60);
         c.pos.y += Math.sin(now * 0.0008 + c.phaseOffset) * 0.004;
         if (c.pos.x > 30)  c.pos.x = -30;
@@ -346,18 +510,17 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
         if (c.pos.y < -20) c.pos.y = 20;
       } else if (isMember) {
         if (formationState === FormationState.ENTERING) {
-          c.pos.lerpVectors(c.driftPos, c.formTarget!, blend);
+          c.pos.lerpVectors(c.driftPos, c.formTarget!, posBlend);
         } else if (formationState === FormationState.HOLDING) {
           c.pos.copy(c.formTarget!);
-          // Tiny oscillation so cubes feel alive during hold
+          // Gentle oscillation keeps cubes alive during hold.
           c.pos.x += Math.sin(now * 0.0006 + i * 0.9) * 0.06;
           c.pos.y += Math.cos(now * 0.0005 + i * 0.8) * 0.06;
         } else {
-          // LEAVING: from held position back to pre-gather position
-          c.pos.lerpVectors(c.driftPos, preDriftPos[i], 1 - blend);
+          c.pos.lerpVectors(c.driftPos, preDriftPos[i], 1 - posBlend);
         }
       } else {
-        // Bystander: keep drifting, will scale to near-invisible
+        // Bystander: keep drifting while hidden.
         c.pos.addScaledVector(c.vel, dt * 60);
         if (c.pos.x > 30)  c.pos.x = -30;
         if (c.pos.x < -30) c.pos.x = 30;
@@ -365,56 +528,58 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
         if (c.pos.y < -20) c.pos.y = 20;
       }
 
-      // --- Rotation (always) ---
+      // Rotation (always spinning, even mid-formation for life)
       c.rot.x += c.rotSpeed.x * dt * 60;
       c.rot.y += c.rotSpeed.y * dt * 60;
       c.rot.z += c.rotSpeed.z * dt * 60;
 
-      // --- Scale ---
-      // Formation members: 1 -> FORMATION_SCALE_MAX -> 1
-      // Bystanders: 1 -> BYSTANDER_SCALE_MIN -> 1
-      // This makes formations unmistakably visible.
+      // Scale
+      // Formation members: easeOutBack spring for ENTERING (pops in with
+      //   slight overshoot); easeInOut for HOLDING->LEAVING (smooth exit).
+      // Bystanders: shrink to near-invisible (BYSTANDER_SCALE_MIN).
       let scale = 1.0;
       if (isFormationActive) {
         if (isMember) {
           if (formationState === FormationState.ENTERING) {
-            scale = 1.0 + (FORMATION_SCALE_MAX - 1.0) * blend;
+            // scaleBlend can exceed 1 slightly (overshoot); allow it.
+            scale = 1.0 + (FORMATION_SCALE_MAX - 1.0) * scaleBlend;
           } else if (formationState === FormationState.HOLDING) {
             scale = FORMATION_SCALE_MAX;
           } else {
-            // LEAVING: blend goes 1->0, so scale goes FORMATION_SCALE_MAX -> 1
-            scale = 1.0 + (FORMATION_SCALE_MAX - 1.0) * blend;
+            scale = 1.0 + (FORMATION_SCALE_MAX - 1.0) * posBlend;
           }
         } else {
-          // Bystander: shrink as blend rises, grow back as blend falls
-          scale = 1.0 + (BYSTANDER_SCALE_MIN - 1.0) * blend;
+          scale = 1.0 + (BYSTANDER_SCALE_MIN - 1.0) * posBlend;
         }
       }
 
       applyMatrix(i, c, scale);
 
-      // --- Color ---
+      // Color: lerp from rest color to formation color on posBlend.
       const restColor = RESTING_COLORS[c.restColorIdx];
       if (isFormationActive && isMember) {
         const [rr, rg, rb] = hexToRgb(restColor);
         const [fr, fg, fb] = hexToRgb(c.formColor);
-        colorBuf[i * 3 + 0] = rr + (fr - rr) * blend;
-        colorBuf[i * 3 + 1] = rg + (fg - rg) * blend;
-        colorBuf[i * 3 + 2] = rb + (fb - rb) * blend;
+        const R = rr + (fr - rr) * colorBlend;
+        const G = rg + (fg - rg) * colorBlend;
+        const B = rb + (fb - rb) * colorBlend;
+        // setStyle (hex) is sRGB-correct; setRGB without colorSpace arg
+        // treats values as linear. We interpolate in sRGB then convert.
+        tmpColor.setRGB(R, G, B, (THREE as any).SRGBColorSpace ?? 'srgb');
       } else {
-        const [rr, rg, rb] = hexToRgb(restColor);
-        colorBuf[i * 3 + 0] = rr;
-        colorBuf[i * 3 + 1] = rg;
-        colorBuf[i * 3 + 2] = rb;
+        tmpColor.set(restColor);
       }
-
-      tmpColor.setRGB(colorBuf[i * 3], colorBuf[i * 3 + 1], colorBuf[i * 3 + 2]);
       mesh.setColorAt(i, tmpColor);
     }
 
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-    renderer.render(scene, camera);
+
+    if (composer) {
+      composer.render();
+    } else {
+      renderer.render(scene, camera);
+    }
   }
 
   tick();
@@ -423,6 +588,8 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     dispose() {
       cancelAnimationFrame(rafId);
       document.removeEventListener('visibilitychange', onVisibility);
+      bloomPass?.dispose();
+      composer?.dispose();
       renderer.dispose();
       geo.dispose();
       mat.dispose();
@@ -439,6 +606,13 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
+      composer?.setSize(w, h);
+      if (bloomPass && bloomConfig) {
+        bloomPass.resolution.set(
+          Math.max(1, Math.round(w * dpr * bloomConfig.resScale)),
+          Math.max(1, Math.round(h * dpr * bloomConfig.resScale)),
+        );
+      }
     },
   };
 }
