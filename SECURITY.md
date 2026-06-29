@@ -12,7 +12,6 @@ Security issues most likely to be relevant:
 - Cross-site scripting (XSS) in the game UI or badge renderer.
 - Malicious or malformed content injected via the clue bank JSON.
 - Supply chain issues in npm dependencies.
-- Secrets accidentally committed to the repository.
 
 ## Reporting a Vulnerability
 
