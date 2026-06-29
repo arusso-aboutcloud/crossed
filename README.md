@@ -226,8 +226,6 @@ npm run build
 npx wrangler pages deploy dist --project-name crossed --branch main
 ```
 
-Set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as environment variables before running.
-
 ### Self-hosted
 
 Serve the `dist/` directory from any static web server - nginx, Caddy, Apache, or any CDN.
