@@ -219,13 +219,6 @@ Every push to `main` triggers the GitHub Actions workflow in
 `.github/workflows/deploy.yml`. The workflow runs `npm ci`, `vite build`, and
 `wrangler pages deploy dist/`.
 
-Required GitHub Actions secrets:
-
-| Secret | Value |
-|--------|-------|
-| `CLOUDFLARE_API_TOKEN` | A Cloudflare API token with Pages write permission |
-| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID (found in the dashboard under Workers and Pages) |
-
 ### Cloudflare Pages (manual)
 
 ```bash
