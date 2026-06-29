@@ -100,6 +100,12 @@
       </button>
     </div>
 
+    <!-- Legal disclaimer -->
+    <p class="disclaimer">
+      This game is not affiliated with or endorsed by Microsoft. The logo is used as a courtesy,
+      and the achievements are intended solely for fun and educational purposes!
+    </p>
+
   </div>
 </div>
 
@@ -481,5 +487,15 @@
     max-width: 80%;
     height: auto;
     border-radius: 8px;
+  }
+
+  .disclaimer {
+    font-size: 0.62rem;
+    color: var(--color-muted);
+    font-family: var(--font-body);
+    text-align: center;
+    opacity: 0.65;
+    margin: 0;
+    line-height: 1.5;
   }
 </style>
