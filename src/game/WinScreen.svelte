@@ -218,6 +218,7 @@
       1px -1px 0 #2c2c2c,
       -1px 1px 0 #2c2c2c;
     letter-spacing: 0.05em;
+    animation: win-enter var(--dur-screen, 230ms) var(--ease-pop, cubic-bezier(0.175,0.885,0.32,1.275)) both;
   }
 
   .awesome-text {
@@ -227,7 +228,9 @@
     text-shadow: 2px 2px 0 #b45309, -1px -1px 0 #92400e;
     text-align: center;
     margin: 0;
-    animation: awesome-pulse 1.5s ease-in-out infinite;
+    animation:
+      win-enter var(--dur-screen, 230ms) var(--ease-pop, cubic-bezier(0.175,0.885,0.32,1.275)) 100ms both,
+      awesome-pulse 1.5s ease-in-out 600ms infinite;
   }
 
   @keyframes awesome-pulse {
@@ -237,6 +240,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .awesome-text { animation: none; }
+    .heading { animation: none; }
   }
 
   .stats {
@@ -245,6 +249,7 @@
     gap: var(--space-md);
     width: 100%;
     max-width: 320px;
+    animation: win-enter var(--dur-screen, 230ms) var(--ease-out, cubic-bezier(0.22,1,0.36,1)) 300ms both;
   }
 
   .stat {
@@ -288,6 +293,11 @@
     width: 100%;
     max-width: 280px;
     align-items: center;
+    animation: win-enter var(--dur-screen, 230ms) var(--ease-out, cubic-bezier(0.22,1,0.36,1)) 500ms both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stats, .actions { animation: none; }
   }
 
   .btn {

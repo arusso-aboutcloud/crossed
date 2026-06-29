@@ -1,9 +1,28 @@
 <script lang="ts">
+  import { fade, fly } from 'svelte/transition';
+
   export let onClose: () => void = () => {};
+
+  let reducedMotion = false;
+  if (typeof window !== 'undefined') {
+    reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  $: overlayDur = reducedMotion ? 0 : 180;
+  $: panelDur   = reducedMotion ? 0 : 250;
 </script>
 
-<div class="overlay" role="dialog" aria-modal="true" aria-label="How to play">
-  <div class="panel">
+<div
+  class="overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="How to play"
+  transition:fade={{ duration: overlayDur }}
+>
+  <div
+    class="panel"
+    in:fly={{ y: 24, duration: panelDur }}
+    out:fly={{ y: 16, duration: overlayDur }}
+  >
     <div class="header">
       <h2>How to Play</h2>
       <button class="close-btn" on:click={onClose} aria-label="Close">X</button>
