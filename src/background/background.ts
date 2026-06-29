@@ -19,7 +19,7 @@ export interface BgController {
 // ---------------------------------------------------------------------------
 
 const RESTING_COLORS = [
-  '#5c94fc', // Mario sky blue
+  '#a855f7', // Purple (high contrast against sky)
   '#43b047', // Mario green
   '#e52222', // Mario red
   '#ffd700', // Gold
@@ -28,7 +28,7 @@ const RESTING_COLORS = [
   '#0891b2', // Ocean teal
   '#fbbf24', // Pineapple yellow
   '#f97316', // Orange
-  '#7dd3fc', // Light blue
+  '#14b8a6', // Teal (high contrast against sky)
 ];
 
 // ---------------------------------------------------------------------------
@@ -80,10 +80,10 @@ interface BloomConfig {
 }
 
 const BLOOM_CONFIG: Record<QualityTier, BloomConfig | null> = {
-  // High: full-res bloom. Lower threshold so Mario palette colors glow.
-  high: { strength: 0.38, radius: 0.45, threshold: 0.25, resScale: 1.0 },
-  // Medium: half-res bloom, tighter radius to save fill-rate on mid phones.
-  medium: { strength: 0.24, radius: 0.40, threshold: 0.30, resScale: 0.5 },
+  // High: full-res bloom. Lower threshold so palette colors glow more.
+  high: { strength: 0.52, radius: 0.48, threshold: 0.18, resScale: 1.0 },
+  // Medium: half-res bloom, bumped strength for visibility on mid phones.
+  medium: { strength: 0.34, radius: 0.42, threshold: 0.24, resScale: 0.5 },
   // Low: no post-processing. Direct render.
   low: null,
 };
@@ -151,6 +151,7 @@ interface Cube {
   restColorIdx: number;
   formColor: string;
   phaseOffset: number;
+  baseScale: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -171,7 +172,7 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     navigator.hardwareConcurrency <= 2;
 
   const tier = detectTier(isLowPower);
-  const COUNT = isLowPower ? 40 : 90;
+  const COUNT = isLowPower ? 65 : 120;
 
   const dprCap = DPR_CAP[tier];
   const dpr = Math.min(window.devicePixelRatio ?? 1, dprCap);
@@ -204,18 +205,18 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   // than legacy materials. Intensities below ~1 produce very dim output with
   // NeutralToneMapping. Values here are tuned so the Mario palette colours
   // remain vivid after tone-mapping without washing out to near-white.
-  const ambientLight = new THREE.AmbientLight(0xfff4e0, 1.5);
+  const ambientLight = new THREE.AmbientLight(0xfff4e0, 2.0);
   scene.add(ambientLight);
 
   // Key light: warm summer sun from upper-right-front.
-  const keyLight = new THREE.DirectionalLight(0xffecc0, 1.8);
+  const keyLight = new THREE.DirectionalLight(0xffecc0, 2.2);
   keyLight.position.set(8, 12, 10);
   scene.add(keyLight);
 
   // Fill light: cool sky reflection from upper-left. Skipped on low tier
   // to reduce lighting calculations and keep the GPU load down.
   if (tier !== 'low') {
-    const fillLight = new THREE.DirectionalLight(0xa8d8ff, 0.6);
+    const fillLight = new THREE.DirectionalLight(0xa8d8ff, 0.85);
     fillLight.position.set(-10, 4, 8);
     scene.add(fillLight);
   }
@@ -225,13 +226,13 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   // ------------------------------------------------------------------
   // MeshStandardMaterial gives PBR shading: each cube face responds to
   // the lighting rig, giving real depth and material feel.
-  // roughness=0.60 keeps it matte-ish (no harsh specular glints on mobile).
-  // metalness=0.05 adds a touch of surface response without looking metallic.
+  // roughness=0.40 gives visible specular highlights for surface contrast.
+  // metalness=0.20 adds polished surface response without full metallic look.
   const geo = new THREE.BoxGeometry(1.0, 1.0, 1.0);
   const mat = new THREE.MeshStandardMaterial({
     vertexColors: true,
-    roughness: 0.60,
-    metalness: 0.05,
+    roughness: 0.40,
+    metalness: 0.20,
   });
   const mesh = new THREE.InstancedMesh(geo, mat, COUNT);
   mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -244,21 +245,23 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
 
   for (let i = 0; i < COUNT; i++) {
     const restColorIdx = Math.floor(Math.random() * RESTING_COLORS.length);
+    const baseScale = rnd(0.55, 2.2);
     const cube: Cube = {
-      pos: new THREE.Vector3(rnd(-28, 28), rnd(-18, 18), rnd(-8, 8)),
-      vel: new THREE.Vector3(rnd(-0.012, 0.012), rnd(-0.008, 0.008), 0),
+      pos: new THREE.Vector3(rnd(-28, 28), rnd(-18, 18), rnd(-5, 9)),
+      vel: new THREE.Vector3(rnd(-0.015, 0.015), rnd(-0.010, 0.010), 0),
       rot: new THREE.Euler(rnd(0, Math.PI * 2), rnd(0, Math.PI * 2), rnd(0, Math.PI * 2)),
-      rotSpeed: new THREE.Vector3(rnd(-0.018, 0.018), rnd(-0.018, 0.018), rnd(-0.008, 0.008)),
+      rotSpeed: new THREE.Vector3(rnd(-0.025, 0.025), rnd(-0.025, 0.025), rnd(-0.010, 0.010)),
       driftPos: new THREE.Vector3(),
       formTarget: null,
       restColorIdx,
       formColor: RESTING_COLORS[restColorIdx],
       phaseOffset: rnd(0, Math.PI * 2),
+      baseScale,
     };
     cubes.push(cube);
     tmpColor.set(RESTING_COLORS[restColorIdx]);
     mesh.setColorAt(i, tmpColor);
-    applyMatrix(i, cube, 1.0);
+    applyMatrix(i, cube, baseScale);
   }
   if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
 
@@ -328,6 +331,7 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   let transitionProgress = 0;
 
   const preDriftPos: THREE.Vector3[] = Array.from({ length: COUNT }, () => new THREE.Vector3());
+  const preDriftScale: number[] = Array.from({ length: COUNT }, () => 1.0);
 
   let formationQueue: number[] = [];
   let formationQueuePos = 0;
@@ -389,6 +393,7 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
     for (let i = 0; i < COUNT; i++) {
       cubes[i].driftPos.copy(cubes[i].pos);
       preDriftPos[i].copy(cubes[i].pos);
+      preDriftScale[i] = cubes[i].baseScale;
       cubes[i].formTarget = null;
       cubes[i].formColor = RESTING_COLORS[cubes[i].restColorIdx];
     }
@@ -545,23 +550,30 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
       c.rot.z += c.rotSpeed.z * dt * 60;
 
       // Scale
-      // Formation members: easeOutBack spring for ENTERING (pops in with
-      //   slight overshoot); easeInOut for HOLDING->LEAVING (smooth exit).
-      // Bystanders: shrink to near-invisible (BYSTANDER_SCALE_MIN).
-      let scale = 1.0;
+      // During drifting: each cube uses its own baseScale with a gentle
+      //   breathing pulse for organic feel.
+      // Formation members: lerp from preDriftScale to FORMATION_SCALE_MAX.
+      //   scaleBlend (easeOutBack) can overshoot slightly for small cubes
+      //   (spring pop); large cubes snap down with a subtle undershoot.
+      // Bystanders: shrink from preDriftScale to near-invisible.
+      let scale: number;
       if (isFormationActive) {
+        const fromScale = preDriftScale[i];
         if (isMember) {
           if (formationState === FormationState.ENTERING) {
-            // scaleBlend can exceed 1 slightly (overshoot); allow it.
-            scale = 1.0 + (FORMATION_SCALE_MAX - 1.0) * scaleBlend;
+            scale = fromScale + (FORMATION_SCALE_MAX - fromScale) * scaleBlend;
           } else if (formationState === FormationState.HOLDING) {
             scale = FORMATION_SCALE_MAX;
           } else {
-            scale = 1.0 + (FORMATION_SCALE_MAX - 1.0) * posBlend;
+            // posBlend: 1 at hold -> 0 at rest; lerp from formation back to drift scale
+            scale = fromScale + (FORMATION_SCALE_MAX - fromScale) * posBlend;
           }
         } else {
-          scale = 1.0 + (BYSTANDER_SCALE_MIN - 1.0) * posBlend;
+          scale = fromScale + (BYSTANDER_SCALE_MIN - fromScale) * posBlend;
         }
+      } else {
+        // Gentle breathing pulse: +-6.5% on a slow per-cube sine
+        scale = c.baseScale * (1.0 + 0.065 * Math.sin(now * 0.0009 + c.phaseOffset));
       }
 
       applyMatrix(i, c, scale);
