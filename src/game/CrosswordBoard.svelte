@@ -14,6 +14,14 @@
   let viewportH = 667;
   let cellSize = 32;
 
+  // Cell-fill micro-feedback
+  let justTypedKey = '';
+  let clearJustTyped: ReturnType<typeof setTimeout> | null = null;
+
+  // Word-complete sweep
+  let sweepWord: PlacedWord | null = null;
+  let sweepTimer: ReturnType<typeof setTimeout> | null = null;
+
   $: puz = $puzzle;
   $: ents = $entries;
   $: fKey = $focusKey;
@@ -56,6 +64,37 @@
 
     const maxCell = vpTier === 'phone' ? 34 : vpTier === 'tablet' ? 36 : vpTier === 'desktop' ? 42 : 46;
     cellSize = Math.max(18, Math.min(maxCell, maxW, maxH));
+  }
+
+  function getWordCells(word: PlacedWord): string[] {
+    const cells: string[] = [];
+    for (let i = 0; i < word.answer.length; i++) {
+      const r = word.direction === 'down' ? word.row + i : word.row;
+      const c = word.direction === 'across' ? word.col + i : word.col;
+      cells.push(`${r},${c}`);
+    }
+    return cells;
+  }
+
+  function isWordComplete(word: PlacedWord, ents: Record<string, string>): boolean {
+    if (!puz) return false;
+    return getWordCells(word).every(k => ents[k] === puz!.cells[k]);
+  }
+
+  function getCellIndexInWord(word: PlacedWord, r: number, c: number): number {
+    for (let i = 0; i < word.answer.length; i++) {
+      const wr = word.direction === 'down' ? word.row + i : word.row;
+      const wc = word.direction === 'across' ? word.col + i : word.col;
+      if (wr === r && wc === c) return i;
+    }
+    return -1;
+  }
+
+  function triggerSweep(word: PlacedWord) {
+    sweepWord = word;
+    if (sweepTimer !== null) clearTimeout(sweepTimer);
+    // Hold the class long enough for the last-cell animation to finish
+    sweepTimer = setTimeout(() => { sweepWord = null; sweepTimer = null; }, 700);
   }
 
   function getActiveWord(placed: PlacedWord[], fk: string, dir: 'across' | 'down'): PlacedWord | null {
@@ -214,8 +253,20 @@
     const letter = raw[raw.length - 1];
     const prev = get(entries);
     const next = { ...prev, [fk]: letter };
+
+    // Cell-fill micro-feedback (non-blocking, clears itself)
+    justTypedKey = fk;
+    if (clearJustTyped !== null) clearTimeout(clearJustTyped);
+    clearJustTyped = setTimeout(() => { justTypedKey = ''; clearJustTyped = null; }, 150);
+
+    // Word-complete detection: find a word that just became fully correct
+    const justCompleted = puz.placed.find(w => !isWordComplete(w, prev) && isWordComplete(w, next));
+
     entries.set(next);
     advanceFocus();
+
+    if (justCompleted) triggerSweep(justCompleted);
+
     if (checkWin(puz, next)) {
       const solved = countWordsSolved(puz, next);
       triggerWin({
@@ -238,6 +289,11 @@
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  });
+
+  onDestroy(() => {
+    if (clearJustTyped !== null) clearTimeout(clearJustTyped);
+    if (sweepTimer !== null) clearTimeout(sweepTimer);
   });
 </script>
 
@@ -271,6 +327,8 @@
           {@const letter = ents[key] ?? ''}
           {@const isCorrect = !!letter && letter === puz.cells[key]}
           {@const cn = isEnterable ? getClueNum(r, c) : null}
+          {@const sweepIdx = (sweepWord && isEnterable) ? getCellIndexInWord(sweepWord, r, c) : -1}
+          {@const isSweeping = sweepIdx >= 0}
           <div
             class="cell"
             class:enterable={isEnterable}
@@ -278,7 +336,9 @@
             class:focused={isFocused}
             class:active-word={isActive && !isFocused}
             class:correct={isCorrect}
-            style="color-scheme: light;"
+            class:just-typed={isEnterable && key === justTypedKey}
+            class:sweeping={isSweeping}
+            style="color-scheme: light;{isSweeping ? ` --sweep-delay: ${sweepIdx * 55}ms;` : ''}"
             on:click={() => cellClick(r, c)}
             on:keydown={(ev) => { if (ev.key === 'Enter' || ev.key === ' ') cellClick(r, c); }}
             role={isEnterable ? 'button' : 'presentation'}
@@ -396,6 +456,7 @@
     color: #1a1a1a !important;
     pointer-events: none;
     line-height: 1;
+    z-index: 2;
   }
 
   .ltr {
@@ -405,6 +466,29 @@
     color: #1a1a1a !important;
     text-transform: uppercase;
     line-height: 1;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Cell-fill micro-feedback: letter pops when typed */
+  .cell.just-typed .ltr {
+    animation: cell-pop var(--dur-cell, 120ms) var(--ease-pop, cubic-bezier(0.175,0.885,0.32,1.275)) both;
+  }
+
+  /* Word-complete sweep: a green flash overlay per cell, staggered by --sweep-delay */
+  .cell.sweeping::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #43b047;
+    animation: sweep-flash var(--dur-word, 320ms) var(--ease-out, cubic-bezier(0.22,1,0.36,1)) var(--sweep-delay, 0ms) both;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cell.just-typed .ltr { animation: none; }
+    .cell.sweeping::after { display: none; }
   }
 
   /*

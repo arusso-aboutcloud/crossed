@@ -1,14 +1,32 @@
 <script lang="ts">
   import { soundEnabled, resumeGame, newPuzzle, exitToMenu, difficulty } from './store';
   import { get } from 'svelte/store';
+  import { fade, fly } from 'svelte/transition';
 
   export let onRules: () => void = () => {};
 
   let confirmNew = false;
+
+  let reducedMotion = false;
+  if (typeof window !== 'undefined') {
+    reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  $: overlayDur = reducedMotion ? 0 : 180;
+  $: panelDur   = reducedMotion ? 0 : 240;
 </script>
 
-<div class="overlay" role="dialog" aria-modal="true" aria-label="Game paused">
-  <div class="panel">
+<div
+  class="overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Game paused"
+  transition:fade={{ duration: overlayDur }}
+>
+  <div
+    class="panel"
+    in:fly={{ y: 22, duration: panelDur }}
+    out:fly={{ y: 14, duration: overlayDur }}
+  >
     <h2 class="heading">Paused</h2>
 
     {#if confirmNew}
