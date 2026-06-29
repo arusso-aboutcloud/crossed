@@ -73,17 +73,18 @@
 
   .diff-label {
     font-family: var(--font-display);
-    font-size: 0.5rem;
+    font-size: clamp(0.5rem, 1.2vw, 0.75rem);
     color: #ffffff;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     text-shadow: 1px 1px 0 #8b0000;
     font-weight: normal;
+    white-space: nowrap;
   }
 
   .timer {
     font-family: var(--font-display);
-    font-size: 0.7rem;
+    font-size: clamp(0.7rem, 1.5vw, 1.0rem);
     color: #ffffff;
     margin: 0 auto;
     letter-spacing: 0.1em;
@@ -107,12 +108,14 @@
     color: #e52222;
     border: 2px solid #8b0000;
     font-family: var(--font-display);
-    font-size: 0.4rem;
+    font-size: clamp(0.45rem, 1.1vw, 0.65rem);
     border-radius: 4px;
     cursor: pointer;
     box-shadow: 2px 2px 0 #8b0000;
     transition: transform 0.1s, box-shadow 0.1s;
     letter-spacing: 0.05em;
+    min-height: 36px;
+    min-width: 48px;
   }
 
   .bar-btn:hover {
@@ -139,15 +142,34 @@
     gap: var(--space-sm);
     position: relative;
     z-index: 1;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  @media (min-width: 720px) {
+  /* Tablet (600px+): board and clue panel side by side. */
+  @media (min-width: 600px) {
     .play-area {
       flex-direction: row;
       justify-content: center;
       align-items: flex-start;
       padding: var(--space-md);
       gap: var(--space-md);
+    }
+  }
+
+  /* Desktop (1024px+): a bit more breathing room. */
+  @media (min-width: 1024px) {
+    .play-area {
+      padding: var(--space-lg);
+      gap: var(--space-lg);
+    }
+  }
+
+  /* Ultrawide (1600px+): cap content width and centre it so dead space is minimal. */
+  @media (min-width: 1600px) {
+    .play-area {
+      max-width: 1600px;
+      align-self: center;
     }
   }
 

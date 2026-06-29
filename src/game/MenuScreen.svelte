@@ -224,7 +224,7 @@
   /* ---- Play button - Mario style ---- */
   .play-btn {
     font-family: var(--font-display);
-    font-size: 0.65rem;
+    font-size: clamp(0.65rem, 1.5vw, 0.9rem);
     background: #e52222;
     color: #ffffff;
     border: none;
@@ -265,13 +265,14 @@
   .btn {
     padding: 0.5rem 1rem;
     border-radius: 8px;
-    font-size: 0.7rem;
+    font-size: clamp(0.7rem, 1.5vw, 0.9rem);
     font-weight: 600;
     cursor: pointer;
     border: none;
     font-family: var(--font-body);
     transition: transform 0.1s, box-shadow 0.15s;
     letter-spacing: 0.05em;
+    min-height: 44px;
   }
 
   .btn:active { transform: scale(0.97); }
@@ -348,7 +349,7 @@
 
   .ab-title {
     font-family: var(--font-display);
-    font-size: 0.55rem;
+    font-size: clamp(0.55rem, 1.2vw, 0.7rem);
     color: #ffd700;
     letter-spacing: 0.12em;
     text-shadow: 0 0 8px rgba(255,215,0,0.6);
@@ -405,7 +406,7 @@
 
   .ab-tier {
     font-family: var(--font-display);
-    font-size: 0.42rem;
+    font-size: clamp(0.42rem, 1.0vw, 0.55rem);
     color: #7ea8cc;
     text-transform: uppercase;
     letter-spacing: 0.08em;

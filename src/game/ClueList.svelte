@@ -67,19 +67,42 @@
     padding: var(--space-sm);
   }
 
-  @media (min-width: 720px) {
+  /* Phone (< 600px): panel below the board, limited height. */
+  @media (max-width: 599px) {
     .clue-panel {
-      width: 280px;
-      min-width: 240px;
-      max-width: 320px;
-      height: calc(100vh - 80px);
-      max-height: calc(100vh - 80px);
+      max-height: 40vh;
     }
   }
 
-  @media (max-width: 719px) {
+  /* Tablet (600px+): panel on the right, fixed width, full play-area height. */
+  @media (min-width: 600px) {
     .clue-panel {
-      max-height: 40vh;
+      width: 260px;
+      min-width: 220px;
+      max-width: 260px;
+      flex: none;
+      height: calc(100vh - 72px);
+      max-height: calc(100vh - 72px);
+    }
+  }
+
+  /* Desktop (1024px+): wider panel. */
+  @media (min-width: 1024px) {
+    .clue-panel {
+      width: 300px;
+      min-width: 260px;
+      max-width: 300px;
+      height: calc(100vh - 72px);
+      max-height: calc(100vh - 72px);
+    }
+  }
+
+  /* Ultrawide (1600px+): even wider panel inside the capped content area. */
+  @media (min-width: 1600px) {
+    .clue-panel {
+      width: 340px;
+      min-width: 300px;
+      max-width: 340px;
     }
   }
 
@@ -94,10 +117,11 @@
     border-radius: 4px;
     cursor: pointer;
     font-family: var(--font-display);
-    font-size: 0.4rem;
+    font-size: clamp(0.4rem, 1.0vw, 0.55rem);
     font-weight: normal;
     transition: background 0.15s;
     letter-spacing: 0.05em;
+    min-height: 36px;
   }
 
   .tab.active {
@@ -144,7 +168,7 @@
 
   .clue-num {
     font-family: var(--font-display);
-    font-size: 0.45rem;
+    font-size: clamp(0.45rem, 1.0vw, 0.6rem);
     color: #e52222;
     font-weight: normal;
     flex-shrink: 0;

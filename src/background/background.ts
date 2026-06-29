@@ -80,10 +80,10 @@ interface BloomConfig {
 }
 
 const BLOOM_CONFIG: Record<QualityTier, BloomConfig | null> = {
-  // High: full-res bloom, gentle glow on bright formation colors.
-  high: { strength: 0.28, radius: 0.40, threshold: 0.55, resScale: 1.0 },
-  // Medium: half-res bloom, slightly tighter to save fill-rate on mid phones.
-  medium: { strength: 0.18, radius: 0.35, threshold: 0.60, resScale: 0.5 },
+  // High: full-res bloom. Lower threshold so Mario palette colors glow.
+  high: { strength: 0.38, radius: 0.45, threshold: 0.25, resScale: 1.0 },
+  // Medium: half-res bloom, tighter radius to save fill-rate on mid phones.
+  medium: { strength: 0.24, radius: 0.40, threshold: 0.30, resScale: 0.5 },
   // Low: no post-processing. Direct render.
   low: null,
 };
@@ -178,7 +178,9 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
 
   renderer.setPixelRatio(dpr);
   renderer.setSize(canvas.clientWidth || 800, canvas.clientHeight || 600, false);
-  renderer.setClearColor(0x000000, 0);
+  // Opaque sky-blue background matches the body background colour and prevents
+  // transparent-black artefacts between cubes when EffectComposer is in use.
+  renderer.setClearColor(0x5c94fc, 1);
 
   // Neutral tone mapping: well-suited to saturated game palettes; less
   // contrast-crushing than ACES. OutputPass reads these settings.
@@ -198,19 +200,22 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   // ------------------------------------------------------------------
   // Lighting rig
   // ------------------------------------------------------------------
-  // Warm ambient ensures no face is fully black; summer-sky warmth.
-  const ambientLight = new THREE.AmbientLight(0xfff4e0, 0.85);
+  // MeshStandardMaterial (PBR) requires substantially more light intensity
+  // than legacy materials. Intensities below ~1 produce very dim output with
+  // NeutralToneMapping. Values here are tuned so the Mario palette colours
+  // remain vivid after tone-mapping without washing out to near-white.
+  const ambientLight = new THREE.AmbientLight(0xfff4e0, 1.5);
   scene.add(ambientLight);
 
   // Key light: warm summer sun from upper-right-front.
-  const keyLight = new THREE.DirectionalLight(0xffecc0, 1.0);
+  const keyLight = new THREE.DirectionalLight(0xffecc0, 1.8);
   keyLight.position.set(8, 12, 10);
   scene.add(keyLight);
 
   // Fill light: cool sky reflection from upper-left. Skipped on low tier
   // to reduce lighting calculations and keep the GPU load down.
   if (tier !== 'low') {
-    const fillLight = new THREE.DirectionalLight(0xa8d8ff, 0.35);
+    const fillLight = new THREE.DirectionalLight(0xa8d8ff, 0.6);
     fillLight.position.set(-10, 4, 8);
     scene.add(fillLight);
   }
@@ -304,6 +309,12 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
 
     // OutputPass applies tone mapping + sRGB conversion as the final step.
     composer.addPass(new OutputPass());
+
+    // Disable per-material tone mapping so OutputPass is the single tone-mapping
+    // step. Without this, MeshStandardMaterial bakes NeutralToneMapping into the
+    // geometry fragment shader AND OutputPass applies it again, double-compressing
+    // the dynamic range and shifting mid-tone colours toward dark navy.
+    mat.toneMapped = false;
   }
 
   // ------------------------------------------------------------------

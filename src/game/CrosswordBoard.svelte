@@ -23,16 +23,39 @@
 
   $: cols = puz ? puz.cols : 13;
   $: rows = puz ? puz.rows : 13;
-  $: isMobile = viewportW < 720;
+
+  // Four viewport tiers matching the layout breakpoints in BoardScreen and ClueList.
+  // Numbers here must stay consistent with the clue-panel widths in ClueList.svelte
+  // and the play-area padding in BoardScreen.svelte so the board never overflows.
+  // phone    < 600px:  column layout, clue panel below board
+  // tablet   600-1023: row layout, clue panel 260px wide, 16px gap
+  // desktop  1024-1599: row layout, clue panel 300px wide, 24px gap
+  // ultrawide 1600+:   row layout, content capped at 1600px, clue panel 340px
+  $: vpTier = viewportW < 600 ? 'phone' : viewportW < 1024 ? 'tablet' : viewportW < 1600 ? 'desktop' : 'ultrawide';
+  $: isPhone = vpTier === 'phone';
+
   $: {
-    // Minimal horizontal margin so grid uses as much width as possible on mobile.
-    // Vertical: reserve top-bar (~56px) + clue panel (~38% of viewport height).
-    const hPad = isMobile ? 8 : 48;
-    const vPad = isMobile ? 56 + Math.floor(viewportH * 0.38) : 120;
-    const maxW = Math.floor((viewportW - hPad) / cols);
-    const maxH = Math.floor((viewportH - vPad) / rows);
-    // Allow up to 34px on mobile (was 30) for larger phones.
-    cellSize = Math.max(18, Math.min(isMobile ? 34 : 38, maxW, maxH));
+    // Clue panel dimensions by tier (0 for phone = below-board column layout).
+    const clueW    = vpTier === 'phone' ? 0 : vpTier === 'tablet' ? 260 : vpTier === 'desktop' ? 300 : 340;
+    const clueGap  = vpTier === 'phone' ? 0 : vpTier === 'tablet' ?  16 : vpTier === 'desktop' ?  24 :  32;
+    const playPad  = vpTier === 'phone' ? 8 : vpTier === 'tablet' ?  16 : vpTier === 'desktop' ?  24 :  32;
+
+    // On ultrawide the play area is capped at 1600px and centred; use that cap.
+    const effectiveVw = vpTier === 'ultrawide' ? Math.min(viewportW, 1600) : viewportW;
+
+    // Available pixels for the board grid in each axis.
+    const availW = effectiveVw - 2 * playPad - clueW - clueGap;
+    const topBarH = 56; // red header height estimate
+    // Phone: clue panel sits below the board, so reserve ~38% of vh for it.
+    const availH = isPhone
+      ? viewportH - topBarH - Math.floor(viewportH * 0.38) - 2 * playPad
+      : viewportH - topBarH - 2 * playPad;
+
+    const maxW = Math.floor(availW / cols);
+    const maxH = Math.floor(availH / rows);
+
+    const maxCell = vpTier === 'phone' ? 34 : vpTier === 'tablet' ? 36 : vpTier === 'desktop' ? 42 : 46;
+    cellSize = Math.max(18, Math.min(maxCell, maxW, maxH));
   }
 
   function getActiveWord(placed: PlacedWord[], fk: string, dir: 'across' | 'down'): PlacedWord | null {

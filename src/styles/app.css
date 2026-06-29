@@ -22,6 +22,11 @@ html {
 }
 
 /* Nintendo / Mario palette */
+/* Responsive layout tiers (must stay in sync with component breakpoints):
+     phone    < 600px   : column layout, clue panel below board
+     tablet   600-1023px: row layout, clue panel 260px
+     desktop  1024-1599px: row layout, clue panel 300px
+     ultrawide 1600px+ : row layout capped at 1600px, clue panel 340px */
 :root {
   /* Nintendo / Mario palette */
   --color-bg: #5c94fc;          /* Mario sky blue */
