@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount, onDestroy } from 'svelte';
   import { winResult, difficulty, newPuzzle, goToDifficulty, exitToMenu } from './store';
   import { get } from 'svelte/store';
   import BadgeShare from '../badge/BadgeShare.svelte';
@@ -8,16 +9,121 @@
 
   let showBadge = false;
   let isRepeatWin = false;
+  let confettiCanvas: HTMLCanvasElement | undefined;
+  let stopConfetti: (() => void) | null = null;
 
   // On each new result: capture repeat state BEFORE marking, then mark.
   $: if (result) {
     isRepeatWin = hasEarned(result.difficulty);
     markEarned(result.difficulty);
     if (!isRepeatWin) {
-      // Fire Umami analytics event for first-time badge earn (no PII).
-      try { (window as any).umami?.track('badge_earned', { difficulty: result.difficulty }); } catch (_) {/* ignore */}
+      try { (window as any).umami?.track('badge_earned', { difficulty: result.difficulty }); } catch (_) { /* ignore */ }
     }
   }
+
+  // Mario palette confetti colors.
+  const CONFETTI_COLORS = [
+    '#5c94fc', '#ffd700', '#e52222', '#43b047',
+    '#ec4899', '#fbbf24', '#f97316', '#7dd3fc', '#ffffff',
+  ];
+
+  function launchConfetti(cvs: HTMLCanvasElement) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
+
+    const ctxOrNull = cvs.getContext('2d');
+    if (!ctxOrNull) return () => {};
+    // Assign to a definitely-typed const so TypeScript does not lose the
+    // non-null narrowing inside the draw/spawnBurst closure below.
+    const ctx: CanvasRenderingContext2D = ctxOrNull;
+
+    const W = cvs.offsetWidth || 400;
+    const H = cvs.offsetHeight || 600;
+    cvs.width = W;
+    cvs.height = H;
+
+    interface Particle {
+      x: number; y: number;
+      vx: number; vy: number;
+      angle: number; aVel: number;
+      color: string;
+      w: number; h: number;
+      life: number; maxLife: number;
+    }
+
+    // Two bursts: an initial volley, then a second wave 300 ms later.
+    const N = 70;
+    const particles: Particle[] = [];
+
+    function spawnBurst(delay: number, count: number, spread: number) {
+      setTimeout(() => {
+        for (let k = 0; k < count; k++) {
+          const a = (Math.PI * 2 * k) / count + (Math.random() - 0.5) * spread;
+          const speed = 4 + Math.random() * 6;
+          particles.push({
+            x: W * 0.5 + (Math.random() - 0.5) * 40,
+            y: H * 0.28,
+            vx: Math.cos(a) * speed,
+            vy: Math.sin(a) * speed - 3.5,
+            angle: Math.random() * Math.PI * 2,
+            aVel: (Math.random() - 0.5) * 0.25,
+            color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+            w: 7 + Math.random() * 7,
+            h: 4 + Math.random() * 5,
+            life: 0,
+            maxLife: 90 + Math.floor(Math.random() * 50),
+          });
+        }
+      }, delay);
+    }
+
+    spawnBurst(0, N, 1.2);
+    spawnBurst(320, Math.floor(N * 0.5), 2.0);
+
+    const GRAVITY = 0.13;
+    let raf = 0;
+    let done = false;
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      let alive = 0;
+      for (const p of particles) {
+        p.life++;
+        if (p.life >= p.maxLife) continue;
+        alive++;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += GRAVITY;
+        p.vx *= 0.992;
+        p.angle += p.aVel;
+        ctx.globalAlpha = Math.max(0, 1 - p.life / p.maxLife);
+        ctx.fillStyle = p.color;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      }
+      ctx.globalAlpha = 1;
+      if (alive > 0 && !done) raf = requestAnimationFrame(draw);
+    }
+
+    raf = requestAnimationFrame(draw);
+
+    return () => {
+      done = true;
+      cancelAnimationFrame(raf);
+    };
+  }
+
+  onMount(() => {
+    if (confettiCanvas) {
+      stopConfetti = launchConfetti(confettiCanvas);
+    }
+  });
+
+  onDestroy(() => {
+    stopConfetti?.();
+  });
 
   function formatTime(s: number): string {
     const m = Math.floor(s / 60).toString().padStart(2, '0');
@@ -31,11 +137,7 @@
 </script>
 
 <div class="win-screen">
-  <div class="confetti" aria-hidden="true">
-    {#each Array.from({ length: 12 }) as _, i}
-      <span class="piece p{i % 6}" style="left: {(i * 7 + 5)}%; animation-delay: {i * 0.15}s;"></span>
-    {/each}
-  </div>
+  <canvas bind:this={confettiCanvas} class="confetti-canvas" aria-hidden="true"></canvas>
 
   <div class="content">
     <h1 class="heading">Puzzle Complete!</h1>
@@ -87,33 +189,12 @@
     overflow: hidden;
   }
 
-  .confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-
-  .piece {
+  .confetti-canvas {
     position: absolute;
-    top: -20px;
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
-    animation: fall 3s ease-in infinite;
-  }
-
-  /* Mario palette confetti colors */
-  .p0 { background: #5c94fc; }
-  .p1 { background: #ffd700; }
-  .p2 { background: #e52222; }
-  .p3 { background: #43b047; }
-  .p4 { background: #ec4899; }
-  .p5 { background: #fbbf24; }
-
-  @keyframes fall {
-    0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-    85%  { opacity: 0.7; }
-    100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .piece { animation: none; display: none; }
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
   }
 
   .content {
