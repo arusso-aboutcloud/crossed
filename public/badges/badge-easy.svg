@@ -1,41 +1,69 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 290" width="220" height="290" role="img" aria-label="Easy badge">
   <defs>
-    <linearGradient id="outer-easy" x1="0" y1="0" x2="0.3" y2="1">
-      <stop offset="0%" stop-color="#4ade80"/>
-      <stop offset="40%" stop-color="#22c55e"/>
-      <stop offset="100%" stop-color="#166534"/>
+    <!-- Outer shield: 4-stop metallic green - bright highlight -> accent -> deep -> shadow -->
+    <linearGradient id="outer-easy" x1="0.25" y1="0" x2="0.1" y2="1">
+      <stop offset="0%"   stop-color="#d4fff0"/>
+      <stop offset="22%"  stop-color="#4ade80"/>
+      <stop offset="62%"  stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#052e10"/>
     </linearGradient>
-    <linearGradient id="inner-easy" x1="0.2" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1a2040"/>
-      <stop offset="100%" stop-color="#0b0d1a"/>
+    <!-- Inner shield: dark polished steel, not near-black -->
+    <linearGradient id="inner-easy" x1="0.3" y1="0" x2="0.1" y2="1">
+      <stop offset="0%"   stop-color="#213844"/>
+      <stop offset="50%"  stop-color="#14222e"/>
+      <stop offset="100%" stop-color="#0c1018"/>
+    </linearGradient>
+    <!-- Metallic sheen: white-to-transparent from top (polished metal reflection) -->
+    <linearGradient id="sheen-easy" x1="0.35" y1="0" x2="0.15" y2="1">
+      <stop offset="0%"   stop-color="white" stop-opacity="0.42"/>
+      <stop offset="38%"  stop-color="white" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <!-- Accent glow from base of inner shield (colour bounce) -->
+    <linearGradient id="inner-glow-easy" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0%"   stop-color="#22c55e" stop-opacity="0.18"/>
+      <stop offset="55%"  stop-color="#22c55e" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="ribbon-easy" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="50%" stop-color="#e8e8e8"/>
-      <stop offset="100%" stop-color="#cccccc"/>
+      <stop offset="0%"   stop-color="#f4f4f4"/>
+      <stop offset="45%"  stop-color="#e0e0e0"/>
+      <stop offset="100%" stop-color="#c4c4c4"/>
     </linearGradient>
-    <filter id="glow-easy" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
-    <filter id="shadow-easy">
-      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#166534" flood-opacity="0.6"/>
+    <filter id="shadow-easy" x="-22%" y="-12%" width="144%" height="132%">
+      <feDropShadow dx="0" dy="7" stdDeviation="10" flood-color="#22c55e" flood-opacity="0.70"/>
     </filter>
   </defs>
 
-  <!-- OUTER SHIELD (metallic border) -->
+  <!-- OUTER SHIELD: metallic green with strong glow -->
   <path d="M110,6 L204,42 L204,130 Q204,200 110,238 Q16,200 16,130 L16,42 Z"
         fill="url(#outer-easy)" filter="url(#shadow-easy)"/>
 
-  <!-- INNER SHIELD (dark body) -->
+  <!-- Crown highlight: bright V-shape at the very top for polished metal look -->
+  <path d="M110,6 L204,42 L194,48 L110,14 L26,48 L16,42 Z"
+        fill="rgba(255,255,255,0.28)"/>
+
+  <!-- Inner rim: thin bright line just inside outer border for raised 3D edge -->
+  <path d="M110,10 L201,44 L201,130 Q201,198 110,234 Q19,198 19,130 L19,44 Z"
+        fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2"/>
+
+  <!-- INNER SHIELD: dark polished steel body -->
   <path d="M110,18 L192,50 L192,130 Q192,192 110,224 Q28,192 28,130 L28,50 Z"
         fill="url(#inner-easy)"/>
 
-  <!-- Highlight edges for 3D effect -->
-  <path d="M110,18 L192,50" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
-  <path d="M110,18 L28,50" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
+  <!-- Accent glow: subtle green bounce from the bottom -->
+  <path d="M110,18 L192,50 L192,130 Q192,192 110,224 Q28,192 28,130 L28,50 Z"
+        fill="url(#inner-glow-easy)"/>
 
-  <!-- MS LOGO: 2x2 colored squares -->
+  <!-- Metallic sheen: white reflection on the upper portion -->
+  <path d="M110,18 L192,50 L192,130 Q192,192 110,224 Q28,192 28,130 L28,50 Z"
+        fill="url(#sheen-easy)"/>
+
+  <!-- Edge highlights -->
+  <path d="M110,18 L192,50" stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none"/>
+  <path d="M110,18 L28,50"  stroke="rgba(255,255,255,0.28)" stroke-width="2"   fill="none"/>
+
+  <!-- MS LOGO -->
   <rect x="89" y="30" width="19" height="19" fill="#f25022" rx="2"/>
   <rect x="112" y="30" width="19" height="19" fill="#7fba00" rx="2"/>
   <rect x="89" y="53" width="19" height="19" fill="#00a4ef" rx="2"/>
@@ -53,21 +81,19 @@
 
   <!-- ICON: Puzzle piece (Easy) -->
   <path d="M93,148 L103,148 Q103,139 110,139 Q117,139 117,148 L127,148 L127,160 Q136,160 136,166 Q136,172 127,172 L127,184 L93,184 L93,172 Q84,172 84,166 Q84,160 93,160 Z"
-        fill="none" stroke="#22c55e" stroke-width="3" stroke-linejoin="round"/>
+        fill="none" stroke="#4ade80" stroke-width="3" stroke-linejoin="round"/>
 
   <!-- STAR PILL -->
-  <rect x="72" y="203" width="76" height="22" rx="11" fill="#0b0d1a" stroke="#22c55e" stroke-width="2"/>
-  <!-- 1 star at cx=110, cy=214 -->
+  <rect x="72" y="203" width="76" height="22" rx="11" fill="#0b0d1a" stroke="#4ade80" stroke-width="2"/>
   <polygon points="110,207 112.0,212.2 117.6,212.8 113.3,216.1 114.7,221.7 110,218.0 105.3,221.7 106.7,216.1 102.4,212.8 108.0,212.2" fill="white"/>
 
-  <!-- TIER LABEL SECTION -->
-  <line x1="16" y1="248" x2="82" y2="248" stroke="#22c55e" stroke-width="2"/>
+  <!-- TIER LABEL -->
+  <line x1="16" y1="248" x2="82" y2="248" stroke="#4ade80" stroke-width="2"/>
   <text x="110" y="252" font-family="Arial Black, Arial, sans-serif" font-size="13" font-weight="900"
-        fill="#22c55e" text-anchor="middle" letter-spacing="3">EASY</text>
-  <line x1="138" y1="248" x2="204" y2="248" stroke="#22c55e" stroke-width="2"/>
+        fill="#4ade80" text-anchor="middle" letter-spacing="3">EASY</text>
+  <line x1="138" y1="248" x2="204" y2="248" stroke="#4ade80" stroke-width="2"/>
 
   <text x="110" y="268" font-family="Arial, sans-serif" font-size="9" font-weight="700"
         fill="#ffffff" text-anchor="middle">Well done!</text>
-
   <text x="110" y="282" font-family="Arial, sans-serif" font-size="7.5" fill="#aaaaaa" text-anchor="middle">You've got the basics down</text>
 </svg>

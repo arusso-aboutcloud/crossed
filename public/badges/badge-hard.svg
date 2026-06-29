@@ -1,37 +1,65 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 290" width="220" height="290" role="img" aria-label="Hard badge">
   <defs>
-    <linearGradient id="outer-hard" x1="0" y1="0" x2="0.3" y2="1">
-      <stop offset="0%" stop-color="#d8b4fe"/>
-      <stop offset="40%" stop-color="#a855f7"/>
-      <stop offset="100%" stop-color="#581c87"/>
+    <!-- Outer shield: 4-stop metallic purple -->
+    <linearGradient id="outer-hard" x1="0.25" y1="0" x2="0.1" y2="1">
+      <stop offset="0%"   stop-color="#f0ddff"/>
+      <stop offset="22%"  stop-color="#c084fc"/>
+      <stop offset="62%"  stop-color="#7e22ce"/>
+      <stop offset="100%" stop-color="#1a0440"/>
     </linearGradient>
-    <linearGradient id="inner-hard" x1="0.2" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1a2040"/>
-      <stop offset="100%" stop-color="#0b0d1a"/>
+    <!-- Inner shield: dark polished steel with violet tint -->
+    <linearGradient id="inner-hard" x1="0.3" y1="0" x2="0.1" y2="1">
+      <stop offset="0%"   stop-color="#1e1840"/>
+      <stop offset="50%"  stop-color="#12102c"/>
+      <stop offset="100%" stop-color="#09070c"/>
+    </linearGradient>
+    <!-- Metallic sheen -->
+    <linearGradient id="sheen-hard" x1="0.35" y1="0" x2="0.15" y2="1">
+      <stop offset="0%"   stop-color="white" stop-opacity="0.40"/>
+      <stop offset="38%"  stop-color="white" stop-opacity="0.09"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <!-- Accent glow from base -->
+    <linearGradient id="inner-glow-hard" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0%"   stop-color="#a855f7" stop-opacity="0.18"/>
+      <stop offset="55%"  stop-color="#a855f7" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="ribbon-hard" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="50%" stop-color="#e8e8e8"/>
-      <stop offset="100%" stop-color="#cccccc"/>
+      <stop offset="0%"   stop-color="#f4f4f4"/>
+      <stop offset="45%"  stop-color="#e0e0e0"/>
+      <stop offset="100%" stop-color="#c4c4c4"/>
     </linearGradient>
-    <filter id="shadow-hard">
-      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#581c87" flood-opacity="0.6"/>
+    <filter id="shadow-hard" x="-22%" y="-12%" width="144%" height="132%">
+      <feDropShadow dx="0" dy="7" stdDeviation="10" flood-color="#a855f7" flood-opacity="0.70"/>
     </filter>
   </defs>
 
-  <!-- OUTER SHIELD (metallic border) -->
+  <!-- OUTER SHIELD -->
   <path d="M110,6 L204,42 L204,130 Q204,200 110,238 Q16,200 16,130 L16,42 Z"
         fill="url(#outer-hard)" filter="url(#shadow-hard)"/>
 
-  <!-- INNER SHIELD (dark body) -->
+  <!-- Crown highlight -->
+  <path d="M110,6 L204,42 L194,48 L110,14 L26,48 L16,42 Z"
+        fill="rgba(255,255,255,0.28)"/>
+
+  <!-- Inner rim -->
+  <path d="M110,10 L201,44 L201,130 Q201,198 110,234 Q19,198 19,130 L19,44 Z"
+        fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2"/>
+
+  <!-- INNER SHIELD -->
   <path d="M110,18 L192,50 L192,130 Q192,192 110,224 Q28,192 28,130 L28,50 Z"
         fill="url(#inner-hard)"/>
+  <path d="M110,18 L192,50 L192,130 Q192,192 110,224 Q28,192 28,130 L28,50 Z"
+        fill="url(#inner-glow-hard)"/>
+  <path d="M110,18 L192,50 L192,130 Q192,192 110,224 Q28,192 28,130 L28,50 Z"
+        fill="url(#sheen-hard)"/>
 
-  <!-- Highlight edges for 3D effect -->
-  <path d="M110,18 L192,50" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
-  <path d="M110,18 L28,50" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none"/>
+  <!-- Edge highlights -->
+  <path d="M110,18 L192,50" stroke="rgba(255,255,255,0.52)" stroke-width="2.5" fill="none"/>
+  <path d="M110,18 L28,50"  stroke="rgba(255,255,255,0.28)" stroke-width="2"   fill="none"/>
 
-  <!-- MS LOGO: 2x2 colored squares -->
+  <!-- MS LOGO -->
   <rect x="89" y="30" width="19" height="19" fill="#f25022" rx="2"/>
   <rect x="112" y="30" width="19" height="19" fill="#7fba00" rx="2"/>
   <rect x="89" y="53" width="19" height="19" fill="#00a4ef" rx="2"/>
@@ -48,27 +76,25 @@
         fill="#0a0a1a" text-anchor="middle" letter-spacing="1.5">CROSSWORD</text>
 
   <!-- ICON: Padlock (Hard) -->
-  <rect x="94" y="158" width="32" height="26" rx="4" fill="none" stroke="#a855f7" stroke-width="3"/>
+  <rect x="94" y="158" width="32" height="26" rx="4" fill="none" stroke="#c084fc" stroke-width="3"/>
   <path d="M99,158 L99,150 Q99,140 110,140 Q121,140 121,150 L121,158"
-        fill="none" stroke="#a855f7" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="110" cy="171" r="4" fill="#a855f7"/>
-  <line x1="110" y1="175" x2="110" y2="180" stroke="#a855f7" stroke-width="2.5"/>
+        fill="none" stroke="#c084fc" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="110" cy="171" r="4" fill="#c084fc"/>
+  <line x1="110" y1="175" x2="110" y2="180" stroke="#c084fc" stroke-width="2.5"/>
 
   <!-- STAR PILL -->
-  <rect x="72" y="203" width="76" height="22" rx="11" fill="#0b0d1a" stroke="#a855f7" stroke-width="2"/>
-  <!-- 3 stars at cx=88, cx=110, cx=132, cy=214 -->
+  <rect x="72" y="203" width="76" height="22" rx="11" fill="#0b0d1a" stroke="#c084fc" stroke-width="2"/>
   <polygon points="88,207 90.0,212.2 95.6,212.8 91.3,216.1 92.7,221.7 88,218.0 83.3,221.7 84.7,216.1 80.4,212.8 86.0,212.2" fill="white"/>
   <polygon points="110,207 112.0,212.2 117.6,212.8 113.3,216.1 114.7,221.7 110,218.0 105.3,221.7 106.7,216.1 102.4,212.8 108.0,212.2" fill="white"/>
   <polygon points="132,207 134.0,212.2 139.6,212.8 135.3,216.1 136.7,221.7 132,218.0 127.3,221.7 128.7,216.1 124.4,212.8 130.0,212.2" fill="white"/>
 
-  <!-- TIER LABEL SECTION -->
-  <line x1="16" y1="248" x2="78" y2="248" stroke="#a855f7" stroke-width="2"/>
+  <!-- TIER LABEL -->
+  <line x1="16" y1="248" x2="78" y2="248" stroke="#c084fc" stroke-width="2"/>
   <text x="110" y="252" font-family="Arial Black, Arial, sans-serif" font-size="13" font-weight="900"
-        fill="#a855f7" text-anchor="middle" letter-spacing="3">HARD</text>
-  <line x1="142" y1="248" x2="204" y2="248" stroke="#a855f7" stroke-width="2"/>
+        fill="#c084fc" text-anchor="middle" letter-spacing="3">HARD</text>
+  <line x1="142" y1="248" x2="204" y2="248" stroke="#c084fc" stroke-width="2"/>
 
   <text x="110" y="268" font-family="Arial, sans-serif" font-size="9" font-weight="700"
         fill="#ffffff" text-anchor="middle">Impressive!</text>
-
   <text x="110" y="282" font-family="Arial, sans-serif" font-size="7.5" fill="#aaaaaa" text-anchor="middle">You mastered complex concepts</text>
 </svg>
