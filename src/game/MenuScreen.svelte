@@ -393,14 +393,16 @@
     aspect-ratio: 1;
     display: block;
     border-radius: 4px;
-    transition: box-shadow 0.3s, transform 0.3s;
-    filter: none;
-    opacity: 0.55;
+    transition: box-shadow 0.3s, transform 0.3s, filter 0.3s, opacity 0.3s;
+    /* Unearned: visible but gently dimmed/desaturated to indicate locked */
+    filter: grayscale(0.18) brightness(0.82);
+    opacity: 0.78;
   }
 
   .ab-badge.earned .ab-img {
     opacity: 1;
-    box-shadow: 0 0 14px rgba(255,215,0,0.65), 0 0 4px rgba(255,215,0,0.4);
+    filter: brightness(1.08) saturate(1.12);
+    box-shadow: 0 0 18px rgba(255,215,0,0.72), 0 0 6px rgba(255,215,0,0.45);
     transform: scale(1.06);
   }
 
