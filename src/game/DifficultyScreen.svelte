@@ -56,7 +56,7 @@
 
   .heading {
     font-family: var(--font-display);
-    font-size: 0.8rem;
+    font-size: clamp(0.8rem, 2vw, 1.1rem);
     color: #e52222;
     margin: 0;
     letter-spacing: 0.05em;
@@ -85,6 +85,8 @@
     transition: transform 0.1s, box-shadow 0.1s;
     min-height: 100px;
     box-shadow: 3px 3px 0 #2c2c2c;
+    /* Ensure cards are finger-friendly on touch devices */
+    min-width: 0;
   }
 
   .tier-card:hover {
@@ -104,7 +106,7 @@
 
   .tier-label {
     font-family: var(--font-display);
-    font-size: 0.5rem;
+    font-size: clamp(0.5rem, 1.3vw, 0.7rem);
     font-weight: normal;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -141,10 +143,11 @@
     border-radius: 8px;
     cursor: pointer;
     font-family: var(--font-display);
-    font-size: 0.45rem;
+    font-size: clamp(0.45rem, 1.2vw, 0.65rem);
     box-shadow: 3px 3px 0 #2c2c2c;
     transition: transform 0.1s, box-shadow 0.1s;
     letter-spacing: 0.05em;
+    min-height: 44px;
   }
 
   .back-btn:hover {
