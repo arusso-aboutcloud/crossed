@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { FORMATIONS } from './formations';
+import { FORMATIONS, FORMATION_SLOT_BUDGET } from './formations';
 
 export interface BgController {
   dispose(): void;
@@ -31,8 +31,10 @@ const ENTER_DURATION = 2.5;
 const HOLD_DURATION = 6.0;
 const LEAVE_DURATION = 2.0;
 
-// Scale applied to non-formation cubes during formation so only the shape is visible.
-const BYSTANDER_SCALE_MIN = 0.08;
+// Bystanders scale to this during a formation. 0.001 is sub-pixel and fully invisible
+// while keeping the transform matrix invertible (avoids degenerate matrices).
+// 0.08 (previous value) left ~40-70 tiny visible flecks around every shape.
+const BYSTANDER_SCALE_MIN = 0.001;
 // Scale applied to formation cubes during HOLDING for visual pop.
 const FORMATION_SCALE_MAX = 1.25;
 
@@ -198,6 +200,18 @@ export function createBackground(canvas: HTMLCanvasElement): BgController | null
   function assignFormation(formIdx: number) {
     const form = FORMATIONS[formIdx];
     const slots = form.slots;
+
+    // Guard: a formation with more slots than COUNT can never fully render.
+    // This catches any formation added beyond the FORMATION_SLOT_BUDGET.
+    // The assignment loop below already clamps at COUNT, but we warn so
+    // the problem is visible in the console during development.
+    if (slots.length > COUNT) {
+      console.warn(
+        `[WebGL] Formation "${form.id}" has ${slots.length} slots but ` +
+        `cube pool is ${COUNT}. Slots beyond ${COUNT} will not render. ` +
+        `Keep formations at or below FORMATION_SLOT_BUDGET (${FORMATION_SLOT_BUDGET}).`
+      );
+    }
 
     let minCol = Infinity, maxCol = -Infinity;
     let minRow = Infinity, maxRow = -Infinity;

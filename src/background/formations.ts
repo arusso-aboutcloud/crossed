@@ -2,6 +2,12 @@
 // Each formation is a list of grid slots { col, row, color } on a local grid.
 // The scheduler centers the grid in world space before assigning cube positions.
 // No external assets - all geometry generated in code.
+//
+// SLOT BUDGET: every formation must stay at or below FORMATION_SLOT_BUDGET slots
+// after deduplication. background.ts allocates COUNT=90 cubes; keeping formations
+// well below COUNT leaves enough bystanders to hide cleanly during a shape display.
+// The guard test (formations.test.ts) enforces this at CI time.
+export const FORMATION_SLOT_BUDGET = 60;
 
 export interface FormationSlot {
   col: number;
